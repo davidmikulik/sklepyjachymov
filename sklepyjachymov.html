@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interaktivní půdorys a vizualizace sklepních prostor č.p. 885 v Jáchymově včetně návrhu cílového stavu, elektroinstalace a prohlášení vlastníka.">
+    <meta name="keywords" content="sklep, Jáchymov, půdorys, vizualizace, elektroinstalace, kóje, 885, prohlášení vlastníka">
+    <meta name="author" content="Sklep Jáchymov">
+    <meta name="robots" content="index, follow">
+    <title>Sklep Jáchymov – Přesný Půdorys & Vizualizace + Elektro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { margin-bottom: 5px; color: #2c3e50; font-size: 22px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 15px; text-align: center; }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-layer {
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-layer.active {
+            background-color: #1565c0;
+            color: white;
+            border-color: #1565c0;
+        }
+
+        .btn-layer-doc.active {
+            background-color: #d84315 !important;
+            color: white !important;
+            border-color: #bf360c !important;
+        }
+
+        .btn-layer-proposal.active {
+            background-color: #0288d1 !important;
+            color: white !important;
+            border-color: #0288d1 !important;
+        }
+
+        .btn-layer-usage.active {
+            background-color: #7b1fa2 !important;
+            color: white !important;
+            border-color: #7b1fa2 !important;
+        }
+
+        .btn-layer-vis.active {
+            background-color: #37474f !important;
+            color: white !important;
+            border-color: #263238 !important;
+        }
+
+        .btn-layer-elec.active {
+            background-color: #f57c00 !important;
+            color: white !important;
+            border-color: #e65100 !important;
+        }
+
+        .btn-dim-toggle {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .btn-dim-toggle.active {
+            background-color: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1300px;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .map-container {
+            flex: 3;
+            min-width: 340px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background-color: #fafafa;
+            overflow: hidden;
+            position: relative;
+        }
+
+        svg { width: 100%; height: auto; display: block; }
+
+        /* Vrstva 1: Fyzický stav */
+        .working-room {
+            fill: #e3f2fd;
+            fill-opacity: 0.75;
+            stroke: #1565c0;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .working-room:hover { fill: #bbdefb; }
+
+        .unusable-room {
+            fill: #cfd8dc;
+            fill-opacity: 0.8;
+            stroke: #78909c;
+            stroke-width: 2;
+            cursor: pointer;
+        }
+        .unusable-room:hover { fill: #b0bec5; }
+
+        .corridor-work { fill: #f5f5f5; stroke: #616161; stroke-width: 1.5; cursor: pointer; }
+        .corridor-work:hover { fill: #e0e0e0; }
+        .stairs-work { fill: #ffe0b2; stroke: #e65100; stroke-width: 1.5; cursor: pointer; }
+
+        /* Vrstva 2: Oficiální stav */
+        .official-unit {
+            fill: #ffecb3;
+            fill-opacity: 0.65;
+            stroke: #d84315;
+            stroke-width: 2.5;
+            stroke-dasharray: 6 3;
+            cursor: pointer;
+        }
+        .official-unit:hover { fill-opacity: 0.85; }
+
+        /* Vrstva 4: Návrhové jednotky */
+        .proposed-unit {
+            fill: #29b6f6;
+            fill-opacity: 0.85;
+            stroke: #0277bd;
+            stroke-width: 2.5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .proposed-unit:hover { fill: #4fc3f7; fill-opacity: 0.95; }
+
+        /* Vrstva 3: Aktuální využití */
+        .usage-room {
+            fill: #f3e5f5;
+            fill-opacity: 0.85;
+            stroke: #7b1fa2;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .usage-room:hover { fill: #e1bee7; }
+
+        /* Vizualizace dělících kójí */
+        .cage-wall { fill: url(#block-pattern); stroke: #424242; stroke-width: 1; }
+        .cage-frame { stroke: #212121; stroke-width: 3; fill: none; }
+        .cage-door { fill: #37474f; fill-opacity: 0.4; stroke: #102a43; stroke-width: 2; cursor: pointer; }
+        .cage-door:hover { fill: #455a64; fill-opacity: 0.7; }
+
+        /* Elektroprvky styling */
+        .elec-light { fill: #ffd54f; stroke: #f57f17; stroke-width: 1.5; cursor: pointer; filter: drop-shadow(0px 0px 3px #ffeb3b); }
+        .elec-light:hover { fill: #ffff8d; transform: scale(1.15); transform-origin: center; }
+        .elec-socket { fill: #00e676; stroke: #1b5e20; stroke-width: 1.5; cursor: pointer; }
+        .elec-socket:hover { fill: #69f0ae; }
+        .elec-line { stroke: #ff9800; stroke-width: 1.5; stroke-dasharray: 4 2; }
+
+        /* Vrstva Kóty a Rozměry */
+        .dim-line { stroke: #d32f2f; stroke-width: 1.5; marker-end: url(#arrow-end); marker-start: url(#arrow-start); }
+        .dim-line-outer { stroke: #2e7d32; stroke-width: 2; marker-end: url(#arrow-end-green); marker-start: url(#arrow-start-green); }
+        .dim-text { font-size: 11px; font-weight: bold; fill: #c62828; text-anchor: middle; dominant-baseline: middle; }
+        .dim-text-outer { font-size: 13px; font-weight: bold; fill: #1b5e20; text-anchor: middle; dominant-baseline: middle; }
+        .dim-guide { stroke: #9e9e9e; stroke-width: 1; stroke-dasharray: 3 3; }
+
+        .label-title { font-size: 12px; font-weight: bold; pointer-events: none; text-anchor: middle; dominant-baseline: middle; }
+        .label-sub { font-size: 10px; fill: #555; pointer-events: none; text-anchor: middle; }
+
+        .info-panel {
+            flex: 1;
+            min-width: 260px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .info-panel h3 { margin-top: 0; color: #1565c0; border-bottom: 2px solid #1565c0; padding-bottom: 6px; }
+        .info-row { margin-bottom: 10px; }
+        .info-label { font-size: 12px; font-weight: bold; color: #666; display: block; }
+        .info-val { font-size: 15px; color: #111; font-weight: 500; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff; }
+        .badge-official { background-color: #d84315; }
+        .badge-working { background-color: #1565c0; }
+        .badge-proposal { background-color: #0288d1; }
+        .badge-usage { background-color: #7b1fa2; }
+        .badge-vis { background-color: #37474f; }
+        .badge-elec { background-color: #f57c00; }
+        .badge-unusable { background-color: #78909c; }
+
+        .img-uploader {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #d84315;
+            z-index: 100;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .joke-box {
+            display: block;
+            margin-top: 16px;
+            padding: 14px 16px;
+            border: 1px solid #cfd8dc;
+            border-radius: 10px;
+            background: #f7fbff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        .joke-box-title {
+            margin: 0 0 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1565c0;
+        }
+
+        .joke-box-text {
+            margin: 0;
+            color: #263238;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>1.PP č.p. 885, Jáchymov – Přesný Půdorys</h1>
+    <p class="subtitle">Interaktivní mapa prostor, umožňuje procházet a zobrazovat různé vrstvy informací</p>
+
+    <!-- OVLÁDACÍ TLAČÍTKA -->
+    <div class="controls">
+        <button class="btn-layer active" onclick="setLayerMode('working')">🏢 Fyzické místnosti (A/B/V)</button>
+        <button class="btn-layer" onclick="setLayerMode('both')">🔗 Fyzický + Oficiální</button>
+        <button class="btn-layer btn-layer-usage" onclick="setLayerMode('usage')">👤 Aktuální využití</button>
+        <button class="btn-layer btn-layer-proposal" onclick="setLayerMode('proposal')">🎯 Návrh cílového stavu </button>
+        <button class="btn-layer btn-layer-elec" onclick="setLayerMode('electric')">⚡ Elektroinstalace (Cílový stav)</button>
+        <button class="btn-layer btn-layer-vis" onclick="setLayerMode('visualization')">🎨 Vizualizace kójí</button>
+        <button class="btn-layer btn-layer-doc" onclick="setLayerMode('doc')">📜 Prohlášení vlastníka</button>
+        <button class="btn-layer" onclick="setLayerMode('official')">📜 Oficiální stav (bez fyzického)</button>
+        <span style="border-left: 1px solid #ccc; height: 20px; margin: 0 5px;"></span>
+        <button class="btn-layer btn-dim-toggle" id="btn-dim" onclick="toggleDimensions()">📐 Vrstva rozměrů (Vypnuta)</button>
+    </div>
+
+    <div class="container">
+        <div class="map-container">
+            <div id="uploader-box" class="img-uploader">
+                <b>Podkladový sken:</b>
+                <input type="file" id="file-input" accept="image/*" onchange="loadCustomImage(event)" style="font-size:11px;">
+            </div>
+
+            <svg viewBox="0 0 1100 560" id="main-svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"></path>
+                    </pattern>
+
+                    <pattern id="block-pattern" width="16" height="12" patternUnits="userSpaceOnUse">
+                        <rect width="16" height="12" fill="#b0bec5"></rect>
+                        <rect x="0" y="0" width="15" height="5" fill="#cfd8dc" stroke="#90a4ae" stroke-width="0.5"></rect>
+                        <rect x="0" y="6" width="7" height="5" fill="#cfd8dc" stroke="#90a4ae" stroke-width="0.5"></rect>
+                        <rect x="8" y="6" width="7" height="5" fill="#cfd8dc" stroke="#90a4ae" stroke-width="0.5"></rect>
+                    </pattern>
+
+                    <marker id="arrow-start" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 10 0 L 0 5 L 10 10 z" fill="#d32f2f"></path>
+                    </marker>
+                    <marker id="arrow-end" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#d32f2f"></path>
+                    </marker>
+                    <marker id="arrow-start-green" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 10 0 L 0 5 L 10 10 z" fill="#2e7d32"></path>
+                    </marker>
+                    <marker id="arrow-end-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32"></path>
+                    </marker>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)"></rect>
+
+                <!-- VRSTVA 0: OBRÁZEK Z PROHLÁŠENÍ VLASTNÍKA -->
+                <g id="layer-doc" style="display: none;">
+                    <image id="doc-image" href="sklepyzprohlasenivlastnika.png " x="80" y="70" width="940" height="420" opacity="0.85" preserveAspectRatio="none" onerror="handleImageError(this)" onclick="window.open('https://drive.google.com/uc?export=view&id=1EJGbXu_3tZ3E7xuVpOS0kPoH5D7D6bfz', '_blank')" style="cursor: pointer;"/>
+                </g>
+
+                <!-- VRSTVA 1: FYZICKÉ MÍSTNOSTI -->
+                <g id="layer-working" style="display: block;">
+                    <rect x="90" y="80" width="240" height="132" class="working-room" onclick="selectItem('working', 'A1', 'Fyzická místnost A1', '6,00 x 3,30 m (19,80 m²)', 'Místnost s kójemi 885/1, 885/2, 885/6')"></rect>
+                    <text x="210" y="185" class="label-title">A1 (6,0 × 3,3 m)</text>
+
+                    <rect x="330" y="80" width="140" height="132" class="working-room" onclick="selectItem('working', 'A2', 'Fyzická místnost A2', '3,50 x 3,30 m (11,55 m²)', 'Místnost s kójemi 885/8 a 885/9')"></rect>
+                    <text x="400" y="185" class="label-title">A2 (3,5 × 3,3 m)</text>
+
+                    <rect x="470" y="80" width="80" height="132" class="stairs-work" onclick="selectItem('working', 'S1', 'Vstupní schodiště', '2,00 x 3,30 m', 'Schody')"></rect>
+                    <text x="510" y="146" class="label-title" fill="#e65100">SCHODY</text>
+
+                    <rect x="550" y="80" width="60" height="132" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,30 m (4,95 m²)', 'Sklad')"></rect>
+                    <text x="580" y="146" class="label-title" font-size="11px">A3 (1,5m)</text>
+
+                    <rect x="610" y="80" width="104" height="132" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,30 m (8,58 m²)', 'Kóje 885/10')"></rect>
+                    <text x="662" y="146" class="label-title">A4 (2,6 m)</text>
+
+                    <rect x="714" y="80" width="60" height="132" class="corridor-work" onclick="selectItem('working', 'C2', 'Odbočka chodby', '1,50 x 3,30 m', 'Prodloužení chodby')"></rect>
+                    <text x="744" y="146" class="label-sub" fill="#444" transform="rotate(-90 744 146)">CHODBA (1,5m)</text>
+
+                    <rect x="774" y="80" width="240" height="132" class="working-room" onclick="selectItem('working', 'A5', 'Fyzická místnost A5', '6,00 x 3,30 m (19,80 m²)', 'Sklad / Kóje 885/7')"></rect>
+                    <text x="894" y="146" class="label-title">A5 (6,0 × 3,3 m)</text>
+
+                    <rect x="90" y="212" width="624" height="62.4" class="corridor-work" onclick="selectItem('working', 'C1 (Hlavní)', 'Hlavní chodba', '15,60 x 1,56 m', 'Páteřní chodba sklepů')"></rect>
+                    <text x="402" y="243" class="label-title" fill="#555">SPOLEČNÁ CHODBA C1 (1,56 m)</text>
+
+                    <rect x="714" y="212" width="60" height="62.4" class="corridor-work" onclick="selectItem('working', 'C1-Uzel', 'Spojovací uzel chodby', '1,50 x 1,56 m', 'Propojení chodby')"></rect>
+
+                    <rect x="774" y="212" width="240" height="62.4" class="working-room" style="fill: #e8eaf6;" onclick="selectItem('working', 'B6', 'Fyzická místnost / Prostor B6', '6,00 x 1,56 m (9,36 m²)', 'Součást nebytové jednotky 885/12')"></rect>
+                    <text x="894" y="243" class="label-title" fill="#3f51b5">B6 (6,0 × 1,56 m)</text>
+
+                    <rect x="90" y="274.4" width="186" height="212" class="working-room" onclick="selectItem('working', 'B1', 'Fyzická místnost B1', '4,65 x 5,30 m (24,65 m²)', 'Nebytová jednotka 885/11')"></rect>
+                    <text x="183" y="380" class="label-title">B1 (4,65 × 5,3 m)</text>
+
+                    <rect x="276" y="274.4" width="220" height="212" class="working-room" onclick="selectItem('working', 'B2', 'Fyzická místnost B2', '5,50 x 5,30 m (29,15 m²)', 'Sklepní prostor pro kóje 885/4 a 885/5')"></rect>
+                    <text x="386" y="380" class="label-title">B2 (5,5 × 5,3 m)</text>
+
+                    <rect x="496" y="274.4" width="96" height="212" class="unusable-room" onclick="selectItem('unusable', 'V0', 'Nepoužitelný prostor', '2,40 x 5,30 m', 'Výsep pod schodištěm')"></rect>
+                    <text x="544" y="370" class="label-title" fill="#455a64">V0</text>
+                    <text x="544" y="390" class="label-sub" fill="#37474f" font-weight="bold">VÝSEP</text>
+
+                    <rect x="592" y="274.4" width="96" height="212" class="working-room" onclick="selectItem('working', 'B3', 'Fyzická místnost B3', '2,40 x 5,30 m (12,72 m²)', 'Součást nb. j. 885/12')"></rect>
+                    <text x="640" y="380" class="label-title">B3 (2,4m)</text>
+
+                    <rect x="688" y="274.4" width="132" height="212" class="working-room" onclick="selectItem('working', 'B4', 'Fyzická místnost B4', '3,30 x 5,30 m (17,49 m²)', 'Součást nb. j. 885/12')"></rect>
+                    <text x="754" y="380" class="label-title">B4 (3,3m)</text>
+
+                    <rect x="820" y="274.4" width="192" height="212" class="working-room" onclick="selectItem('working', 'B5', 'Fyzická místnost B5', '4,80 x 5,30 m (25,44 m²)', 'Součást nb. j. 885/12')"></rect>
+                    <text x="916" y="380" class="label-title">B5 (4,8 × 5,3 m)</text>
+                </g>
+
+                <!-- VRSTVA 2: OFICIÁLNÍ STAV -->
+                <g id="layer-official" style="display: none;">
+                    <rect x="90" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/1', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
+                    <text x="130" y="108" class="label-title" fill="#d84315">885/1</text>
+
+                    <rect x="170" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/6', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
+                    <text x="210" y="108" class="label-title" fill="#d84315">885/6</text>
+
+                    <rect x="250" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/8', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
+                    <text x="290" y="108" class="label-title" fill="#d84315">885/8</text>
+
+                    <rect x="330" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/9', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
+                    <text x="365" y="108" class="label-title" fill="#d84315">885/9</text>
+
+                    <rect x="400" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/2', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
+                    <text x="435" y="108" class="label-title" fill="#d84315">885/2</text>
+
+                    <rect x="610" y="80" width="104" height="132" class="official-unit" onclick="selectItem('official', '885/10', 'Sklepní kóje', 'Odpovídá A4', 'Příslušenství k bytu')"></rect>
+                    <text x="662" y="146" class="label-title" fill="#d84315">885/10</text>
+
+                    <rect x="714" y="80" width="60" height="132" class="official-unit" style="stroke:#757575; fill:#eee; fill-opacity:0.3;" onclick="selectItem('official', 'Společná chodba', 'Společný prostor', 'Šířka 1,5m', 'Chodba vymezená v Prohlášení')"></rect>
+
+                    <rect x="774" y="80" width="240" height="132" class="official-unit" onclick="selectItem('official', '885/7', 'Sklepní kóje', 'Odpovídá A5', 'Příslušenství k bytu')"></rect>
+                    <text x="894" y="146" class="label-title" fill="#d84315">885/7 (A5)</text>
+
+                    <rect x="90" y="274.4" width="186" height="212" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/11', 'Nebytová jednotka', 'Výměra z PV: 27,83 m²', 'Právně ucelený prostor (B1)')"></rect>
+                    <text x="183" y="370" class="label-title" fill="#d84315">nb. j. č. 885/11</text>
+                    <text x="183" y="390" class="label-title" fill="#d84315" font-size="11px">(27,83 m²)</text>
+
+                    <path d="M 592,274.4 L 774,274.4 L 774,212 L 1012,212 L 1012,486.4 L 592,486.4 Z" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/12', 'Nebytová jednotka', 'Výměra z PV: 59,03 m²', 'Společný blok: B3 + B4 + B5 + B6')"></path>
+                    <text x="802" y="370" class="label-title" fill="#d84315">nb. j. č. 885/12</text>
+                    <text x="802" y="390" class="label-title" fill="#d84315" font-size="11px">(59,03 m²)</text>
+                </g>
+
+                <!-- VRSTVA 4: NÁVRH CÍLOVÉHO STAVU (Obsahuje Kóje 885/4 a 885/5) -->
+                <g id="layer-proposal" style="display: none;">
+                    <rect x="550" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal', 'A3', 'Společný sklep A3', '1,50 x 3,30 m (4,95 m²)', 'Společný prostor v cílovém stavu')"></rect>
+                    <text x="580" y="136" class="label-title" fill="#0d47a1">A3</text>
+                    <text x="580" y="156" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+
+                    <rect x="714" y="80" width="60" height="60" class="proposed-unit" onclick="selectItem('proposal', 'A6', 'Společná část A6', '2,00 x 1,50 m (3,00 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
+                    <text x="744" y="110" class="label-title" fill="#0d47a1">A6</text>
+                    <text x="744" y="126" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+
+                    <rect x="714" y="140" width="60" height="72" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
+                    <text x="744" y="180" class="label-sub" fill="#455a64" font-size="10px">CHODBA (1,5 m)</text>
+
+                    <rect x="276" y="362.4" width="136" height="124" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '1,70 x 3,10 m (5,27 m²)', 'Nová kóje v levé části B2, příčky tvárnice/kov, dveře v pravé stěně')"></rect>
+                    <text x="340" y="424" class="label-title" fill="#0d47a1">885/4</text>
+                    <text x="340" y="440" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 3,1 m)</text>
+
+                    <rect x="276" y="274.4" width="136" height="88" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '1,70 x 2,20 m (3,74 m²)', 'Nová kóje vedle 885/4 v místnosti B2, dveře v pravé stěně')"></rect>
+                    <text x="340" y="318" class="label-title" fill="#0d47a1">885/5</text>
+                    <text x="340" y="334" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 2,2 m)</text>
+                </g>
+
+                <!-- VRSTVA 6: ELEKTROINSTALACE (Kompletní cílový stav) -->
+                <g id="layer-electric" style="display: none;">
+                    <!-- Elektroinstalace - Stávající kóje v A1 -->
+                    <circle cx="130" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/1', 'Svítidlo v kóji 885/1', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="150" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/1', 'Zásuvka v kóji 885/1', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+
+                    <circle cx="210" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/2', 'Svítidlo v kóji 885/2', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="230" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/2', 'Zásuvka v kóji 885/2', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+
+                    <circle cx="290" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/6', 'Svítidlo v kóji 885/6', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="310" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/6', 'Zásuvka v kóji 885/6', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+
+                    <!-- Elektroinstalace - Stávající kóje v A2 -->
+                    <circle cx="365" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/8', 'Svítidlo v kóji 885/8', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="385" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/8', 'Zásuvka v kóji 885/8', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+
+                    <circle cx="435" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/9', 'Svítidlo v kóji 885/9', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="455" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/9', 'Zásuvka v kóji 885/9', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+
+                    <!-- Elektroinstalace - Ostatní prostory část A -->
+                    <circle cx="510" cy="146" r="9" class="elec-light" onclick="selectItem('elec', 'S-S1', 'Schodišťové svítidlo', 'LED IP44', 'Schodišťové osvětlení')"></circle>
+                    <circle cx="580" cy="130" r="7" class="elec-light" onclick="selectItem('elec', 'S-A3', 'Svítidlo A3', 'LED IP44', 'Osvětlení skladu')"></circle>
+                    <circle cx="662" cy="135" r="9" class="elec-light" onclick="selectItem('elec', 'S-885/10', 'Svítidlo v 885/10 (A4)', 'LED 18W', 'Svítidlo kóje 885/10')"></circle>
+                    <circle cx="744" cy="110" r="8" class="elec-light" onclick="selectItem('elec', 'S-A6', 'Svítidlo v A6', 'LED 18W', 'Osvětlení společné kóje A6')"></circle>
+                    <circle cx="894" cy="135" r="10" class="elec-light" onclick="selectItem('elec', 'S-885/7', 'Svítidlo v 885/7 (A5)', 'LED 36W', 'Hlavní osvětlení A5')"></circle>
+
+                    <!-- Elektroinstalace - Chodba C1 -->
+                    <circle cx="210" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-1', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
+                    <circle cx="490" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-2', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
+                    <circle cx="744" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-3', 'Osvětlení chodby', 'LED IP44', 'Průchozí osvětlení')"></circle>
+
+                    <!-- Elektroinstalace - Nebytová jednotka B1 -->
+                    <circle cx="183" cy="380" r="11" class="elec-light" onclick="selectItem('elec', 'S-B1', 'Svítidlo B1 (885/11)', 'LED panel 36W IP44', 'Hlavní osvětlení nebytového prostoru')"></circle>
+                    <rect x="250" y="285" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B1-1', 'Zásuvka B1', '230V IP44', 'Zásuvkový okruh B1')"></rect>
+
+                    <!-- Elektroinstalace - Kóje 885/4 a 885/5 (Nové) -->
+                    <circle cx="378" cy="424" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/4', 'Svítidlo v kóji 885/4', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 3,1 m kóji')"></circle>
+                    <rect x="393" y="370" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/4', 'Zásuvka v kóji 885/4', '230V IP44', 'Zásuvka pro kóji 885/4 (1,7 x 3,1 m)')"></rect>
+
+                    <circle cx="378" cy="318" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/5', 'Svítidlo v kóji 885/5', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 2,2 m kóji')"></circle>
+                    <rect x="393" y="282" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/5', 'Zásuvka v kóji 885/5', '230V IP44', 'Zásuvka pro kóji 885/5 (1,7 x 2,2 m)')"></rect>
+
+                    <!-- Elektroinstalace - Zbývající prostor B2 a části B3, B4, B5 -->
+                    <circle cx="460" cy="390" r="11" class="elec-light" onclick="selectItem('elec', 'S-B2', 'Svítidlo B2', 'LED 36W IP44', 'Osvětlení zbývající části B2')"></circle>
+                    <rect x="475" y="460" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B2-1', 'Zásuvka B2', '230V IP44', 'Zásuvkový okruh B2')"></rect>
+
+                    <circle cx="640" cy="380" r="9" class="elec-light" onclick="selectItem('elec', 'S-B3', 'Svítidlo B3', 'LED 18W', 'Svítidlo pro B3 (885/12)')"></circle>
+                    <circle cx="754" cy="380" r="9" class="elec-light" onclick="selectItem('elec', 'S-B4', 'Svítidlo B4', 'LED 18W', 'Svítidlo pro B4 (885/12)')"></circle>
+                    <circle cx="916" cy="380" r="11" class="elec-light" onclick="selectItem('elec', 'S-B5', 'Svítidlo B5', 'LED 36W', 'Osvětlení skladu B5 (885/12)')"></circle>
+                    <rect x="990" y="460" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B5-1', 'Zásuvka B5', '230V IP44', 'Zásuvkový okruh B5')"></rect>
+                </g>
+
+                <!-- VRSTVA 3: AKTUÁLNÍ VYUŽITÍ -->
+                <g id="layer-usage" style="display: none;">
+                    <rect x="90" y="80" width="240" height="132" class="usage-room" onclick="selectItem('usage', 'A1', 'Místnost A1', '19,80 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
+                    <text x="210" y="136" class="label-title" fill="#4a148c">A1</text>
+                    <text x="210" y="156" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
+
+                    <rect x="330" y="80" width="140" height="132" class="usage-room" onclick="selectItem('usage', 'A2', 'Místnost A2', '11,55 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
+                    <text x="400" y="136" class="label-title" fill="#4a148c">A2</text>
+                    <text x="400" y="156" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
+
+                    <rect x="470" y="80" width="80" height="132" class="stairs-work" onclick="selectItem('usage', 'S1', 'Vstupní schodiště', '2,00 x 3,30 m (6,60 m²)', 'Společné schodiště - průchozí')"></rect>
+                    <text x="510" y="136" class="label-title" fill="#4a148c">S1</text>
+                    <text x="510" y="156" class="label-title" fill="#4a148c">Schodiště</text>
+
+                    <rect x="550" y="80" width="60" height="132" class="usage-room" onclick="selectItem('usage', 'A3', 'Místnost A3', '4,95 m²', 'Uživatel: Urbanovi (byt č. 2)')"></rect>
+                    <text x="580" y="136" class="label-title" fill="#4a148c">A3</text>
+                    <text x="580" y="156" class="label-title" fill="#4a148c"><tspan x="580" dy="0">Urban</tspan><tspan x="580" dy="16">(2)</tspan></text>
+
+                    <rect x="610" y="80" width="104" height="132" class="usage-room" onclick="selectItem('usage', 'A4', 'Místnost A4', '8,58 m²', 'Uživatel: Bergauer (byt č. 9)')"></rect>
+                    <text x="662" y="136" class="label-title" fill="#4a148c">A4</text>
+                    <text x="662" y="156" class="label-title" fill="#4a148c">Bergauer (9)</text>
+
+                    <rect x="714" y="80" width="60" height="132" class="corridor-work"></rect>
+
+                    <rect x="774" y="80" width="240" height="132" class="usage-room" onclick="selectItem('usage', 'A5', 'Místnost A5', '19,80 m²', 'Uživatel: Poštová (byt č. 10)')"></rect>
+                    <text x="894" y="136" class="label-title" fill="#4a148c">A5</text>
+                    <text x="894" y="156" class="label-title" fill="#4a148c">Poštová (10)</text>
+
+                    <rect x="90" y="274.4" width="186" height="212" class="usage-room" onclick="selectItem('usage', 'B1', 'Místnost B1', '24,65 m²', 'Uživatel: Rutrich')"></rect>
+                    <text x="183" y="370" class="label-title" fill="#4a148c">B1</text>
+                    <text x="183" y="390" class="label-title" fill="#4a148c">Rutrich</text>
+
+                    <rect x="276" y="274.4" width="220" height="212" class="usage-room" onclick="selectItem('usage', 'B2', 'Místnost B2', '29,15 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
+                    <text x="386" y="370" class="label-title" fill="#4a148c">B2</text>
+                    <text x="386" y="390" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
+
+                    <rect x="592" y="274.4" width="96" height="212" class="usage-room" onclick="selectItem('usage', 'B3', 'Místnost B3', '12,72 m²', 'Uživatel: Čabinová (byt č. 6)')"></rect>
+                    <text x="640" y="370" class="label-title" fill="#4a148c">B3</text>
+                    <text x="640" y="390" class="label-title" fill="#4a148c">Čabinová (6)</text>
+
+                    <rect x="688" y="274.4" width="132" height="212" class="usage-room" onclick="selectItem('usage', 'B4', 'Místnost B4', '17,49 m²', 'Uživatel: Urban (byt č. 7)')"></rect>
+                    <text x="754" y="370" class="label-title" fill="#4a148c">B4</text>
+                    <text x="754" y="390" class="label-title" fill="#4a148c">Urban (7)</text>
+                </g>
+
+                <!-- VRSTVA 5: VIZUALIZACE KÓJÍ DLE FOTO -->
+                <g id="layer-vis" style="display: none;">
+                    <g onclick="selectItem('vis', '885/1,6,2', 'Blok kójí v A1', '3 kóje (2,0 x 1,4 m)', 'Příčky z tvárnic ode zdi ke zdi s čelními dveřmi')">
+                        <rect x="166" y="80" width="8" height="56" class="cage-wall"></rect>
+                        <rect x="246" y="80" width="8" height="56" class="cage-wall"></rect>
+                        <rect x="90" y="136" width="240" height="10" class="cage-wall"></rect>
+
+                        <rect x="110" y="134" width="40" height="14" class="cage-door"></rect>
+                        <text x="130" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/1</text>
+
+                        <rect x="190" y="134" width="40" height="14" class="cage-door"></rect>
+                        <text x="210" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/2</text>
+
+                        <rect x="270" y="134" width="40" height="14" class="cage-door"></rect>
+                        <text x="290" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/6</text>
+
+                        <!-- Tlačítko pro otevření vizualizace A1 -->
+                        <g style="cursor: pointer;" onclick="window.open('vizualizacesklepyjachymov.jpg','_blank')">
+                            <circle cx="310" cy="180" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
+                            <text x="210" y="92" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
+                        </g>
+                    </g>
+
+                    <g onclick="selectItem('vis', '885/8,9', 'Blok kójí v A2', '2 kóje (1,75 x 1,4 m)', 'Příčky z tvárnic ode zdi ke zdi s čelními dveřmi')">
+                        <rect x="396" y="80" width="8" height="56" class="cage-wall"></rect>
+                        <rect x="330" y="136" width="140" height="10" class="cage-wall"></rect>
+
+                        <rect x="345" y="134" width="40" height="14" class="cage-door"></rect>
+                        <text x="365" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/8</text>
+
+                        <rect x="415" y="134" width="40" height="14" class="cage-door"></rect>
+                        <text x="435" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/9</text>
+                    </g>
+                    <!-- Tlačítko pro otevření vizualizace B2 -->
+                    <g style="cursor: pointer;" onclick="window.open('pingpong.png','_blank')">
+                        <circle cx="455" cy="275" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
+                        <text x="455" y="275" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
+                    </g>
+
+                    <g onclick="selectItem('vis', '885/4 a 885/5', 'Dělící příčka a pravá stěna', 'Příčka x=344, pravá stěna x=412', 'Vizualizace kójí 885/4 (3,1 m) a 885/5 (2,2 m)')">
+                        <rect x="412" y="274.4" width="8" height="212" class="cage-wall"></rect>
+                        <rect x="275" y="350" width="145" height="8" class="cage-wall"></rect>
+                        <rect x="412" y="300" width="14" height="40" class="cage-door" onclick="selectItem('vis', 'Dveře 885/4', 'Dveře kóje 885/4', 'Pravá stěna', 'Dveře na příčce')"></rect>
+                        <rect x="412" y="400" width="14" height="40" class="cage-door" onclick="selectItem('vis', 'Dveře 885/5', 'Dveře kóje 885/5', 'Pravá stěna', 'Dveře na pravé zdi')"></rect>
+                        <text x="310" y="424" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/4</text>
+                        <text x="310" y="440" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 3,1 m)</text>
+                        <text x="378" y="318" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/5</text>
+                        <text x="378" y="334" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 2,2 m)</text>
+                    </g>
+                    <!-- Nově: Vizualizace - A4 plně vyzděná -->
+                    <g onclick="selectItem('vis', 'A4', 'Vizualizace A4', '2,60 x 3,30 m', 'Plně vyzděná kóje v A4')">
+                        <rect x="610" y="203" width="104" height="8" class="cage-wall"></rect>
+                        <rect x="707" y="80" width="8" height="130" class="cage-wall"></rect>
+                        <rect x="640" y="200" width="40" height="14" class="cage-door"></rect>
+                        <text x="662" y="146" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A4</text>
+                    </g>
+                    <g onclick="selectItem('vis', 'A6', 'Navrhovaná společná kóje A6', '2,00 x 1,50 m', 'A6 využívá stávající boční zdi chodby; bez viditelných bočních stěn')">
+                        <rect x="714" y="80" width="60" height="60" fill="#29b6f6" fill-opacity="0.15"></rect>
+                        <rect x="714" y="140" width="60" height="8" class="cage-wall"></rect>
+                        <rect x="730" y="136" width="24" height="14" class="cage-door"></rect>
+                        <text x="744" y="105" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A6</text>
+                        <text x="744" y="122" font-size="10px" fill="#0d47a1" text-anchor="middle">Společná</text>
+                    </g>
+                </g>
+
+                <!-- VRSTVA KÓTY A ROZMĚRY -->
+                <g id="layer-dimensions" style="display: none;">
+                    <line x1="40" y1="80" x2="40" y2="486.4" class="dim-line-outer"></line>
+                    <line x1="35" y1="80" x2="85" y2="80" class="dim-guide"></line>
+                    <line x1="35" y1="486.4" x2="85" y2="486.4" class="dim-guide"></line>
+                    <text x="25" y="283" class="dim-text-outer" transform="rotate(-90 25 283)">CELKOVÁ VÝŠKA: 10,16 m</text>
+
+                    <!-- Kóty A -->
+                    <line x1="90" y1="50" x2="330" y2="50" class="dim-line"></line>
+                    <line x1="90" y1="45" x2="90" y2="75" class="dim-guide"></line>
+                    <line x1="330" y1="45" x2="330" y2="75" class="dim-guide"></line>
+                    <text x="210" y="50" class="dim-text">A1: 3 KÓJE (2,0 m × 1,4 m)</text>
+
+                    <line x1="330" y1="50" x2="470" y2="50" class="dim-line"></line>
+                    <line x1="330" y1="45" x2="330" y2="75" class="dim-guide"></line>
+                    <line x1="470" y1="45" x2="470" y2="75" class="dim-guide"></line>
+                    <text x="400" y="50" class="dim-text">A2: 2 KÓJE (1,75 m × 1,4 m)</text>
+
+                    <!-- Kóty B -->
+                    <line x1="90" y1="510" x2="276" y2="510" class="dim-line"></line>
+                    <line x1="90" y1="495" x2="90" y2="525" class="dim-guide"></line>
+                    <line x1="276" y1="495" x2="276" y2="525" class="dim-guide"></line>
+                    <text x="183" y="510" class="dim-text">B1: 4,65 m</text>
+
+                    <line x1="276" y1="510" x2="496" y2="510" class="dim-line"></line>
+                    <line x1="496" y1="495" x2="496" y2="525" class="dim-guide"></line>
+                    <text x="386" y="510" class="dim-text">B2: 5,50 m (kóje 885/4 a 885/5)</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="info-panel">
+            <h3>Detail označené části</h3>
+            <div id="panel-body">
+                <p style="color: #777; font-size: 13px;">Klikněte na jakoukoliv část mapy nebo elektroinstalace pro zobrazení detailu a parametrů.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="joke-box" id="joke-box">
+        <h3 class="joke-box-title">Něco o Jáchymově <button onclick="loadText()" style="background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 0 0 8px;" title="Načíst nové">🔄</button></h3>
+        <p class="joke-box-text" id="joke-text">Načítám text ze serveru…</p>
+    </div>
+
+    <script>
+        let dimensionsVisible = false;
+
+        function handleImageError(img) {
+            console.warn("Lokální obrázek sklepyzprohlasenivlastnika.png nebyl nalezen. Používám záložní zobrazení.");
+            document.getElementById('uploader-box').style.display = 'block';
+            img.style.display = 'none';
+            const layerDoc = document.getElementById('layer-doc');
+            
+            if (!document.getElementById('fallback-draw')) {
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                g.setAttribute("id", "fallback-draw");
+                g.innerHTML = `
+                    <rect x="85" y="70" width="935" height="420" fill="#fff8e1" stroke="#d84315" stroke-width="3" stroke-dasharray="8 4" opacity="0.9"/>
+                    <text x="550" y="250" font-size="20" font-weight="bold" fill="#d84315" text-anchor="middle">📜 SKEN Z PROHLÁŠENÍ VLASTNÍKA</text>
+                    <text x="550" y="280" font-size="14" fill="#666" text-anchor="middle">Chybí soubor 'sklepyzprohlasenivlastnika.png' ve složce.</text>
+                    <text x="550" y="300" font-size="13" fill="#1565c0" text-anchor="middle">Můžete jej nahrát tlačítkem vpravo nahoře.</text>
+                `;
+                layerDoc.appendChild(g);
+            }
+        }
+
+        function loadCustomImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('doc-image');
+                    img.setAttribute('href', e.target.result);
+                    img.style.display = 'block';
+                    const fallback = document.getElementById('fallback-draw');
+                    if (fallback) fallback.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function setLayerMode(mode) {
+            document.querySelectorAll('.btn-layer:not(.btn-dim-toggle)').forEach(b => b.classList.remove('active'));
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            const layerDoc = document.getElementById('layer-doc');
+            const layerWork = document.getElementById('layer-working');
+            const layerOff = document.getElementById('layer-official');
+            const layerProp = document.getElementById('layer-proposal');
+            const layerUsage = document.getElementById('layer-usage');
+            const layerVis = document.getElementById('layer-vis');
+            const layerElec = document.getElementById('layer-electric');
+            const uploaderBox = document.getElementById('uploader-box');
+
+            layerDoc.style.display = 'none';
+            layerWork.style.display = 'none';
+            layerOff.style.display = 'none';
+            layerProp.style.display = 'none';
+            layerUsage.style.display = 'none';
+            layerVis.style.display = 'none';
+            layerElec.style.display = 'none';
+            uploaderBox.style.display = 'none';
+
+            if (mode === 'doc') {
+                layerDoc.style.display = 'block';
+                layerWork.style.display = 'none';
+                uploaderBox.style.display = 'block';
+                selectItem('official', 'Prohlášení vlastníka', 'Podkladový výkres PV', '1.PP č.p. 885', 'Zobrazení originální přílohy z Katastru');
+            } else if (mode === 'both') {
+                layerWork.style.display = 'block';
+                layerOff.style.display = 'block';
+            } else if (mode === 'working') {
+                layerWork.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+            } else if (mode === 'official') {
+                layerOff.style.display = 'block';
+            } else if (mode === 'proposal') {
+                // Fyzický + Oficiální + Návrh kójí 885/4 a 885/5
+                layerWork.style.display = 'block';
+                layerOff.style.display = 'block';
+                layerProp.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+                selectItem('proposal', 'Cílový stav', 'Fyzický + Oficiální stav + Kóje 885/4, 885/5', 'Kompletní plán', 'Sloučený pohled pro realizaci');
+            } else if (mode === 'usage') {
+                layerWork.style.display = 'block';
+                layerUsage.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+            } else if (mode === 'visualization') {
+                layerWork.style.display = 'block';
+                layerVis.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+            } else if (mode === 'electric') {
+                layerWork.style.display = 'block';
+                layerOff.style.display = 'block';
+                layerProp.style.display = 'block';
+                layerElec.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+                selectItem('elec', 'Elektroinstalace', 'Cílové zapojení IP44', 'Kompletní síť', 'Všechna světla a zásuvky (vč. kójí 885/4 a 885/5)');
+            }
+        }
+
+        function toggleDimensions() {
+            dimensionsVisible = !dimensionsVisible;
+            const layerDim = document.getElementById('layer-dimensions');
+            const btnDim = document.getElementById('btn-dim');
+
+            if (dimensionsVisible) {
+                layerDim.style.display = 'block';
+                btnDim.classList.add('active');
+                btnDim.innerText = '📐 Vrstva rozměrů (Zapnuta)';
+            } else {
+                layerDim.style.display = 'none';
+                btnDim.classList.remove('active');
+                btnDim.innerText = '📐 Vrstva rozměrů (Vypnuta)';
+            }
+        }
+
+        function selectItem(type, id, name, dim, use) {
+            const panel = document.getElementById('panel-body');
+            let badgeClass = 'badge-working';
+            let badgeText = 'Fyzické zaměření';
+            let colorHex = '#1565c0';
+
+            if (type === 'official') {
+                badgeClass = 'badge-official';
+                badgeText = 'Oficiální stav (PV)';
+                colorHex = '#d84315';
+            } else if (type === 'proposal') {
+                badgeClass = 'badge-proposal';
+                badgeText = 'Návrh cílového stavu';
+                colorHex = '#0288d1';
+            } else if (type === 'usage') {
+                badgeClass = 'badge-usage';
+                badgeText = 'Aktuální uživatel';
+                colorHex = '#7b1fa2';
+            } else if (type === 'vis') {
+                badgeClass = 'badge-vis';
+                badgeText = 'Vizualizace kójí';
+                colorHex = '#37474f';
+            } else if (type === 'elec') {
+                badgeClass = 'badge-elec';
+                badgeText = 'Elektroinstalace IP44';
+                colorHex = '#f57c00';
+            } else if (type === 'unusable') {
+                badgeClass = 'badge-unusable';
+                badgeText = 'Nevyužitelný prostor';
+                colorHex = '#455a64';
+            }
+
+            panel.innerHTML = `
+                <div style="margin-bottom: 12px;">
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Označení:</span>
+                    <span class="info-val" style="color: ${colorHex}; font-size: 18px; font-weight: bold;">${id}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Typ / Název:</span>
+                    <span class="info-val">${name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Přesný rozměr / Parametry:</span>
+                    <span class="info-val" style="color:#2e7d32; font-weight:bold;">${dim}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Využití / Provedení:</span>
+                    <span class="info-val">${use}</span>
+                </div>
+            `;
+        }
+
+        async function loadText() {
+            const textBox = document.getElementById('joke-box');
+            const textEl = document.getElementById('joke-text');
+
+            try {
+                const response = await fetch('generate_text_mistral.php?_=' + Date.now());
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const text = await response.text();
+                const trimmed = text.trim();
+                if (!trimmed) {
+                    throw new Error('Prázdná odpověď ze serveru');
+                }
+
+                textEl.textContent = trimmed;
+            } catch (error) {
+                console.warn('Nepodařilo se načíst text:', error);
+                if (textBox) {
+                    textBox.style.display = 'none';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadText);
+    </script>
+</body>
+</html>
