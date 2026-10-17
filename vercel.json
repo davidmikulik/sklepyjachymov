@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/", "destination": "/sklepyjachymov.html" },
+    { "source": "/generate_text_mistral.php", "destination": "/api/generate-text" }
+  ]
+}
