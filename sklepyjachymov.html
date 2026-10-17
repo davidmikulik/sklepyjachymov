@@ -809,7 +809,7 @@
             const textEl = document.getElementById('joke-text');
 
             try {
-                const response = await fetch('generate_text_mistral.php?_=' + Date.now());
+                const response = await fetch('/api/generate-text?_=' + Date.now());
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
