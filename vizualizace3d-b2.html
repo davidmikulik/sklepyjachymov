@@ -370,10 +370,10 @@
             }
             return canvasTex(c);
         }
-        const hatch = new THREE.Group(); hatch.position.set(4.35, 0, D - 0.55); scene.add(hatch);
-        add(box(0.70, 0.012, 0.70), std({ color: '#4b5157', metalness: 0.7, roughness: 0.4 }), 0, 0.006, 0, { parent: hatch, cast: false });
-        add(box(0.62, 0.016, 0.62), std({ map: checkerTexture(), metalness: 0.75, roughness: 0.35 }), 0, 0.008, 0, { parent: hatch, cast: false });
-        [-0.2, 0.2].forEach(dx => add(box(0.1, 0.018, 0.025), std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 }), dx, 0.009, 0.24, { parent: hatch, cast: false }));
+        const hatch = new THREE.Group(); hatch.position.set(4.4, 0, D - 0.62); scene.add(hatch);
+        add(box(0.88, 0.012, 0.88), std({ color: '#4b5157', metalness: 0.7, roughness: 0.4 }), 0, 0.006, 0, { parent: hatch, cast: false });
+        add(box(0.80, 0.016, 0.80), std({ map: checkerTexture(), metalness: 0.75, roughness: 0.35 }), 0, 0.008, 0, { parent: hatch, cast: false });
+        [-0.25, 0.25].forEach(dx => add(box(0.12, 0.018, 0.025), std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 }), dx, 0.009, 0.32, { parent: hatch, cast: false }));
 
         // ---------- Osvětlení ----------
         scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
