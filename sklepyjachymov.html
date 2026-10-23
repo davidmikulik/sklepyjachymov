@@ -248,6 +248,7 @@
         .e2-rs-g { cursor: pointer; }
         .e2-rs-text { font-size: 8px; font-weight: bold; fill: #ffb74d; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
         .e2-supply { fill: none; stroke: #263238; stroke-width: 1.5; stroke-dasharray: 3 2; }
+        .e2-supply-light { stroke: #f9a825; }
         .e2-legend { font-size: 10.5px; fill: #37474f; }
         .e2-common-feed { fill: none; stroke: #2e7d32; stroke-width: 1.5; stroke-dasharray: 5 2 1 2; }
         .e2-meter { fill: #eceff1; stroke: #ffb74d; stroke-width: 1; }
@@ -1062,90 +1063,81 @@
                         <polyline points="367,208 462,208" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
                         <polyline points="560,220 430,220 430,478" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
                         <polyline points="560,220 728,220 728,172 800,172" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <!-- Přívody kójí (každá kóje vlastní okruh B16 + podružný elektroměr v RS; zásuvka 3x2,5, svítidlo 3x1,5) -->
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K1 – 885/1', 'Přívod kóje 885/1', 'Zásuvka CYKY-J 3x2,5 cca 18,0 m · svítidlo CYKY-J 3x1,5 cca 4,0 m · jistič B16 · elektroměr E1', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E1 pro odečet a rozúčtování')">
+                        <!-- Zásuvkové okruhy K1–K12 (B16, CYKY-J 3x2,5, podružný elektroměr E1–E12) -->
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K1 – 885/1', 'Zásuvka kóje 885/1', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E1 · cca 18,0 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E1 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="93,208 93,196" class="e2-feed"></polyline>
-                            <polyline points="93,196 93,96 113,96" class="e2-feed"></polyline>
                             <rect x="88.5" y="191.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="120" cy="96" r="7" class="elec-light"></circle>
-                            <text x="120" y="96.5" class="e2-circ-id">K1</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K2 – 885/6', 'Přívod kóje 885/6', 'Zásuvka CYKY-J 3x2,5 cca 15,7 m · svítidlo CYKY-J 3x1,5 cca 1,4 m · jistič B16 · elektroměr E2', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E2 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K2 – 885/6', 'Zásuvka kóje 885/6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E2 · cca 15,7 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E2 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="234,208 234,152" class="e2-feed"></polyline>
-                            <polyline points="234,152 234,138 233,138" class="e2-feed"></polyline>
                             <rect x="229.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="226" cy="138" r="7" class="elec-light"></circle>
-                            <text x="226" y="138.5" class="e2-circ-id">K2</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K3 – 885/8', 'Přívod kóje 885/8', 'Zásuvka CYKY-J 3x2,5 cca 13,4 m · svítidlo CYKY-J 3x1,5 cca 1,4 m · jistič B16 · elektroměr E3', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E3 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K3 – 885/8', 'Zásuvka kóje 885/8', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E3 · cca 13,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E3 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="324,208 324,152" class="e2-feed"></polyline>
-                            <polyline points="324,152 324,138 323,138" class="e2-feed"></polyline>
                             <rect x="319.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="316" cy="138" r="7" class="elec-light"></circle>
-                            <text x="316" y="138.5" class="e2-circ-id">K3</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K4 – 885/9', 'Přívod kóje 885/9', 'Zásuvka CYKY-J 3x2,5 cca 13,1 m · svítidlo CYKY-J 3x1,5 cca 1,4 m · jistič B16 · elektroměr E4', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E4 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K4 – 885/9', 'Zásuvka kóje 885/9', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E4 · cca 13,1 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E4 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="398,208 398,152" class="e2-feed"></polyline>
-                            <polyline points="398,152 398,138 397,138" class="e2-feed"></polyline>
                             <rect x="393.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="390" cy="138" r="7" class="elec-light"></circle>
-                            <text x="390" y="138.5" class="e2-circ-id">K4</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K5 – 885/2', 'Přívod kóje 885/2', 'Zásuvka CYKY-J 3x2,5 cca 13,5 m · svítidlo CYKY-J 3x1,5 cca 4,0 m · jistič B16 · elektroměr E5', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E5 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K5 – 885/2', 'Zásuvka kóje 885/2', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E5 · cca 13,5 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E5 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="462,208 462,200" class="e2-feed"></polyline>
-                            <polyline points="462,200 462,96 447,96" class="e2-feed"></polyline>
                             <rect x="457.5" y="195.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="440" cy="96" r="7" class="elec-light"></circle>
-                            <text x="440" y="96.5" class="e2-circ-id">K5</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K6 – 885/5', 'Přívod kóje 885/5', 'Zásuvka CYKY-J 3x2,5 cca 12,6 m · svítidlo CYKY-J 3x1,5 cca 3,7 m · jistič B16 · elektroměr E6', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E6 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K6 – 885/5', 'Zásuvka kóje 885/5', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E6 · cca 12,6 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E6 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="430,333 403,333" class="e2-feed"></polyline>
-                            <polyline points="403,333 295,333" class="e2-feed"></polyline>
                             <rect x="398.5" y="328.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="288" cy="333" r="7" class="elec-light"></circle>
-                            <text x="288" y="333.5" class="e2-circ-id">K6</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K7 – 885/X', 'Přívod kóje 885/X', 'Zásuvka CYKY-J 3x2,5 cca 14,4 m · svítidlo CYKY-J 3x1,5 cca 3,7 m · jistič B16 · elektroměr E7', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E7 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K7 – 885/X', 'Zásuvka kóje 885/X', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E7 · cca 14,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E7 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="430,406 403,406" class="e2-feed"></polyline>
-                            <polyline points="403,406 295,406" class="e2-feed"></polyline>
                             <rect x="398.5" y="401.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="288" cy="406" r="7" class="elec-light"></circle>
-                            <text x="288" y="406.5" class="e2-circ-id">K7</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K8 – 885/4', 'Přívod kóje 885/4', 'Zásuvka CYKY-J 3x2,5 cca 16,2 m · svítidlo CYKY-J 3x1,5 cca 3,7 m · jistič B16 · elektroměr E8', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E8 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K8 – 885/4', 'Zásuvka kóje 885/4', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E8 · cca 16,2 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E8 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="430,478 403,478" class="e2-feed"></polyline>
-                            <polyline points="403,478 295,478" class="e2-feed"></polyline>
                             <rect x="398.5" y="473.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="288" cy="478" r="7" class="elec-light"></circle>
-                            <text x="288" y="478.5" class="e2-circ-id">K8</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K9 – 885/10', 'Přívod kóje 885/10', 'Zásuvka CYKY-J 3x2,5 cca 9,9 m · svítidlo CYKY-J 3x1,5 cca 4,4 m · jistič B16 · elektroměr E9', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E9 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K9 – 885/10', 'Zásuvka kóje 885/10', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E9 · cca 9,9 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E9 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="704,220 704,200" class="e2-feed"></polyline>
-                            <polyline points="704,200 704,100 669,100" class="e2-feed"></polyline>
                             <rect x="699.5" y="195.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="662" cy="100" r="7" class="elec-light"></circle>
-                            <text x="662" y="100.5" class="e2-circ-id">K9</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K10 – 885/7', 'Přívod kóje 885/7', 'Zásuvka CYKY-J 3x2,5 cca 14,0 m · svítidlo CYKY-J 3x1,5 cca 4,0 m · jistič B16 · elektroměr E10', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E10 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K10 – 885/7', 'Zásuvka kóje 885/7', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E10 · cca 14,0 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E10 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="800,172 840,172" class="e2-feed"></polyline>
-                            <polyline points="840,172 840,100 887,100" class="e2-feed"></polyline>
                             <rect x="835.5" y="167.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="894" cy="100" r="7" class="elec-light"></circle>
-                            <text x="894" y="100.5" class="e2-circ-id">K10</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K11 – 885/11', 'Přívod nebytové jednotky 885/11', 'Zásuvka CYKY-J 3x2,5 cca 16,4 m · svítidlo CYKY-J 3x1,5 cca 1,8 m · jistič B16 · elektroměr E11', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E11 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K11 – 885/11', 'Zásuvka nebytové jednotky 885/11', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E11 · cca 16,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E11 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="200,220 200,282" class="e2-feed"></polyline>
-                            <polyline points="200,282 200,313" class="e2-feed"></polyline>
                             <rect x="195.5" y="277.5" width="9" height="9" class="elec-socket"></rect>
-                            <circle cx="200" cy="320" r="7" class="elec-light"></circle>
-                            <text x="200" y="320.5" class="e2-circ-id">K11</text>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K12 – 885/12', 'Přívod nebytové jednotky 885/12', 'Zásuvka CYKY-J 3x2,5 cca 12,3 m · svítidlo CYKY-J 3x1,5 cca 2,1 m · jistič B16 · elektroměr E12', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44 (3x2,5), z krabice u zásuvky odbočka ke svítidlu LED IP44 (3x1,5); podružný elektroměr E12 pro odečet a rozúčtování')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K12 – 885/12', 'Zásuvka nebytové jednotky 885/12', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E12 · cca 12,3 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E12 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
                             <polyline points="728,250 790,250" class="e2-feed"></polyline>
-                            <polyline points="790,250 833,250" class="e2-feed"></polyline>
                             <rect x="785.5" y="245.5" width="9" height="9" class="elec-socket"></rect>
+                        </g>
+                        <!-- Okruh O2: svítidla v kójích (samostatný přívod osvětlení, jistič B10) -->
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh O2', 'Svítidla v kójích a nebytových jednotkách', 'CYKY-J 3x1,5 · jistič B10 · cca 76,6 m', 'Ze samostatného přívodu osvětlení; svítidlo LED IP44 v každé kóji a v 885/11 a 885/12, vypínač u dveří')">
+                            <polyline points="93,208 93,196 93,96 113,96" class="e2-light-line"></polyline>
+                            <circle cx="120" cy="96" r="7" class="elec-light"></circle>
+                            <polyline points="234,208 234,152 234,138 233,138" class="e2-light-line"></polyline>
+                            <circle cx="226" cy="138" r="7" class="elec-light"></circle>
+                            <polyline points="324,208 324,152 324,138 323,138" class="e2-light-line"></polyline>
+                            <circle cx="316" cy="138" r="7" class="elec-light"></circle>
+                            <polyline points="398,208 398,152 398,138 397,138" class="e2-light-line"></polyline>
+                            <circle cx="390" cy="138" r="7" class="elec-light"></circle>
+                            <polyline points="462,208 462,200 462,96 447,96" class="e2-light-line"></polyline>
+                            <circle cx="440" cy="96" r="7" class="elec-light"></circle>
+                            <polyline points="430,333 403,333 295,333" class="e2-light-line"></polyline>
+                            <circle cx="288" cy="333" r="7" class="elec-light"></circle>
+                            <polyline points="430,406 403,406 295,406" class="e2-light-line"></polyline>
+                            <circle cx="288" cy="406" r="7" class="elec-light"></circle>
+                            <polyline points="430,478 403,478 295,478" class="e2-light-line"></polyline>
+                            <circle cx="288" cy="478" r="7" class="elec-light"></circle>
+                            <polyline points="704,220 704,200 704,100 669,100" class="e2-light-line"></polyline>
+                            <circle cx="662" cy="100" r="7" class="elec-light"></circle>
+                            <polyline points="800,172 840,172 840,100 887,100" class="e2-light-line"></polyline>
+                            <circle cx="894" cy="100" r="7" class="elec-light"></circle>
+                            <polyline points="200,220 200,282 200,313" class="e2-light-line"></polyline>
+                            <circle cx="200" cy="320" r="7" class="elec-light"></circle>
+                            <polyline points="728,250 790,250 833,250" class="e2-light-line"></polyline>
                             <circle cx="840" cy="250" r="7" class="elec-light"></circle>
-                            <text x="840" y="250.5" class="e2-circ-id">K12</text>
                         </g>
                         <!-- Okruh O1: společné osvětlení s čidly pohybu -->
                         <polyline points="552,108 552,226 180,226 180,236" class="e2-light-line"></polyline>
@@ -1159,28 +1151,28 @@
                         <polyline points="690,226 690,236" class="e2-light-line"></polyline>
                         <polyline points="744,226 764,226 764,147" class="e2-light-line"></polyline>
                         <polyline points="567,100 578,100" class="e2-light-line"></polyline>
-                        <circle cx="180" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-1', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="400" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-2', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="690" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-3', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="744" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-4', 'Chodba u boční chodby', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="510" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo S1', 'Schodiště', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="585" cy="100" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A3', 'Společný sklep A3', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="764" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A6', 'Společná kóje A6', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="180" cy="196" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A1', 'Přístupová plocha A1', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="390" cy="192" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A2', 'Přístupová plocha A2', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="480" cy="300" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-1', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
-                        <circle cx="480" cy="460" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-2', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení, spínáno čidly pohybu')"></circle>
+                        <circle cx="180" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-1', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="400" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-2', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="690" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-3', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="744" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-4', 'Chodba u boční chodby', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="510" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo S1', 'Schodiště', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="585" cy="100" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A3', 'Společný sklep A3', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="764" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A6', 'Společná kóje A6', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="180" cy="196" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A1', 'Přístupová plocha A1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="390" cy="192" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A2', 'Přístupová plocha A2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="480" cy="300" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-1', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="480" cy="460" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-2', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
                         <path d="M 523 232 A 7 7 0 0 1 537 232 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-1', 'Čidlo pohybu', 'PIR, IP44', 'U schodiště v chodbě C1; spíná okruh O1')"></path>
                         <path d="M 359 214 A 7 7 0 0 1 373 214 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-2', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu k horním kójím; spíná okruh O1')"></path>
                         <path d="M 450 283 A 7 7 0 0 1 464 283 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-3', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu do B2; spíná okruh O1')"></path>
                         <!-- Okruh Z1: společné zásuvky A3 a A6 -->
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh Z1', 'Společné zásuvky A3 a A6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E13 · cca 11,8 m', 'Měřeno společně s osvětlením O1 na elektroměru E13 (společná spotřeba, rozpočítá se mezi vlastníky)')">
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh Z1', 'Společné zásuvky A3 a A6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E13 · cca 11,8 m', 'Společná spotřeba měřená elektroměrem E13, rozpočítá se mezi vlastníky')">
                             <polyline points="569,104 606,104 606,229 722,229 722,155" class="e2-common-feed"></polyline>
                             <rect x="601.5" y="165.5" width="9" height="9" class="elec-socket"></rect>
                             <rect x="717.5" y="145.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
                         <!-- Schéma podružného měření v RS -->
-                        <g class="e2-rs-g" onclick="selectItem('elec2', 'Měření v RS', '13 podružných elektroměrů', 'E1–E10 kóje · E11 = 885/11 · E12 = 885/12 · E13 = společné prostory', 'Elektroměry na DIN lištu s odečtem kWh; spotřeba E13 se rozpočítá mezi vlastníky')">
+                        <g class="e2-rs-g" onclick="selectItem('elec2', 'Měření v RS', '13 podružných elektroměrů', 'E1–E10 kóje · E11 = 885/11 · E12 = 885/12 · E13 = společné zásuvky A3, A6', 'Elektroměry na DIN lištu s odečtem kWh pro zásuvkové okruhy; osvětlení O1 a O2 je na samostatném přívodu')">
                             <rect x="716" y="30" width="298" height="46" rx="4" fill="#263238" stroke="#ff9800" stroke-width="1.5"></rect>
                             <text x="724" y="42" class="e2-meter-title">RS – podružné elektroměry pro odečet a rozúčtování (kWh)</text>
                             <rect x="722" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
@@ -1224,12 +1216,13 @@
                             <text x="1000.3" y="71" class="e2-meter-lab">spol.</text>
                         </g>
                         <!-- Podružný rozvaděč RS v A3 -->
-                        <g class="e2-rs-g" onclick="selectItem('elec2', 'RS – A3', 'Podružný rozvaděč (společný prostor A3)', 'Hl. vypínač · chránič 30 mA · 12× B16 s elektroměrem E1–E12 · Z1 B16 + O1 B10 s elektroměrem E13', 'K1–K10 kóje, K11 = 885/11, K12 = 885/12, E13 = společné prostory (osvětlení + zásuvky A3, A6); odečet a rozúčtování podle elektroměrů')">
+                        <g class="e2-rs-g" onclick="selectItem('elec2', 'RS – A3', 'Podružný rozvaděč (společný prostor A3)', 'Zásuvková část: hl. vypínač, chránič 30 mA, 12× B16 s elektroměrem E1–E12, Z1 B16 s E13 · Osvětlení: samostatný přívod, vypínač, O1 B10, O2 B10', 'K1–K10 kóje, K11 = 885/11, K12 = 885/12, Z1 společné zásuvky; O1 společné osvětlení, O2 svítidla v kójích')">
                             <rect x="551" y="82" width="18" height="26" rx="2" class="e2-rs"></rect>
                             <text x="560" y="96" class="e2-rs-text">RS</text>
                         </g>
-                        <path d="M 560 62 L 560 80 M 555 74 L 560 81 L 565 74" class="e2-supply"></path>
-                        <text x="566" y="66" class="e2-legend" style="font-size:9px;">přívod z hl. rozvaděče</text>
+                        <path d="M 555 60 L 555 80 M 551 74 L 555 81 L 559 74" class="e2-supply"></path>
+                        <path d="M 565 60 L 565 80 M 561 74 L 565 81 L 569 74" class="e2-supply e2-supply-light"></path>
+                        <text x="572" y="66" class="e2-legend" style="font-size:9px;">přívody: zásuvky + osvětlení</text>
                         <!-- Legenda elektro -->
                         <g pointer-events="none">
                             <rect x="90" y="34" width="440" height="34" rx="4" fill="#ffffff" fill-opacity="0.92" stroke="#cfd8dc"></rect>
@@ -1238,9 +1231,9 @@
                             <rect x="198" y="42.5" width="9" height="9" class="elec-socket"></rect><text x="212" y="51" class="e2-legend">zásuvka</text>
                             <path d="M 258 51 A 7 7 0 0 1 272 51 Z" class="e2-pir"></path><text x="277" y="51" class="e2-legend">čidlo</text>
                             <line x1="314" y1="47" x2="334" y2="47" class="e2-tray"></line><text x="339" y="51" class="e2-legend">trasa</text>
-                            <line x1="374" y1="47" x2="394" y2="47" class="e2-feed"></line><text x="399" y="51" class="e2-legend">kóje</text>
-                            <line x1="430" y1="47" x2="450" y2="47" class="e2-light-line"></line><text x="455" y="51" class="e2-legend">osvětlení</text>
-                            <text x="98" y="64" class="e2-legend" style="font-size:9px; fill:#607d8b;">CYKY-J 3×2,5 (zásuvky K1–K12 + Z1) ≈ 181,1 m · CYKY-J 3×1,5 (svítidla + O1) ≈ 67,8 m · vč. rezerv</text>
+                            <line x1="374" y1="47" x2="394" y2="47" class="e2-feed"></line><text x="399" y="51" class="e2-legend">zásuvky</text>
+                            <line x1="446" y1="47" x2="466" y2="47" class="e2-light-line"></line><text x="471" y="51" class="e2-legend">světla</text>
+                            <text x="98" y="64" class="e2-legend" style="font-size:9px; fill:#607d8b;">3×2,5 zásuvky K1–K12 + Z1 ≈ 181,1 m (B16) · 3×1,5 světla O1 + O2 ≈ 109,0 m (B10, samost. přívod)</text>
                         </g>
                     </g>
 
@@ -1399,7 +1392,7 @@
                 // Elektroinstalace 2 nad vizualizací cílového stavu 2
                 layerVis2.style.display = 'block';
                 layerElec2.style.display = 'block';
-                selectItem('elec2', 'Elektroinstalace 2', 'Rozvod z podružného rozvaděče RS v A3', '12 okruhů s elektroměry E1–E12 + společné E13', 'Zásuvky CYKY-J 3x2,5 cca 181,1 m (B16), osvětlení CYKY-J 3x1,5 cca 67,8 m (O1 B10)');
+                selectItem('elec2', 'Elektroinstalace 2', 'Rozvod z podružného rozvaděče RS v A3', 'Zásuvky: 12 okruhů s elektroměry E1–E12 + Z1 s E13 · Světla: samostatný přívod, O1 + O2', 'Zásuvky CYKY-J 3x2,5 cca 181,1 m (B16), světla CYKY-J 3x1,5 cca 109,0 m (B10)');
             } else if (mode === 'electric') {
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';
