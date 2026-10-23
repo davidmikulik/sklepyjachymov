@@ -169,6 +169,11 @@
             transition: all 0.2s;
         }
         .proposed-unit:hover { fill: #4fc3f7; fill-opacity: 0.95; }
+        .door-proposal { cursor: pointer; }
+        .door-gap { fill: #ffffff; stroke: none; }
+        .door-leaf { stroke: #0d47a1; stroke-width: 2.5; stroke-linecap: round; }
+        .door-swing { fill: #0d47a1; fill-opacity: 0.12; stroke: #0d47a1; stroke-width: 1; stroke-dasharray: 3 2; }
+        .door-proposal:hover .door-leaf, .door-proposal:hover .door-swing { stroke: #e65100; }
 
         /* Vrstva 3: Aktuální využití */
         .usage-room {
@@ -444,12 +449,12 @@
                     <text x="120" y="156" class="label-title" fill="#0d47a1" font-size="9px">1,5 × 3,3</text>
 
                     <rect x="156" y="80" width="84" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/6', 'Upravená sklepní kóje', '2,10 x 2,00 m (4,20 m²)', 'Kóje v místnosti A1, hloubka 2 m, příčky 15 cm (původně 2,00 x 1,40 m)')"></rect>
-                    <text x="198" y="112" class="label-title" fill="#0d47a1">885/6</text>
-                    <text x="198" y="130" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
+                    <text x="198" y="98" class="label-title" fill="#0d47a1">885/6</text>
+                    <text x="198" y="114" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
 
                     <rect x="246" y="80" width="84" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/8', 'Upravená sklepní kóje', '2,10 x 2,00 m (4,20 m²)', 'Kóje v místnosti A1, hloubka 2 m, příčky 15 cm (původně 2,00 x 1,40 m)')"></rect>
-                    <text x="288" y="112" class="label-title" fill="#0d47a1">885/8</text>
-                    <text x="288" y="130" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
+                    <text x="288" y="98" class="label-title" fill="#0d47a1">885/8</text>
+                    <text x="288" y="114" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
 
                     <rect x="156" y="166" width="174" height="46" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'A1 – volný prostor', 'Přístupová plocha před kójemi', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/6 a 885/8 z chodby C1')"></rect>
                     <text x="243" y="189" class="label-sub" fill="#455a64" font-size="10px">PŘÍSTUP (4,35 × 1,15 m)</text>
@@ -466,8 +471,8 @@
                     <text x="440" y="156" class="label-title" fill="#0d47a1" font-size="9px">1,5 × 3,3</text>
 
                     <rect x="330" y="80" width="74" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/9', 'Upravená sklepní kóje', '1,85 x 2,00 m (3,70 m²)', 'Kóje v místnosti A2, hloubka 2 m, příčky 15 cm (původně 1,75 x 1,40 m)')"></rect>
-                    <text x="367" y="112" class="label-title" fill="#0d47a1">885/9</text>
-                    <text x="367" y="130" class="label-title" fill="#0d47a1" font-size="9px">1,85 × 2,0</text>
+                    <text x="367" y="98" class="label-title" fill="#0d47a1">885/9</text>
+                    <text x="367" y="114" class="label-title" fill="#0d47a1" font-size="9px">1,85 × 2,0</text>
 
                     <rect x="330" y="166" width="74" height="46" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'A2 – volný prostor', 'Přístupová plocha před kójí', '1,85 x 1,15 m (2,13 m²)', 'Přístup ke kóji 885/9 z chodby C1')"></rect>
                     <text x="367" y="186" class="label-sub" fill="#455a64" font-size="9px">PŘÍSTUP</text>
@@ -482,28 +487,100 @@
                     <text x="580" y="156" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
 
                     <rect x="714" y="80" width="60" height="60" class="proposed-unit" onclick="selectItem('proposal2', 'A6', 'Společná část A6', '2,00 x 1,50 m (3,00 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
-                    <text x="744" y="110" class="label-title" fill="#0d47a1">A6</text>
-                    <text x="744" y="126" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+                    <text x="744" y="92" class="label-title" fill="#0d47a1">A6</text>
+                    <text x="744" y="104" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
 
                     <rect x="714" y="140" width="60" height="72" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
                     <text x="744" y="180" class="label-sub" fill="#455a64" font-size="10px">CHODBA (1,5 m)</text>
 
                     <!-- B2: tři stejné kóje 885/5, 885/X, 885/4 (vnitřní 3,40 × 1,67 m), příčky 15 cm -->
                     <rect x="276" y="274.4" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Kóje v levé části B2 (1/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="344" y="300" class="label-title" fill="#0d47a1">885/5</text>
-                    <text x="344" y="318" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
+                    <text x="330" y="300" class="label-title" fill="#0d47a1">885/5</text>
+                    <text x="330" y="318" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
 
                     <rect x="276" y="347.07" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/X', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Nová kóje v levé části B2 (2/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="344" y="373" class="label-title" fill="#0d47a1">885/X</text>
-                    <text x="344" y="391" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
+                    <text x="330" y="373" class="label-title" fill="#0d47a1">885/X</text>
+                    <text x="330" y="391" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
 
                     <rect x="276" y="419.73" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Kóje v levé části B2 (3/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="344" y="446" class="label-title" fill="#0d47a1">885/4</text>
-                    <text x="344" y="464" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
+                    <text x="330" y="446" class="label-title" fill="#0d47a1">885/4</text>
+                    <text x="330" y="464" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
 
                     <!-- Příčky 15 cm -->
                     <rect x="276" y="341.07" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
                     <rect x="276" y="413.73" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
+
+                    <!-- Příčka 15 cm podél pravé strany kójí v B2 -->
+                    <rect x="412" y="274.4" width="6" height="212" fill="#546e7a" pointer-events="none"></rect>
+
+                    <!-- Nové příčky 15 cm na hranicích: 885/2 dole, 885/10 dole a vpravo, A6 dole, A3 dole -->
+                    <rect x="404" y="209" width="66" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="610" y="209" width="107" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="711" y="80" width="6" height="132" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="714" y="137" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="550" y="209" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
+
+                    <!-- DVEŘE: šířka 0,80 m, otevírání dovnitř kóje -->
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/1', 'Vstupní dveře kóje 885/1', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V příčce do přístupové plochy A1')">
+                        <rect x="150" y="173" width="6" height="32" class="door-gap"></rect>
+                        <line x1="150" y1="173" x2="118" y2="173" class="door-leaf"></line>
+                        <path d="M 150 173 L 118 173 A 32 32 0 0 0 150 205 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/6', 'Vstupní dveře kóje 885/6', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A1')">
+                        <rect x="182" y="160" width="32" height="6" class="door-gap"></rect>
+                        <line x1="182" y1="160" x2="182" y2="128" class="door-leaf"></line>
+                        <path d="M 182 160 L 182 128 A 32 32 0 0 1 214 160 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/8', 'Vstupní dveře kóje 885/8', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A1')">
+                        <rect x="272" y="160" width="32" height="6" class="door-gap"></rect>
+                        <line x1="272" y1="160" x2="272" y2="128" class="door-leaf"></line>
+                        <path d="M 272 160 L 272 128 A 32 32 0 0 1 304 160 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/9', 'Vstupní dveře kóje 885/9', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A2')">
+                        <rect x="351" y="160" width="32" height="6" class="door-gap"></rect>
+                        <line x1="351" y1="160" x2="351" y2="128" class="door-leaf"></line>
+                        <path d="M 351 160 L 351 128 A 32 32 0 0 1 383 160 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/2', 'Vstupní dveře kóje 885/2', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V příčce do přístupové plochy A2')">
+                        <rect x="404" y="173" width="6" height="32" class="door-gap"></rect>
+                        <line x1="410" y1="173" x2="442" y2="173" class="door-leaf"></line>
+                        <path d="M 410 173 L 442 173 A 32 32 0 0 1 410 205 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/5', 'Vstupní dveře kóje 885/5', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
+                        <rect x="412" y="291.73" width="6" height="32" class="door-gap"></rect>
+                        <line x1="412" y1="291.73" x2="380" y2="291.73" class="door-leaf"></line>
+                        <path d="M 412 291.73 L 380 291.73 A 32 32 0 0 0 412 323.73 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/X', 'Vstupní dveře kóje 885/X', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
+                        <rect x="412" y="364.4" width="6" height="32" class="door-gap"></rect>
+                        <line x1="412" y1="364.4" x2="380" y2="364.4" class="door-leaf"></line>
+                        <path d="M 412 364.4 L 380 364.4 A 32 32 0 0 0 412 396.4 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/4', 'Vstupní dveře kóje 885/4', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
+                        <rect x="412" y="437.06" width="6" height="32" class="door-gap"></rect>
+                        <line x1="412" y1="437.06" x2="380" y2="437.06" class="door-leaf"></line>
+                        <path d="M 412 437.06 L 380 437.06 A 32 32 0 0 0 412 469.06 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A3', 'Vstupní dveře A3', 'Šířka 0,80 m, otevírání dovnitř', 'Ze společné chodby C1 do společného sklepa A3')">
+                        <rect x="564" y="209" width="32" height="6" class="door-gap"></rect>
+                        <line x1="564" y1="212" x2="564" y2="180" class="door-leaf"></line>
+                        <path d="M 564 212 L 564 180 A 32 32 0 0 1 596 212 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A6', 'Vstupní dveře A6', 'Šířka 0,80 m, otevírání dovnitř', 'Z chodby (1,5 m) do společné kóje A6')">
+                        <rect x="728" y="137" width="32" height="6" class="door-gap"></rect>
+                        <line x1="728" y1="140" x2="728" y2="108" class="door-leaf"></line>
+                        <path d="M 728 140 L 728 108 A 32 32 0 0 1 760 140 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře kóje 885/10', 'Šířka 0,80 m, otevírání dovnitř', 'Ze společné chodby C1 do kóje 885/10 (A4)')">
+                        <rect x="646" y="209" width="32" height="6" class="door-gap"></rect>
+                        <line x1="646" y1="212" x2="646" y2="180" class="door-leaf"></line>
+                        <path d="M 646 212 L 646 180 A 32 32 0 0 1 678 212 Z" class="door-swing"></path>
+                    </g>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/7', 'Vstupní dveře kóje 885/7', 'Šířka 0,80 m, otevírání dovnitř', 'Z chodby (1,5 m) do kóje 885/7 (A5)')">
+                        <rect x="771" y="141" width="6" height="32" class="door-gap"></rect>
+                        <line x1="774" y1="141" x2="806" y2="141" class="door-leaf"></line>
+                        <path d="M 774 141 L 806 141 A 32 32 0 0 1 774 173 Z" class="door-swing"></path>
+                    </g>
                 </g>
 
                 <!-- VRSTVA 6: ELEKTROINSTALACE (Kompletní cílový stav) -->
