@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D vizualizace B2 – kóje 885/5, 885/X, 885/4</title>
+    <meta name="description" content="Orientační 3D vizualizace cílového stavu místnosti B2 se třemi novými sklepními kójemi.">
+    <style>
+        html, body { margin: 0; height: 100%; background: #1c1f22; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #eceff1; overflow: hidden; }
+        #view { position: fixed; inset: 0; }
+        .panel { position: fixed; top: 12px; left: 12px; max-width: 360px; background: rgba(28, 31, 34, 0.86); border: 1px solid #455a64; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.45; }
+        .panel h1 { font-size: 15px; margin: 0 0 6px; color: #ffcc80; }
+        .panel p { margin: 4px 0; }
+        .panel .note { color: #90a4ae; font-size: 11.5px; }
+        .buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .buttons button, .buttons a { background: #37474f; color: #eceff1; border: 1px solid #607d8b; border-radius: 5px; padding: 5px 9px; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .buttons button.active { background: #ef6c00; border-color: #ef6c00; }
+        body.render .panel { display: none; }
+        @media (max-width: 600px) { .panel { left: 8px; right: 8px; max-width: none; } }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="view"></div>
+    <div class="panel">
+        <h1>Místnost B2 – cílový stav</h1>
+        <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,67 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2 (šířka 1,95 m).</p>
+        <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2 a fotografie současného stavu. Rozměry dle půdorysu, výška stropu 2,80 m. Myší lze pohled otáčet a přibližovat.</p>
+        <div class="buttons">
+            <button data-view="photo" class="active">Pohled od vstupu</button>
+            <button data-view="cutaway">Řez shora</button>
+            <button data-view="inside">Pohled do kóje 885/X</button>
+            <a href="/">← Zpět na plánek</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+        // Rozměry v metrech: x = od západní stěny (kóje), z = od chodby C1 k oknům, y = výška
+        const W = 5.5, D = 5.3, H = 2.8;
+        const KX = 3.40, PT = 0.15;               // šířka kójí a tloušťka příčky
+        const KD = (D - 2 * PT) / 3;              // hloubka kóje 1,667 m
+        const KOJE = ['885/5', '885/X', '885/4'];
+
+        const params = new URLSearchParams(location.search);
+        const renderMode = params.has('render');
+        if (renderMode) document.body.classList.add('render');
+        const outW = parseInt(params.get('w') || '0', 10);
+        const outH = parseInt(params.get('h') || '0', 10);
+
+        // ---------- Pomocné funkce pro procedurální textury ----------
+        function rng(seed) {
+            return function () {
+                seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+                let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+        function wave(r, n) {
+            const parts = [];
+            for (let i = 0; i < n; i++) parts.push({ f: (i + 1) * (0.6 + r() * 1.4), p: r() * 6.28, a: 1 / (i + 1) });
+            return x => parts.reduce((s, q) => s + q.a * Math.sin(x * q.f + q.p), 0);
+        }
+        function canvasTex(canvas, srgb = true) {
+            const t = new THREE.CanvasTexture(canvas);
+            if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+            t.anisotropy = 8;
+            return t;
+        }
+        function speckle(ctx, w, h, r, count, colors, size) {
+            for (let i = 0; i < count; i++) {
+                ctx.fillStyle = colors[Math.floor(r() * colors.length)];
+                ctx.globalAlpha = 0.04 + r() * 0.12;
+                const s = size * (0.3 + r());
+                ctx.beginPath();
+                ctx.arc(r() * w, r() * h, s, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        // Opravená omítka: nová vápenocementová omítka s bílým nátěrem a šedým soklem
+        function wallTexture(lenM, seed) {
+            const PX = 160, w = Math.round(lenM * PX), h = Math.round(H * PX);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(seed);
+            ctx.fillStyle = '#efede8'; ctx.fillRect(0, 0, w, h);
+            speckle(ctx, w, h, r, Math.round(lenM * 120), ['#e2dfd8', '#f8f7f3', '#dcd8cf'], 26);
+            speckle(ctx, w, h, r, Math.round(lenM * 1600), ['#d8d4cb', '#ffffff'], 1.4);
+            // sokl 10 cm
+            const sh = 0.10 * PX;
+            ctx.fillStyle = '#8f9295'; ctx.fillRect(0, h - sh, w, sh);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)'; ctx.fillRect(0, h - sh - 1.5, w, 1.5);
+            return canvasTex(c);
+        }
+
+        function plainTexture(wM, hM, seed, base, specks, px = 160) {
+            const w = Math.round(wM * px), h = Math.round(hM * px);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(seed);
+            ctx.fillStyle = base; ctx.fillRect(0, 0, w, h);
+            speckle(ctx, w, h, r, Math.round(wM * hM * 220), specks, 22);
+            speckle(ctx, w, h, r, Math.round(wM * hM * 900), specks, 3);
+            return { c, ctx, r, w, h, px };
+        }
+
+        function floorTexture() {
+            const t = plainTexture(W, D, 7, '#8d867b', ['#6f675c', '#a9a294', '#5d554b', '#c2b9a8'], 180);
+            const { ctx, r, w, h } = t;
+            // praskliny
+            ctx.strokeStyle = 'rgba(55, 48, 40, 0.22)'; ctx.lineWidth = 1.2;
+            for (let i = 0; i < 8; i++) {
+                let x = r() * w, y = r() * h, a = r() * 6.28; ctx.beginPath(); ctx.moveTo(x, y);
+                for (let k = 0; k < 30; k++) { a += (r() - 0.5) * 0.6; x += Math.cos(a) * 12; y += Math.sin(a) * 12; ctx.lineTo(x, y); }
+                ctx.stroke();
+            }
+            return canvasTex(t.c);
+        }
+
+        function blockTexture(lenM, hM, seed) {
+            const PX = 200, w = Math.round(lenM * PX), h = Math.round(hM * PX);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(seed);
+            ctx.fillStyle = '#aaa59d'; ctx.fillRect(0, 0, w, h);    // malta
+            const bw = 0.5 * PX, bh = 0.25 * PX, j = 0.01 * PX;
+            for (let row = 0, y = h; y > -bh; row++, y -= bh) {
+                for (let x = -(row % 2) * bw / 2; x < w; x += bw) {
+                    const l = 60 + r() * 7;
+                    ctx.fillStyle = `hsl(${30 + r() * 15}, ${4 + r() * 5}%, ${l}%)`;
+                    ctx.fillRect(x + j, y - bh + j, bw - 2 * j, bh - 2 * j);
+                }
+            }
+            speckle(ctx, w, h, r, Math.round(lenM * hM * 1800), ['#8d8d8d', '#bdbdbd', '#6d6d6d'], 1.1);
+            return canvasTex(c);
+        }
+
+        function signTexture(text) {
+            const c = document.createElement('canvas'); c.width = 256; c.height = 128;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, 256, 128);
+            ctx.strokeStyle = '#263238'; ctx.lineWidth = 8; ctx.strokeRect(4, 4, 248, 120);
+            ctx.fillStyle = '#263238'; ctx.font = 'bold 70px system-ui, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 128, 68);
+            return canvasTex(c);
+        }
+
+        // ---------- Scéna ----------
+        const container = document.getElementById('view');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: renderMode });
+        renderer.setPixelRatio(renderMode ? 1 : Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        container.appendChild(renderer.domElement);
+        RectAreaLightUniformsLib.init();
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color('#15181b');
+
+        const std = (opts) => new THREE.MeshStandardMaterial(Object.assign({ roughness: 0.9, metalness: 0 }, opts));
+        function add(geo, mat, x, y, z, opts = {}) {
+            const m = new THREE.Mesh(geo, mat);
+            m.position.set(x, y, z);
+            m.castShadow = opts.cast !== false; m.receiveShadow = true;
+            if (opts.ry) m.rotation.y = opts.ry;
+            (opts.parent || scene).add(m);
+            return m;
+        }
+        const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+
+        // Podlaha a strop
+        const floor = add(new THREE.PlaneGeometry(W, D), std({ map: floorTexture(), roughness: 0.95 }), W / 2, 0, D / 2, { cast: false });
+        floor.rotation.x = -Math.PI / 2;
+        const ceilT = plainTexture(W, D, 11, '#e9e6e0', ['#d3cec4', '#f7f5f0', '#c8c1b4'], 120);
+        const ceiling = add(new THREE.PlaneGeometry(W, D), std({ map: canvasTex(ceilT.c) }), W / 2, H, D / 2, { cast: false });
+        ceiling.rotation.x = Math.PI / 2;
+        ceiling.userData.cutaway = true;
+
+        // Stěny místnosti (vnitřní líc) – jižní stěna s okny se skládá z tvaru s otvory
+        const WIN = [{ cx: 3.95, w: 0.95, y0: 1.35, y1: 2.30 }, { cx: 1.85, w: 0.95, y0: 1.35, y1: 2.30 }];
+        function shapeWall(len, holes, tex) {
+            const s = new THREE.Shape();
+            s.moveTo(0, 0); s.lineTo(len, 0); s.lineTo(len, H); s.lineTo(0, H); s.lineTo(0, 0);
+            holes.forEach(o => {
+                const p = new THREE.Path();
+                p.moveTo(o.x0, o.y0); p.lineTo(o.x1, o.y0); p.lineTo(o.x1, o.y1); p.lineTo(o.x0, o.y1); p.lineTo(o.x0, o.y0);
+                s.holes.push(p);
+            });
+            tex.repeat.set(1 / len, 1 / H);
+            return new THREE.Mesh(new THREE.ShapeGeometry(s), std({ map: tex, bumpMap: tex, bumpScale: 0.6 }));
+        }
+        // jižní (okna), díváme se na ni od vstupu
+        const south = shapeWall(W, WIN.map(o => ({ x0: W - o.cx - o.w / 2, x1: W - o.cx + o.w / 2, y0: o.y0, y1: o.y1 })), wallTexture(W, 3));
+        south.position.set(W, 0, D - 0.004); south.rotation.y = Math.PI; south.receiveShadow = true; scene.add(south);
+        // východní stěna (bez otvoru)
+        const east = shapeWall(D, [], wallTexture(D, 5));
+        east.position.set(W - 0.004, 0, 0); east.rotation.y = -Math.PI / 2; east.receiveShadow = true; scene.add(east);
+        east.userData.cutaway = true;
+        // západní (za kójemi) a severní (vstup z chodby C1)
+        const west = shapeWall(D, [], wallTexture(D, 9));
+        west.position.set(0.004, 0, D); west.rotation.y = Math.PI / 2; west.receiveShadow = true; scene.add(west);
+        const north = shapeWall(W, [{ x0: 4.0, x1: 5.0, y0: 0, y1: 2.0 }], wallTexture(W, 13));
+        north.position.set(0, 0, 0.004); north.receiveShadow = true; scene.add(north);
+        north.userData.cutaway = true;
+
+        // Masivní obvodové zdi (tloušťka) – vrhají stíny, okna v nich mají hluboká ostění
+        const massMat = std({ color: '#6d6258' });
+        const T = 0.55;
+        add(box(W + 2 * T, H, T), massMat, W / 2, H / 2, -T / 2).userData.cutaway = true;
+        add(box(T, H, D + 2 * T), massMat, -T / 2, H / 2, D / 2);
+        // východní zeď s otvorem
+        add(box(T, H, D + 2 * T), massMat, W + T / 2, H / 2, D / 2).userData.cutaway = true;
+        // jižní zeď s okenními otvory
+        const sx = [0, ...WIN.slice().sort((a, b) => a.cx - b.cx).flatMap(o => [o.cx - o.w / 2, o.cx + o.w / 2]), W];
+        for (let i = 0; i < sx.length; i += 2) add(box(sx[i + 1] - sx[i] + (i === 0 || i === sx.length - 2 ? T : 0), H, T), massMat, (sx[i] + sx[i + 1]) / 2 + (i === 0 ? -T / 2 : i === sx.length - 2 ? T / 2 : 0), H / 2, D + T / 2);
+        const revealMat = std({ color: '#ece9e3' });
+        WIN.forEach(o => {
+            add(box(o.w, o.y0, T), massMat, o.cx, o.y0 / 2, D + T / 2);
+            add(box(o.w, H - o.y1, T), massMat, o.cx, o.y1 + (H - o.y1) / 2, D + T / 2);
+            // šikmý parapet a ostění z cihel
+            add(box(o.w, 0.04, T), revealMat, o.cx, o.y0 + 0.02, D + T / 2);
+            add(box(0.04, o.y1 - o.y0, T), revealMat, o.cx - o.w / 2 + 0.02, (o.y0 + o.y1) / 2, D + T / 2);
+            add(box(0.04, o.y1 - o.y0, T), revealMat, o.cx + o.w / 2 - 0.02, (o.y0 + o.y1) / 2, D + T / 2);
+            // sklo s mříží (sklobetonový dojem) – svítí denním světlem zvenku
+            const glass = new THREE.Mesh(new THREE.PlaneGeometry(o.w, o.y1 - o.y0), new THREE.MeshStandardMaterial({ color: '#dfe9e2', emissive: '#e8f0ff', emissiveIntensity: 1.6, roughness: 0.4 }));
+            glass.position.set(o.cx, (o.y0 + o.y1) / 2, D + T - 0.08); glass.rotation.y = Math.PI; scene.add(glass);
+            const barMat = std({ color: '#d6d2c8', roughness: 0.6 });
+            for (let k = 1; k < 6; k++) add(box(0.015, o.y1 - o.y0, 0.02), barMat, o.cx - o.w / 2 + k * o.w / 6, (o.y0 + o.y1) / 2, D + T - 0.1, { cast: false });
+            for (let k = 1; k < 5; k++) add(box(o.w, 0.015, 0.02), barMat, o.cx, o.y0 + k * (o.y1 - o.y0) / 5, D + T - 0.1, { cast: false });
+            const grille = std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 });
+            for (let k = 1; k < 4; k++) add(box(0.012, o.y1 - o.y0, 0.012), grille, o.cx - o.w / 2 + k * o.w / 4, (o.y0 + o.y1) / 2, D + T - 0.25);
+            add(box(o.w, 0.012, 0.012), grille, o.cx, (o.y0 + o.y1) / 2, D + T - 0.25);
+        });
+
+        // Průvlaky ve stropu a ocelový nosník u vstupu (dle fotografie)
+        const beamMat = std({ map: canvasTex(plainTexture(1, 1, 31, '#e4e0d8', ['#cfc8bb', '#f4f1ea'], 200).c) });
+        add(box(0.32, 0.34, D), beamMat, 4.55, H - 0.17, D / 2).userData.cutaway = true;
+        add(box(W, 0.30, 0.30), beamMat, W / 2, H - 0.15, 2.7).userData.cutaway = true;
+        const steel = std({ color: '#2e3338', metalness: 0.7, roughness: 0.45 });
+        add(box(W, 0.2, 0.02), steel, W / 2, H - 0.12, 0.45).userData.cutaway = true;
+        add(box(W, 0.012, 0.12), steel, W / 2, H - 0.22, 0.45).userData.cutaway = true;
+
+        // Žluté plynové potrubí
+        const gasMat = std({ color: '#f2c618', roughness: 0.45, metalness: 0.1 });
+        const pipe = (a, b) => {
+            const va = new THREE.Vector3(...a), vb = new THREE.Vector3(...b);
+            const len = va.distanceTo(vb);
+            const m = add(new THREE.CylinderGeometry(0.022, 0.022, len, 14), gasMat, 0, 0, 0);
+            m.position.copy(va).add(vb).multiplyScalar(0.5);
+            m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vb.clone().sub(va).normalize());
+            return m;
+        };
+        pipe([W - 0.06, 2.45, 0.6], [W - 0.06, 2.45, D - 0.06]).userData.cutaway = true;
+        pipe([W - 0.06, 2.45, D - 0.06], [3.35, 2.45, D - 0.06]);
+        pipe([4.55, 2.45, D - 0.06], [4.55, 1.70, D - 0.06]);
+
+        // ---------- Kóje: příčky z tvárnic 15 cm ----------
+        const blockMat = (len, seed) => { const t = blockTexture(len, H, seed); return std({ map: t, bumpMap: t, bumpScale: 0.8, roughness: 0.95 }); };
+        const front = new THREE.Group(); scene.add(front);
+        const DOOR_W = 0.80, DOOR_H = 1.97;
+        const kStart = i => i * (KD + PT);
+        const doorZ = i => kStart(i) + KD / 2;
+        // čelní příčka s dveřními otvory (segmenty)
+        let z0 = 0;
+        const frontMat = blockMat(D, 41);
+        const segs = [];
+        KOJE.forEach((_, i) => { segs.push([z0, doorZ(i) - DOOR_W / 2]); z0 = doorZ(i) + DOOR_W / 2; });
+        segs.push([z0, D]);
+        segs.forEach(([a, b], i) => {
+            const t = blockTexture(b - a, H, 50 + i);
+            const m = std({ map: t, bumpMap: t, bumpScale: 0.8 });
+            add(box(PT, H, b - a), m, KX + PT / 2, H / 2, (a + b) / 2);
+        });
+        KOJE.forEach((_, i) => {
+            const t = blockTexture(DOOR_W, H - DOOR_H, 60 + i);
+            add(box(PT, H - DOOR_H, DOOR_W), std({ map: t }), KX + PT / 2, DOOR_H + (H - DOOR_H) / 2, doorZ(i));
+        });
+        // dělicí příčky mezi kójemi
+        [1, 2].forEach(i => add(box(KX, H, PT), blockMat(KX, 70 + i), KX / 2, H / 2, kStart(i) - PT / 2));
+
+        // Dveře: ocelová zárubeň, plné křídlo, klika, cedulka s číslem
+        const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
+        const leafMat = std({ color: '#5f7080', metalness: 0.35, roughness: 0.5 });
+        const handleMat = std({ color: '#cfd8dc', metalness: 0.9, roughness: 0.25 });
+        const doorOpen = { '885/X': -0.5 };
+        KOJE.forEach((name, i) => {
+            const zc = doorZ(i), xf = KX + PT + 0.005;
+            add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, xf, (DOOR_H + 0.04) / 2, zc - DOOR_W / 2 - 0.012);
+            add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, xf, (DOOR_H + 0.04) / 2, zc + DOOR_W / 2 + 0.012);
+            add(box(0.03, 0.035, DOOR_W + 0.06), frameMat, xf, DOOR_H + 0.018, zc);
+            // křídlo otáčené kolem pantu u menšího z (otevírá se dovnitř kóje)
+            const hinge = new THREE.Group();
+            hinge.position.set(KX + PT - 0.03, 0, zc - DOOR_W / 2 + 0.01);
+            hinge.rotation.y = doorOpen[name] || 0;
+            scene.add(hinge);
+            add(box(0.04, DOOR_H - 0.02, DOOR_W - 0.02), leafMat, 0, DOOR_H / 2, DOOR_W / 2 - 0.01, { parent: hinge });
+            add(box(0.06, 0.02, 0.13), handleMat, 0.045, 1.05, DOOR_W - 0.1, { parent: hinge });
+            add(box(0.02, 0.06, 0.03), handleMat, 0.03, 1.05, DOOR_W - 0.06, { parent: hinge });
+            const sign = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.11), new THREE.MeshStandardMaterial({ map: signTexture(name), roughness: 0.5 }));
+            sign.position.set(0.022, 1.62, DOOR_W / 2); sign.rotation.y = Math.PI / 2; hinge.add(sign);
+        });
+
+        // Vybavení uvnitř kójí: regál s krabicemi, svítidlo
+        const shelfMat = std({ color: '#9aa5ab', metalness: 0.6, roughness: 0.45 });
+        const boxCols = ['#b48a5a', '#a07a4c', '#c49a68', '#5d7f99', '#7a8b5c'];
+        KOJE.forEach((name, i) => {
+            const zs = kStart(i), r = rng(90 + i);
+            const sx0 = 0.05, sw = 0.45;
+            [0, 0.6, 1.2, 1.8].forEach(y => add(box(sw, 0.03, KD - 0.2), shelfMat, sx0 + sw / 2, y + 0.15, zs + KD / 2, { cast: true }));
+            for (let p = 0; p < 4; p++) add(box(0.03, 2.0, 0.03), shelfMat, sx0 + (p % 2) * sw, 1.0, zs + 0.1 + (p < 2 ? 0 : KD - 0.2));
+            [0.18, 0.78, 1.38].forEach(y => {
+                for (let k = 0; k < 3; k++) {
+                    if (r() < 0.25) continue;
+                    const bh = 0.25 + r() * 0.2;
+                    add(box(0.38, bh, 0.35 + r() * 0.15), std({ color: boxCols[Math.floor(r() * boxCols.length)] }), sx0 + 0.22, y + bh / 2, zs + 0.3 + k * 0.5);
+                }
+            });
+            // stropní LED svítidlo kóje
+            add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), KX / 2 + 0.4, H - 0.03, zs + KD / 2, { cast: false });
+            const pl = new THREE.PointLight('#ffe9cc', name === '885/X' ? 5 : 2.5, 6, 2);
+            pl.position.set(KX / 2 + 0.4, H - 0.25, zs + KD / 2);
+            scene.add(pl);
+        });
+
+        // Elektro ve volné části: kabelová lišta, LED svítidla, čidlo pohybu
+        const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
+        add(box(0.06, 0.04, D - 0.2), pvc, 3.85, H - 0.02, D / 2, { cast: false }).userData.cutaway = true;
+        KOJE.forEach((_, i) => { add(box(0.3, 0.04, 0.05), pvc, 3.7, H - 0.02, kStart(i) + KD - 0.2, { cast: false }).userData.cutaway = true; });
+        const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
+        [0.75, 4.55].forEach(z => {
+            add(box(0.12, 0.05, 1.2), pvc, 5.1, H - 0.025, z, { cast: false }).userData.cutaway = true;
+            add(box(0.09, 0.01, 1.15), ledMat, 5.1, H - 0.052, z, { cast: false }).userData.cutaway = true;
+            const ra = new THREE.RectAreaLight('#fff6ea', 9, 0.1, 1.15);
+            ra.position.set(5.1, H - 0.06, z); ra.lookAt(5.1, 0, z); scene.add(ra);
+        });
+        const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, 4.45, H - 0.05, 0.35); pir.rotation.x = Math.PI; pir.userData.cutaway = true;
+
+        // Přívod vody na východní stěně: svislé potrubí zakryté plechovým krytem, vodorovně pod stropem
+        const coverMat = std({ color: '#d9dcdc', metalness: 0.3, roughness: 0.5 });
+        const waterCover = add(box(0.12, H - 0.25, 0.2), coverMat, W - 0.06, (H - 0.25) / 2, 3.2);
+        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, 3.2, 14), pvc, W - 0.07, H - 0.18, 1.6);
+        waterPipe.rotation.x = Math.PI / 2;
+        waterCover.userData.cutaway = waterPipe.userData.cutaway = true;
+
+        // ---------- Osvětlení ----------
+        scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
+        WIN.forEach((o, i) => {
+            const ra = new THREE.RectAreaLight('#eaf1ff', 6, o.w, o.y1 - o.y0);
+            ra.position.set(o.cx, (o.y0 + o.y1) / 2, D + 0.02); ra.lookAt(o.cx, (o.y0 + o.y1) / 2 - 0.6, 0); scene.add(ra);
+            const sun = new THREE.SpotLight('#fff1d8', i === 0 ? 120 : 60, 14, 0.42, 0.7, 1.6);
+            sun.position.set(o.cx - 0.6, 4.6, D + 3.2);
+            sun.target.position.set(o.cx - 0.2, 0, D - 1.6);
+            sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.radius = 4;
+            scene.add(sun, sun.target);
+        });
+        const fill = new THREE.PointLight('#fff3e2', 7, 9, 2);
+        fill.position.set(4.9, 2.45, 2.6); fill.castShadow = true; fill.shadow.mapSize.set(1024, 1024); fill.shadow.bias = -0.002;
+        scene.add(fill);
+
+        // ---------- Kamera, pohledy ----------
+        const camera = new THREE.PerspectiveCamera(60, 1, 0.05, 60);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        const VIEWS = {
+            photo: { pos: [4.75, 1.62, 0.12], target: [3.3, 1.05, 5.3], fov: 92 },
+            cutaway: { pos: [9.2, 8.6, -3.6], target: [2.7, 0.4, 2.7], fov: 40 },
+            inside: { pos: [5.3, 1.6, 0.8], target: [2.0, 1.05, 2.75], fov: 68 }
+        };
+        function setView(name) {
+            const v = VIEWS[name];
+            camera.position.set(...v.pos); controls.target.set(...v.target); camera.fov = v.fov;
+            camera.updateProjectionMatrix(); controls.update();
+            const cut = name === 'cutaway';
+            scene.traverse(o => { if (o.userData.cutaway) o.visible = !cut; });
+            document.querySelectorAll('.buttons button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+        }
+        document.querySelectorAll('.buttons button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+        let composer = null;
+        function resize() {
+            const w = outW || window.innerWidth, h = outH || window.innerHeight;
+            renderer.setSize(w, h, !renderMode);
+            camera.aspect = w / h; camera.updateProjectionMatrix();
+            if (composer) composer.setSize(w, h);
+        }
+        try {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            const ao = new GTAOPass(scene, camera, 1, 1);
+            ao.updateGtaoMaterial({ radius: 0.5, distanceExponent: 1.5, thickness: 1.5, scale: 1.2 });
+            composer.addPass(ao);
+            composer.addPass(new OutputPass());
+        } catch (e) {
+            console.warn('Post-processing nedostupné:', e);
+            composer = null;
+        }
+        window.addEventListener('resize', resize);
+        setView(params.get('view') || 'photo');
+        resize();
+
+        function frame() {
+            controls.update();
+            if (composer) composer.render(); else renderer.render(scene, camera);
+        }
+        if (renderMode) {
+            frame(); frame();
+            window.__rendered = true;
+        } else {
+            renderer.setAnimationLoop(frame);
+        }
+    </script>
+</body>
+</html>
