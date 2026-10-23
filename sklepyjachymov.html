@@ -215,6 +215,8 @@
         .v2-door { cursor: pointer; }
         .v2-door-gap { fill: #f5f5f0; stroke: none; }
         .v2-opening { fill: #f5f5f0; stroke: none; pointer-events: none; }
+        .v2-arrow { fill: none; stroke: #1565c0; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .v2-jamb { stroke: #37474f; stroke-width: 2.5; }
         .v2-door-leaf { stroke: #6d4c41; stroke-width: 3; stroke-linecap: round; }
         .v2-door-swing { fill: #8d6e63; fill-opacity: 0.12; stroke: #8d6e63; stroke-width: 1; stroke-dasharray: 3 2; }
         .v2-door:hover .v2-door-leaf { stroke: #e65100; }
@@ -824,12 +826,12 @@
                         <!-- Komunikace a přístupové plochy -->
                         <rect x="90" y="212" width="624" height="62.4" class="v2-corridor" onclick="selectItem('vis2', 'C1', 'Společná chodba C1', '15,60 x 1,56 m', 'Páteřní chodba sklepů')"></rect>
                         <rect x="714" y="140" width="60" height="134.4" class="v2-corridor" onclick="selectItem('vis2', 'Chodba', 'Boční chodba', '1,50 m', 'Přístup ke kójím A6 a 885/7')"></rect>
-                        <rect x="156" y="166" width="174" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/6 a 885/8')"></rect>
-                        <rect x="330" y="166" width="74" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,15 m (2,13 m²)', 'Přístup ke kóji 885/9')"></rect>
+                        <rect x="156" y="166" width="174" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/1, 885/6 a 885/8 průchodem z A2 (bez vlastního vstupu z C1)')"></rect>
+                        <rect x="330" y="166" width="74" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,15 m (2,13 m²)', 'Jediný vstup z chodby C1 k horním kójím; přístup k 885/9 a 885/2, průchodem doleva do A1')"></rect>
                         <rect x="418" y="274.4" width="78" height="212" class="v2-corridor" onclick="selectItem('vis2', 'Přístup B2', 'Volná část B2', '1,95 x 5,30 m (10,34 m²)', 'Přístup ke kójím 885/5, 885/X a 885/4')"></rect>
-                        <text x="402" y="246" class="v2-corr-label" >SPOLEČNÁ CHODBA C1</text>
-                        <text x="243" y="192" class="v2-corr-sub" >přístup</text>
-                        <text x="367" y="192" class="v2-corr-sub" >přístup</text>
+                        <text x="560" y="246" class="v2-corr-label" >SPOLEČNÁ CHODBA C1</text>
+                        <text x="210" y="186" class="v2-corr-sub" >přístup</text>
+                        <text x="367" y="182" class="v2-corr-sub" >přístup</text>
                         <text x="457" y="380" class="v2-corr-sub" transform="rotate(-90 457 380)">PŘÍSTUP B2 · 1,95 m</text>
                         <text x="747" y="176" class="v2-corr-sub" transform="rotate(-90 747 176)">chodba</text>
                         <!-- Kóje (vnitřní rozměry) -->
@@ -864,9 +866,9 @@
                         <rect x="711" y="214" width="6" height="58.4" class="v2-opening"><title>Průchod chodba C1 → boční chodba</title></rect>
                         <rect x="716" y="209" width="56" height="6" class="v2-opening"><title>Průchod boční chodba</title></rect>
                         <rect x="472" y="209" width="76" height="6" class="v2-opening"><title>Schodiště → chodba C1</title></rect>
-                        <rect x="223" y="209" width="40" height="6" class="v2-opening"><title>Vstup do A1 (poloha orientační)</title></rect>
-                        <rect x="347" y="209" width="40" height="6" class="v2-opening"><title>Vstup do A2 (poloha orientační)</title></rect>
+                        <rect x="347" y="209" width="40" height="6" class="v2-opening"><title>Jediný vstup z chodby C1 k horním kójím (před 885/9)</title></rect>
                         <rect x="437" y="271.4" width="40" height="6" class="v2-opening"><title>Vstup do B2 (poloha orientační)</title></rect>
+                        <rect x="327" y="173" width="6" height="32" class="v2-opening"><title>Průchod A2 → A1 (současné dveře, ponechán jen otvor)</title></rect>
                         <!-- Nové příčky 15 cm (tvárnice) -->
                         <g filter="url(#v2-shadow)" pointer-events="none">
                             <rect x="150" y="80" width="6" height="132" class="v2-partition"></rect>
@@ -980,6 +982,20 @@
                         <text x="580" y="154" class="v2-area" fill="#2e7d32">4,95 m²</text>
                         <text x="744" y="95" class="v2-num v2-num-s" fill="#2e7d32">A6</text>
                         <text x="744" y="108" class="v2-dim" fill="#2e7d32">společná</text>
+                        <!-- Vstup k horním kójím a průchod -->
+                        <g class="v2-door" onclick="selectItem('vis2', 'Vstup', 'Jediný vstup k horním kójím', 'Z chodby C1 před kójí 885/9', 'Přístup ke kójím 885/9 a 885/2, dále průchodem doleva k 885/1, 885/6 a 885/8')">
+                            <rect x="347" y="207" width="40" height="10" fill="transparent"></rect>
+                            <path d="M 367 236 L 367 218 M 361 224 L 367 217 L 373 224" class="v2-arrow"></path>
+                            <text x="367" y="246" class="v2-corr-sub" font-weight="bold" fill="#1565c0">VSTUP</text>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Průchod', 'Průchod mezi A2 a A1', 'V místě současných dveří', 'Dveře se odstraní, ponechá se pouze otvor')">
+                            <rect x="322" y="173" width="16" height="32" fill="transparent"></rect>
+                            <line x1="324" y1="173" x2="336" y2="173" class="v2-jamb"></line>
+                            <line x1="324" y1="205" x2="336" y2="205" class="v2-jamb"></line>
+                            <path d="M 344 198 L 314 198 M 320 192 L 313 198 L 320 204" class="v2-arrow"></path>
+                            <text x="308" y="202" class="v2-corr-sub" font-weight="bold" fill="#1565c0" style="text-anchor: end;">průchod</text>
+                        </g>
+
                         <!-- Legenda a měřítko -->
                         <g pointer-events="none">
                             <rect x="90" y="500" width="18" height="12" class="v2-unit" style="stroke:#546e7a; stroke-width:1;"></rect>
