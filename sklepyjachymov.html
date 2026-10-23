@@ -82,6 +82,12 @@
             border-color: #263238 !important;
         }
 
+        .btn-layer-vis2.active {
+            background-color: #1565c0 !important;
+            color: white !important;
+            border-color: #0d47a1 !important;
+        }
+
         .btn-layer-elec.active {
             background-color: #f57c00 !important;
             color: white !important;
@@ -192,6 +198,36 @@
         .cage-door { fill: #37474f; fill-opacity: 0.4; stroke: #102a43; stroke-width: 2; cursor: pointer; }
         .cage-door:hover { fill: #455a64; fill-opacity: 0.7; }
 
+        /* Vizualizace kójí 2 */
+        .v2-unit { fill: #bbdefb; stroke: none; cursor: pointer; transition: fill 0.2s; }
+        .v2-unit:hover { fill: #90caf9; }
+        .v2-shared { fill: #c8e6c9; stroke: none; cursor: pointer; }
+        .v2-shared:hover { fill: #a5d6a7; }
+        .v2-corridor { fill: #f5f5f0; stroke: none; cursor: pointer; }
+        .v2-corridor:hover { fill: #ebebe0; }
+        .v2-out { fill: url(#v2-hatch); stroke: none; cursor: pointer; }
+        .v2-stairs { fill: #ffe0b2; stroke: none; cursor: pointer; }
+        .v2-tread { stroke: #ffb74d; stroke-width: 1; pointer-events: none; }
+        .v2-wall { fill: none; stroke: #37474f; stroke-width: 2.5; pointer-events: none; }
+        .v2-outer { fill: none; stroke: #263238; stroke-width: 6; pointer-events: none; }
+        .v2-wall-legend { stroke: #37474f; stroke-width: 3; }
+        .v2-partition { fill: url(#block-pattern); stroke: #455a64; stroke-width: 0.6; }
+        .v2-door { cursor: pointer; }
+        .v2-door-gap { fill: #f5f5f0; stroke: none; }
+        .v2-opening { fill: #f5f5f0; stroke: none; pointer-events: none; }
+        .v2-door-leaf { stroke: #6d4c41; stroke-width: 3; stroke-linecap: round; }
+        .v2-door-swing { fill: #8d6e63; fill-opacity: 0.12; stroke: #8d6e63; stroke-width: 1; stroke-dasharray: 3 2; }
+        .v2-door:hover .v2-door-leaf { stroke: #e65100; }
+        .v2-num { font-size: 14px; font-weight: bold; fill: #0d47a1; text-anchor: middle; pointer-events: none; }
+        .v2-num-s { font-size: 12px; }
+        .v2-dim { font-size: 9.5px; fill: #1565c0; text-anchor: middle; pointer-events: none; }
+        .v2-area { font-size: 9.5px; font-weight: bold; fill: #1565c0; text-anchor: middle; pointer-events: none; }
+        .v2-out-label { font-size: 12px; font-weight: bold; fill: #78909c; text-anchor: middle; pointer-events: none; }
+        .v2-out-sub { font-size: 10px; fill: #90a4ae; text-anchor: middle; pointer-events: none; }
+        .v2-corr-label { font-size: 12px; font-weight: bold; fill: #8d8d80; text-anchor: middle; letter-spacing: 1px; pointer-events: none; }
+        .v2-corr-sub { font-size: 9px; fill: #9e9e90; text-anchor: middle; pointer-events: none; }
+        .v2-legend { font-size: 11px; fill: #37474f; }
+
         /* Elektroprvky styling */
         .elec-light { fill: #ffd54f; stroke: #f57f17; stroke-width: 1.5; cursor: pointer; filter: drop-shadow(0px 0px 3px #ffeb3b); }
         .elec-light:hover { fill: #ffff8d; transform: scale(1.15); transform-origin: center; }
@@ -227,6 +263,7 @@
         .badge-working { background-color: #1565c0; }
         .badge-proposal { background-color: #0288d1; }
         .badge-proposal2 { background-color: #00897b; }
+        .badge-vis2 { background-color: #1565c0; }
         .badge-usage { background-color: #7b1fa2; }
         .badge-vis { background-color: #37474f; }
         .badge-elec { background-color: #f57c00; }
@@ -287,6 +324,7 @@
         <button class="btn-layer btn-layer-proposal2" onclick="setLayerMode('proposal2')">🎯 Návrh cílového stavu 2</button>
         <button class="btn-layer btn-layer-elec" onclick="setLayerMode('electric')">⚡ Elektroinstalace (Cílový stav)</button>
         <button class="btn-layer btn-layer-vis" onclick="setLayerMode('visualization')">🎨 Vizualizace kójí</button>
+        <button class="btn-layer btn-layer-vis2" onclick="setLayerMode('visualization2')">🎨 Vizualizace kójí 2</button>
         <button class="btn-layer btn-layer-doc" onclick="setLayerMode('doc')">📜 Prohlášení vlastníka</button>
         <button class="btn-layer" onclick="setLayerMode('official')">📜 Oficiální stav (bez fyzického)</button>
         <span style="border-left: 1px solid #ccc; height: 20px; margin: 0 5px;"></span>
@@ -325,6 +363,13 @@
                     <marker id="arrow-end-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32"></path>
                     </marker>
+                    <pattern id="v2-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <rect width="8" height="8" fill="#eceff1"></rect>
+                        <line x1="0" y1="0" x2="0" y2="8" stroke="#cfd8dc" stroke-width="3"></line>
+                    </pattern>
+                    <filter id="v2-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="1.2" dy="1.6" stdDeviation="1" flood-color="#263238" flood-opacity="0.45"></feDropShadow>
+                    </filter>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#grid)"></rect>
 
@@ -745,6 +790,224 @@
                     </g>
                 </g>
 
+                    <!-- VRSTVA 5b: VIZUALIZACE KÓJÍ 2 – čistý půdorys cílového stavu dle Návrhu cílového stavu 2 (měřítko 40 px = 1 m) -->
+                    <g id="layer-vis2" style="display: none;">
+                        <rect x="40" y="30" width="1020" height="525" fill="#ffffff"></rect>
+                        <!-- Prostory mimo řešení -->
+                        <rect x="90" y="274.4" width="186" height="212" class="v2-out" onclick="selectItem('vis2', 'nb. j. 885/11', 'Mimo řešení', 'B1', 'Nebytová jednotka 885/11 (B1), mimo řešení kójí')"></rect>
+                        <text x="183" y="374.4" class="v2-out-label" >nb. j. 885/11</text>
+                        <text x="183" y="389.4" class="v2-out-sub" >B1</text>
+                        <rect x="496" y="274.4" width="96" height="212" class="v2-out" onclick="selectItem('vis2', 'VÝSEP', 'Mimo řešení', 'V0', 'Nepoužitelný prostor pod schodištěm')"></rect>
+                        <text x="544" y="374.4" class="v2-out-label" >VÝSEP</text>
+                        <text x="544" y="389.4" class="v2-out-sub" >V0</text>
+                        <rect x="592" y="274.4" width="420" height="212" class="v2-out" onclick="selectItem('vis2', 'nb. j. 885/12', 'Mimo řešení', 'B3 + B4 + B5', 'Nebytová jednotka 885/12, mimo řešení kójí')"></rect>
+                        <text x="802" y="374.4" class="v2-out-label" >nb. j. 885/12</text>
+                        <text x="802" y="389.4" class="v2-out-sub" >B3 + B4 + B5</text>
+                        <rect x="774" y="212" width="240" height="62.4" class="v2-out" onclick="selectItem('vis2', '885/12', 'Mimo řešení', 'B6', 'Součást nebytové jednotky 885/12')"></rect>
+                        <text x="894" y="237.2" class="v2-out-label" >885/12</text>
+                        <text x="894" y="252.2" class="v2-out-sub" >B6</text>
+                        <!-- Schodiště -->
+                        <rect x="470" y="80" width="80" height="132" class="v2-stairs" onclick="selectItem('vis2', 'Schodiště', 'Vstupní schodiště', '2,00 x 3,30 m', 'Vstup do sklepa')"></rect>
+                        <line x1="470" y1="91" x2="550" y2="91" class="v2-tread"></line>
+                        <line x1="470" y1="102" x2="550" y2="102" class="v2-tread"></line>
+                        <line x1="470" y1="113" x2="550" y2="113" class="v2-tread"></line>
+                        <line x1="470" y1="124" x2="550" y2="124" class="v2-tread"></line>
+                        <line x1="470" y1="135" x2="550" y2="135" class="v2-tread"></line>
+                        <line x1="470" y1="146" x2="550" y2="146" class="v2-tread"></line>
+                        <line x1="470" y1="157" x2="550" y2="157" class="v2-tread"></line>
+                        <line x1="470" y1="168" x2="550" y2="168" class="v2-tread"></line>
+                        <line x1="470" y1="179" x2="550" y2="179" class="v2-tread"></line>
+                        <line x1="470" y1="190" x2="550" y2="190" class="v2-tread"></line>
+                        <line x1="470" y1="201" x2="550" y2="201" class="v2-tread"></line>
+                        <rect x="494" y="96" width="32" height="22" fill="#ffffff" fill-opacity="0.85" rx="3" pointer-events="none"></rect>
+                        <text x="510" y="108" class="v2-out-label" fill="#e65100">SCHODY</text>
+                        <!-- Komunikace a přístupové plochy -->
+                        <rect x="90" y="212" width="624" height="62.4" class="v2-corridor" onclick="selectItem('vis2', 'C1', 'Společná chodba C1', '15,60 x 1,56 m', 'Páteřní chodba sklepů')"></rect>
+                        <rect x="714" y="140" width="60" height="134.4" class="v2-corridor" onclick="selectItem('vis2', 'Chodba', 'Boční chodba', '1,50 m', 'Přístup ke kójím A6 a 885/7')"></rect>
+                        <rect x="156" y="166" width="174" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/6 a 885/8')"></rect>
+                        <rect x="330" y="166" width="74" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,15 m (2,13 m²)', 'Přístup ke kóji 885/9')"></rect>
+                        <rect x="418" y="274.4" width="78" height="212" class="v2-corridor" onclick="selectItem('vis2', 'Přístup B2', 'Volná část B2', '1,95 x 5,30 m (10,34 m²)', 'Přístup ke kójím 885/5, 885/X a 885/4')"></rect>
+                        <text x="402" y="246" class="v2-corr-label" >SPOLEČNÁ CHODBA C1</text>
+                        <text x="243" y="192" class="v2-corr-sub" >přístup</text>
+                        <text x="367" y="192" class="v2-corr-sub" >přístup</text>
+                        <text x="457" y="380" class="v2-corr-sub" transform="rotate(-90 457 380)">PŘÍSTUP B2 · 1,95 m</text>
+                        <text x="747" y="176" class="v2-corr-sub" transform="rotate(-90 747 176)">chodba</text>
+                        <!-- Kóje (vnitřní rozměry) -->
+                        <rect x="90" y="80" width="60" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/1', 'Sklepní kóje – cílový stav', '1,50 x 3,30 m (4,95 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="156" y="80" width="84" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/6', 'Sklepní kóje – cílový stav', '2,10 x 2,00 m (4,20 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="246" y="80" width="84" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/8', 'Sklepní kóje – cílový stav', '2,10 x 2,00 m (4,20 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="330" y="80" width="74" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/9', 'Sklepní kóje – cílový stav', '1,85 x 2,00 m (3,70 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="410" y="80" width="60" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/2', 'Sklepní kóje – cílový stav', '1,50 x 3,30 m (4,95 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="610" y="80" width="104" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/10', 'Sklepní kóje – cílový stav', '2,60 x 3,30 m (8,58 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="774" y="80" width="240" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/7', 'Sklepní kóje – cílový stav', '6,00 x 3,30 m (19,80 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="276" y="274.4" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/5', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="276" y="347.07" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/X', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="276" y="419.73" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="550" y="80" width="60" height="132" class="v2-shared" onclick="selectItem('vis2', 'A3', 'Společný prostor', '1,50 x 3,30 m (4,95 m²)', 'Společně užívaný prostor')"></rect>
+                        <rect x="714" y="80" width="60" height="60" class="v2-shared" onclick="selectItem('vis2', 'A6', 'Společný prostor', 'Společná kóje', 'Společně užívaný prostor')"></rect>
+                        <!-- Stávající konstrukce dle půdorysu -->
+                        <rect x="90" y="80" width="240" height="132" class="v2-wall"></rect>
+                        <rect x="330" y="80" width="140" height="132" class="v2-wall"></rect>
+                        <rect x="470" y="80" width="80" height="132" class="v2-wall"></rect>
+                        <rect x="550" y="80" width="60" height="132" class="v2-wall"></rect>
+                        <rect x="610" y="80" width="104" height="132" class="v2-wall"></rect>
+                        <rect x="714" y="80" width="60" height="132" class="v2-wall"></rect>
+                        <rect x="774" y="80" width="240" height="132" class="v2-wall"></rect>
+                        <rect x="90" y="212" width="624" height="62.4" class="v2-wall"></rect>
+                        <rect x="774" y="212" width="240" height="62.4" class="v2-wall"></rect>
+                        <rect x="90" y="274.4" width="186" height="212" class="v2-wall"></rect>
+                        <rect x="276" y="274.4" width="220" height="212" class="v2-wall"></rect>
+                        <rect x="496" y="274.4" width="96" height="212" class="v2-wall"></rect>
+                        <rect x="592" y="274.4" width="420" height="212" class="v2-wall"></rect>
+                        <rect x="90" y="80" width="924" height="406.4" class="v2-outer"></rect>
+                        <!-- Otvory ve stávajících zdech (průchody a vstupy do místností) -->
+                        <rect x="711" y="214" width="6" height="58.4" class="v2-opening"><title>Průchod chodba C1 → boční chodba</title></rect>
+                        <rect x="716" y="209" width="56" height="6" class="v2-opening"><title>Průchod boční chodba</title></rect>
+                        <rect x="472" y="209" width="76" height="6" class="v2-opening"><title>Schodiště → chodba C1</title></rect>
+                        <rect x="223" y="209" width="40" height="6" class="v2-opening"><title>Vstup do A1 (poloha orientační)</title></rect>
+                        <rect x="347" y="209" width="40" height="6" class="v2-opening"><title>Vstup do A2 (poloha orientační)</title></rect>
+                        <rect x="437" y="271.4" width="40" height="6" class="v2-opening"><title>Vstup do B2 (poloha orientační)</title></rect>
+                        <!-- Nové příčky 15 cm (tvárnice) -->
+                        <g filter="url(#v2-shadow)" pointer-events="none">
+                            <rect x="150" y="80" width="6" height="132" class="v2-partition"></rect>
+                            <rect x="240" y="80" width="6" height="80" class="v2-partition"></rect>
+                            <rect x="156" y="160" width="174" height="6" class="v2-partition"></rect>
+                            <rect x="404" y="80" width="6" height="132" class="v2-partition"></rect>
+                            <rect x="330" y="160" width="74" height="6" class="v2-partition"></rect>
+                            <rect x="404" y="209" width="66" height="6" class="v2-partition"></rect>
+                            <rect x="276" y="341.07" width="136" height="6" class="v2-partition"></rect>
+                            <rect x="276" y="413.73" width="136" height="6" class="v2-partition"></rect>
+                            <rect x="412" y="274.4" width="6" height="212" class="v2-partition"></rect>
+                            <rect x="610" y="209" width="107" height="6" class="v2-partition"></rect>
+                            <rect x="711" y="80" width="6" height="132" class="v2-partition"></rect>
+                            <rect x="714" y="137" width="60" height="6" class="v2-partition"></rect>
+                            <rect x="550" y="209" width="60" height="6" class="v2-partition"></rect>
+                        </g>
+                        <!-- Dveře 0,80 m, otevírání dovnitř -->
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/1', 'Vstupní dveře 885/1', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="150" y="173" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 150 173 L 118 173 A 32 32 0 0 0 150 205 Z" class="v2-door-swing"></path>
+                            <line x1="150" y1="173" x2="118" y2="173" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/6', 'Vstupní dveře 885/6', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="182" y="160" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 182 160 L 182 128 A 32 32 0 0 1 214 160 Z" class="v2-door-swing"></path>
+                            <line x1="182" y1="160" x2="182" y2="128" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/8', 'Vstupní dveře 885/8', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="272" y="160" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 272 160 L 272 128 A 32 32 0 0 1 304 160 Z" class="v2-door-swing"></path>
+                            <line x1="272" y1="160" x2="272" y2="128" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/9', 'Vstupní dveře 885/9', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="351" y="160" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 351 160 L 351 128 A 32 32 0 0 1 383 160 Z" class="v2-door-swing"></path>
+                            <line x1="351" y1="160" x2="351" y2="128" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/2', 'Vstupní dveře 885/2', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="404" y="173" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 410 173 L 442 173 A 32 32 0 0 1 410 205 Z" class="v2-door-swing"></path>
+                            <line x1="410" y1="173" x2="442" y2="173" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="646" y="209" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 646 212 L 646 180 A 32 32 0 0 1 678 212 Z" class="v2-door-swing"></path>
+                            <line x1="646" y1="212" x2="646" y2="180" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/7', 'Vstupní dveře 885/7', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="771" y="141" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 774 141 L 806 141 A 32 32 0 0 1 774 173 Z" class="v2-door-swing"></path>
+                            <line x1="774" y1="141" x2="806" y2="141" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A6', 'Vstupní dveře A6', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="728" y="137" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 728 140 L 728 108 A 32 32 0 0 1 760 140 Z" class="v2-door-swing"></path>
+                            <line x1="728" y1="140" x2="728" y2="108" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A3', 'Vstupní dveře A3', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="564" y="209" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 564 212 L 564 180 A 32 32 0 0 1 596 212 Z" class="v2-door-swing"></path>
+                            <line x1="564" y1="212" x2="564" y2="180" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/5', 'Vstupní dveře 885/5', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="412" y="291.73" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 412 291.73 L 380 291.73 A 32 32 0 0 0 412 323.73 Z" class="v2-door-swing"></path>
+                            <line x1="412" y1="291.73" x2="380" y2="291.73" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/X', 'Vstupní dveře 885/X', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="412" y="364.4" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 412 364.4 L 380 364.4 A 32 32 0 0 0 412 396.4 Z" class="v2-door-swing"></path>
+                            <line x1="412" y1="364.4" x2="380" y2="364.4" class="v2-door-leaf"></line>
+                        </g>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/4', 'Vstupní dveře 885/4', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
+                            <rect x="412" y="437.06" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 412 437.06 L 380 437.06 A 32 32 0 0 0 412 469.06 Z" class="v2-door-swing"></path>
+                            <line x1="412" y1="437.06" x2="380" y2="437.06" class="v2-door-leaf"></line>
+                        </g>
+                        <!-- Popisky -->
+                        <text x="120" y="128" class="v2-num v2-num-s" >885/1</text>
+                        <text x="120" y="142" class="v2-dim" >1,50 × 3,30</text>
+                        <text x="120" y="154" class="v2-area" >4,95 m²</text>
+                        <text x="198" y="96" class="v2-num" >885/6</text>
+                        <text x="198" y="110" class="v2-dim" >2,10 × 2,00 m</text>
+                        <text x="198" y="122" class="v2-area" >4,20 m²</text>
+                        <text x="288" y="96" class="v2-num" >885/8</text>
+                        <text x="288" y="110" class="v2-dim" >2,10 × 2,00 m</text>
+                        <text x="288" y="122" class="v2-area" >4,20 m²</text>
+                        <text x="367" y="96" class="v2-num v2-num-s" >885/9</text>
+                        <text x="367" y="110" class="v2-dim" >1,85 × 2,00</text>
+                        <text x="367" y="122" class="v2-area" >3,70 m²</text>
+                        <text x="440" y="128" class="v2-num v2-num-s" >885/2</text>
+                        <text x="440" y="142" class="v2-dim" >1,50 × 3,30</text>
+                        <text x="440" y="154" class="v2-area" >4,95 m²</text>
+                        <text x="662" y="128" class="v2-num" >885/10</text>
+                        <text x="662" y="142" class="v2-dim" >2,60 × 3,30 m</text>
+                        <text x="662" y="154" class="v2-area" >8,58 m²</text>
+                        <text x="894" y="130" class="v2-num" >885/7</text>
+                        <text x="894" y="144" class="v2-dim" >6,00 × 3,30 m</text>
+                        <text x="894" y="156" class="v2-area" >19,80 m²</text>
+                        <text x="330" y="296" class="v2-num" >885/5</text>
+                        <text x="330" y="310" class="v2-dim" >3,40 × 1,67 m</text>
+                        <text x="330" y="322" class="v2-area" >5,67 m²</text>
+                        <text x="330" y="369" class="v2-num" >885/X</text>
+                        <text x="330" y="383" class="v2-dim" >3,40 × 1,67 m</text>
+                        <text x="330" y="395" class="v2-area" >5,67 m²</text>
+                        <text x="330" y="442" class="v2-num" >885/4</text>
+                        <text x="330" y="456" class="v2-dim" >3,40 × 1,67 m</text>
+                        <text x="330" y="468" class="v2-area" >5,67 m²</text>
+                        <text x="580" y="128" class="v2-num v2-num-s" fill="#2e7d32">A3</text>
+                        <text x="580" y="142" class="v2-dim" fill="#2e7d32">společná</text>
+                        <text x="580" y="154" class="v2-area" fill="#2e7d32">4,95 m²</text>
+                        <text x="744" y="95" class="v2-num v2-num-s" fill="#2e7d32">A6</text>
+                        <text x="744" y="108" class="v2-dim" fill="#2e7d32">společná</text>
+                        <!-- Legenda a měřítko -->
+                        <g pointer-events="none">
+                            <rect x="90" y="500" width="18" height="12" class="v2-unit" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="114" y="510" class="v2-legend" >Soukromá kóje</text>
+                            <rect x="225" y="500" width="18" height="12" class="v2-shared" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="249" y="510" class="v2-legend" >Společný prostor</text>
+                            <rect x="360" y="500" width="18" height="12" class="v2-corridor" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="384" y="510" class="v2-legend" >Chodba / přístup</text>
+                            <rect x="495" y="500" width="18" height="12" class="v2-out" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="519" y="510" class="v2-legend" >Mimo řešení</text>
+                            <rect x="630" y="500" width="18" height="12" class="v2-partition" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="654" y="510" class="v2-legend" >Nová příčka 15 cm</text>
+                            <line x1="765" y1="506" x2="783" y2="506" class="v2-wall-legend"></line>
+                            <text x="789" y="510" class="v2-legend" >Stávající zeď</text>
+                            <path d="M 880 512 L 880 500 A 12 12 0 0 1 892 512 Z" class="v2-door-swing"></path>
+                            <line x1="880" y1="512" x2="880" y2="500" class="v2-door-leaf"></line>
+                            <text x="900" y="510" class="v2-legend" >Dveře 0,80 m</text>
+                            <rect x="90" y="530" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
+                            <text x="90" y="546" class="v2-legend" text-anchor="middle">0</text>
+                            <rect x="130" y="530" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
+                            <text x="130" y="546" class="v2-legend" text-anchor="middle">1</text>
+                            <rect x="170" y="530" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
+                            <text x="170" y="546" class="v2-legend" text-anchor="middle">2</text>
+                            <text x="210" y="546" class="v2-legend" text-anchor="middle">3 m</text>
+                            <text x="1012" y="540" class="v2-legend" text-anchor="end" font-style="italic">Cílový stav dle Návrhu 2 · 10 soukromých kójí · nové příčky 37,3 m · rozměry vnitřní</text>
+                        </g>
+                    </g>
+
                 <!-- VRSTVA KÓTY A ROZMĚRY -->
                 <g id="layer-dimensions" style="display: none;">
                     <line x1="40" y1="80" x2="40" y2="486.4" class="dim-line-outer"></line>
@@ -840,6 +1103,7 @@
             const layerProp2 = document.getElementById('layer-proposal2');
             const layerUsage = document.getElementById('layer-usage');
             const layerVis = document.getElementById('layer-vis');
+            const layerVis2 = document.getElementById('layer-vis2');
             const layerElec = document.getElementById('layer-electric');
             const uploaderBox = document.getElementById('uploader-box');
 
@@ -850,6 +1114,7 @@
             layerProp2.style.display = 'none';
             layerUsage.style.display = 'none';
             layerVis.style.display = 'none';
+            layerVis2.style.display = 'none';
             layerElec.style.display = 'none';
             uploaderBox.style.display = 'none';
 
@@ -888,6 +1153,10 @@
                 layerWork.style.display = 'block';
                 layerVis.style.display = 'block';
                 layerWork.removeAttribute('opacity');
+            } else if (mode === 'visualization2') {
+                // Samostatný čistý půdorys cílového stavu dle Návrhu 2
+                layerVis2.style.display = 'block';
+                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (37,3 m), dveře 0,80 m, rozměry vnitřní');
             } else if (mode === 'electric') {
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';
@@ -940,6 +1209,10 @@
                 badgeClass = 'badge-vis';
                 badgeText = 'Vizualizace kójí';
                 colorHex = '#37474f';
+            } else if (type === 'vis2') {
+                badgeClass = 'badge-vis2';
+                badgeText = 'Vizualizace kójí 2';
+                colorHex = '#1565c0';
             } else if (type === 'elec') {
                 badgeClass = 'badge-elec';
                 badgeText = 'Elektroinstalace IP44';
