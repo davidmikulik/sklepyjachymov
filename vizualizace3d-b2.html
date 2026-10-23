@@ -94,55 +94,18 @@
             ctx.globalAlpha = 1;
         }
 
-        // Stará omítka s odprýsknutým spodním pásem a viditelnými cihlami
-        function wallTexture(lenM, seed, baseH = 1.15) {
-            const PX = 220, w = Math.round(lenM * PX), h = Math.round(H * PX);
+        // Opravená omítka: nová vápenocementová omítka s bílým nátěrem a šedým soklem
+        function wallTexture(lenM, seed) {
+            const PX = 160, w = Math.round(lenM * PX), h = Math.round(H * PX);
             const c = document.createElement('canvas'); c.width = w; c.height = h;
             const ctx = c.getContext('2d'); const r = rng(seed);
-            // zdivo: cihly a kamení
-            ctx.fillStyle = '#8c7b6a'; ctx.fillRect(0, 0, w, h);
-            const bw = 0.29 * PX, bh = 0.075 * PX, jt = 0.012 * PX;
-            for (let row = 0, y = h; y > 0; row++, y -= bh) {
-                for (let x = -(row % 2) * bw / 2; x < w; x += bw) {
-                    const tone = r();
-                    const col = tone < 0.55 ? `hsl(${10 + r() * 14}, ${22 + r() * 18}%, ${40 + r() * 14}%)`
-                        : tone < 0.85 ? `hsl(${25 + r() * 15}, ${15 + r() * 15}%, ${45 + r() * 15}%)`
-                            : `hsl(${30 + r() * 10}, ${8 + r() * 8}%, ${60 + r() * 12}%)`;
-                    ctx.fillStyle = col;
-                    ctx.fillRect(x + jt / 2, y - bh + jt / 2, bw - jt, bh - jt);
-                }
-            }
-            speckle(ctx, w, h, r, 2500, ['#5d4037', '#d7ccc8', '#3e2723'], 3);
-            // omítka nad nepravidelnou hranou
-            const edge = wave(r, 6);
-            const top = x => (baseH + 0.16 * edge(x / PX * 1.3) + 0.04 * edge(x / PX * 5)) * PX;
-            ctx.fillStyle = '#e8e4dc';
-            ctx.beginPath(); ctx.moveTo(0, 0);
-            for (let x = 0; x <= w; x += 4) ctx.lineTo(x, h - top(x));
-            ctx.lineTo(w, 0); ctx.closePath(); ctx.fill();
-            // zbytky omítky ve spodní části
-            for (let i = 0; i < lenM * 5; i++) {
-                const px = r() * w, py = h - r() * baseH * PX * 0.9, rad = (0.05 + r() * 0.18) * PX;
-                ctx.fillStyle = r() < 0.5 ? '#cfc6b8' : '#b9ad9c';
-                ctx.globalAlpha = 0.85;
-                ctx.beginPath();
-                for (let a = 0; a < 6.3; a += 0.4) {
-                    const rr = rad * (0.6 + r() * 0.6);
-                    ctx.lineTo(px + Math.cos(a) * rr, py + Math.sin(a) * rr * 0.7);
-                }
-                ctx.fill();
-            }
-            ctx.globalAlpha = 1;
-            // stín na hraně omítky
-            ctx.strokeStyle = 'rgba(90, 80, 70, 0.35)'; ctx.lineWidth = 3;
-            ctx.beginPath();
-            for (let x = 0; x <= w; x += 4) ctx.lineTo(x, h - top(x));
-            ctx.stroke();
-            // šmouhy a vlhkost
-            speckle(ctx, w, h, r, 900, ['#bdb5a8', '#a19a8f', '#ffffff'], 18);
-            const g = ctx.createLinearGradient(0, h, 0, h - 0.35 * PX);
-            g.addColorStop(0, 'rgba(60, 50, 40, 0.35)'); g.addColorStop(1, 'rgba(60, 50, 40, 0)');
-            ctx.fillStyle = g; ctx.fillRect(0, h - 0.35 * PX, w, 0.35 * PX);
+            ctx.fillStyle = '#efede8'; ctx.fillRect(0, 0, w, h);
+            speckle(ctx, w, h, r, Math.round(lenM * 120), ['#e2dfd8', '#f8f7f3', '#dcd8cf'], 26);
+            speckle(ctx, w, h, r, Math.round(lenM * 1600), ['#d8d4cb', '#ffffff'], 1.4);
+            // sokl 10 cm
+            const sh = 0.10 * PX;
+            ctx.fillStyle = '#8f9295'; ctx.fillRect(0, h - sh, w, sh);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)'; ctx.fillRect(0, h - sh - 1.5, w, 1.5);
             return canvasTex(c);
         }
 
@@ -245,8 +208,8 @@
         // jižní (okna), díváme se na ni od vstupu
         const south = shapeWall(W, WIN.map(o => ({ x0: W - o.cx - o.w / 2, x1: W - o.cx + o.w / 2, y0: o.y0, y1: o.y1 })), wallTexture(W, 3));
         south.position.set(W, 0, D - 0.004); south.rotation.y = Math.PI; south.receiveShadow = true; scene.add(south);
-        // východní (výsep V0) s otvorem v ocelové zárubni
-        const east = shapeWall(D, [{ x0: D - 2.15, x1: D - 1.25, y0: 0, y1: 2.0 }], wallTexture(D, 5));
+        // východní stěna (bez otvoru)
+        const east = shapeWall(D, [], wallTexture(D, 5));
         east.position.set(W - 0.004, 0, 0); east.rotation.y = -Math.PI / 2; east.receiveShadow = true; scene.add(east);
         east.userData.cutaway = true;
         // západní (za kójemi) a severní (vstup z chodby C1)
@@ -262,14 +225,11 @@
         add(box(W + 2 * T, H, T), massMat, W / 2, H / 2, -T / 2).userData.cutaway = true;
         add(box(T, H, D + 2 * T), massMat, -T / 2, H / 2, D / 2);
         // východní zeď s otvorem
-        add(box(T, H, D - 2.15 + T), massMat, W + T / 2, H / 2, (D - 2.15) / 2 - T / 2).userData.cutaway = true;
-        add(box(T, H, 1.25 + T), massMat, W + T / 2, H / 2, D - 1.25 / 2 + T / 2).userData.cutaway = true;
-        add(box(T, H - 2.0, 0.9), massMat, W + T / 2, 2.0 + (H - 2.0) / 2, D - 1.7).userData.cutaway = true;
+        add(box(T, H, D + 2 * T), massMat, W + T / 2, H / 2, D / 2).userData.cutaway = true;
         // jižní zeď s okenními otvory
         const sx = [0, ...WIN.slice().sort((a, b) => a.cx - b.cx).flatMap(o => [o.cx - o.w / 2, o.cx + o.w / 2]), W];
         for (let i = 0; i < sx.length; i += 2) add(box(sx[i + 1] - sx[i] + (i === 0 || i === sx.length - 2 ? T : 0), H, T), massMat, (sx[i] + sx[i + 1]) / 2 + (i === 0 ? -T / 2 : i === sx.length - 2 ? T / 2 : 0), H / 2, D + T / 2);
-        const revealTex = wallTexture(0.6, 21, 3.0); revealTex.repeat.set(1, 1);
-        const revealMat = std({ map: revealTex, bumpMap: revealTex, bumpScale: 0.5 });
+        const revealMat = std({ color: '#ece9e3' });
         WIN.forEach(o => {
             add(box(o.w, o.y0, T), massMat, o.cx, o.y0 / 2, D + T / 2);
             add(box(o.w, H - o.y1, T), massMat, o.cx, o.y1 + (H - o.y1) / 2, D + T / 2);
@@ -391,10 +351,12 @@
         });
         const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, 4.45, H - 0.05, 0.35); pir.rotation.x = Math.PI; pir.userData.cutaway = true;
 
-        // Ocelová zárubeň do výsepu V0 na východní stěně
-        [add(box(0.05, 2.05, 0.05), frameMat, W - 0.03, 1.02, D - 2.15),
-         add(box(0.05, 2.05, 0.05), frameMat, W - 0.03, 1.02, D - 1.25),
-         add(box(0.05, 0.05, 0.95), frameMat, W - 0.03, 2.03, D - 1.7)].forEach(m => { m.userData.cutaway = true; });
+        // Přívod vody na východní stěně: svislé potrubí zakryté plechovým krytem, vodorovně pod stropem
+        const coverMat = std({ color: '#d9dcdc', metalness: 0.3, roughness: 0.5 });
+        const waterCover = add(box(0.12, H - 0.25, 0.2), coverMat, W - 0.06, (H - 0.25) / 2, 3.2);
+        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, 3.2, 14), pvc, W - 0.07, H - 0.18, 1.6);
+        waterPipe.rotation.x = Math.PI / 2;
+        waterCover.userData.cutaway = waterPipe.userData.cutaway = true;
 
         // ---------- Osvětlení ----------
         scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
