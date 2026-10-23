@@ -64,6 +64,12 @@
             border-color: #0288d1 !important;
         }
 
+        .btn-layer-proposal2.active {
+            background-color: #00897b !important;
+            color: white !important;
+            border-color: #00897b !important;
+        }
+
         .btn-layer-usage.active {
             background-color: #7b1fa2 !important;
             color: white !important;
@@ -215,6 +221,7 @@
         .badge-official { background-color: #d84315; }
         .badge-working { background-color: #1565c0; }
         .badge-proposal { background-color: #0288d1; }
+        .badge-proposal2 { background-color: #00897b; }
         .badge-usage { background-color: #7b1fa2; }
         .badge-vis { background-color: #37474f; }
         .badge-elec { background-color: #f57c00; }
@@ -272,6 +279,7 @@
         <button class="btn-layer" onclick="setLayerMode('both')">🔗 Fyzický + Oficiální</button>
         <button class="btn-layer btn-layer-usage" onclick="setLayerMode('usage')">👤 Aktuální využití</button>
         <button class="btn-layer btn-layer-proposal" onclick="setLayerMode('proposal')">🎯 Návrh cílového stavu </button>
+        <button class="btn-layer btn-layer-proposal2" onclick="setLayerMode('proposal2')">🎯 Návrh cílového stavu 2</button>
         <button class="btn-layer btn-layer-elec" onclick="setLayerMode('electric')">⚡ Elektroinstalace (Cílový stav)</button>
         <button class="btn-layer btn-layer-vis" onclick="setLayerMode('visualization')">🎨 Vizualizace kójí</button>
         <button class="btn-layer btn-layer-doc" onclick="setLayerMode('doc')">📜 Prohlášení vlastníka</button>
@@ -423,6 +431,28 @@
                     <text x="340" y="440" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 3,1 m)</text>
 
                     <rect x="276" y="274.4" width="136" height="88" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '1,70 x 2,20 m (3,74 m²)', 'Nová kóje vedle 885/4 v místnosti B2, dveře v pravé stěně')"></rect>
+                    <text x="340" y="318" class="label-title" fill="#0d47a1">885/5</text>
+                    <text x="340" y="334" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 2,2 m)</text>
+                </g>
+
+                <!-- VRSTVA 4b: NÁVRH CÍLOVÉHO STAVU 2 (výchozí kopie vrstvy 4, bude dále upravována) -->
+                <g id="layer-proposal2" style="display: none;">
+                    <rect x="550" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal2', 'A3', 'Společný sklep A3', '1,50 x 3,30 m (4,95 m²)', 'Společný prostor v cílovém stavu')"></rect>
+                    <text x="580" y="136" class="label-title" fill="#0d47a1">A3</text>
+                    <text x="580" y="156" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+
+                    <rect x="714" y="80" width="60" height="60" class="proposed-unit" onclick="selectItem('proposal2', 'A6', 'Společná část A6', '2,00 x 1,50 m (3,00 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
+                    <text x="744" y="110" class="label-title" fill="#0d47a1">A6</text>
+                    <text x="744" y="126" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+
+                    <rect x="714" y="140" width="60" height="72" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
+                    <text x="744" y="180" class="label-sub" fill="#455a64" font-size="10px">CHODBA (1,5 m)</text>
+
+                    <rect x="276" y="362.4" width="136" height="124" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '1,70 x 3,10 m (5,27 m²)', 'Nová kóje v levé části B2, příčky tvárnice/kov, dveře v pravé stěně')"></rect>
+                    <text x="340" y="424" class="label-title" fill="#0d47a1">885/4</text>
+                    <text x="340" y="440" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 3,1 m)</text>
+
+                    <rect x="276" y="274.4" width="136" height="88" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '1,70 x 2,20 m (3,74 m²)', 'Nová kóje vedle 885/4 v místnosti B2, dveře v pravé stěně')"></rect>
                     <text x="340" y="318" class="label-title" fill="#0d47a1">885/5</text>
                     <text x="340" y="334" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 2,2 m)</text>
                 </g>
@@ -681,6 +711,7 @@
             const layerWork = document.getElementById('layer-working');
             const layerOff = document.getElementById('layer-official');
             const layerProp = document.getElementById('layer-proposal');
+            const layerProp2 = document.getElementById('layer-proposal2');
             const layerUsage = document.getElementById('layer-usage');
             const layerVis = document.getElementById('layer-vis');
             const layerElec = document.getElementById('layer-electric');
@@ -690,6 +721,7 @@
             layerWork.style.display = 'none';
             layerOff.style.display = 'none';
             layerProp.style.display = 'none';
+            layerProp2.style.display = 'none';
             layerUsage.style.display = 'none';
             layerVis.style.display = 'none';
             layerElec.style.display = 'none';
@@ -715,6 +747,13 @@
                 layerProp.style.display = 'block';
                 layerWork.removeAttribute('opacity');
                 selectItem('proposal', 'Cílový stav', 'Fyzický + Oficiální stav + Kóje 885/4, 885/5', 'Kompletní plán', 'Sloučený pohled pro realizaci');
+            } else if (mode === 'proposal2') {
+                // Fyzický + Oficiální + Návrh cílového stavu 2
+                layerWork.style.display = 'block';
+                layerOff.style.display = 'block';
+                layerProp2.style.display = 'block';
+                layerWork.removeAttribute('opacity');
+                selectItem('proposal2', 'Cílový stav 2', 'Fyzický + Oficiální stav + Návrh 2', 'Kompletní plán', 'Alternativní návrh vycházející z Návrhu cílového stavu');
             } else if (mode === 'usage') {
                 layerWork.style.display = 'block';
                 layerUsage.style.display = 'block';
@@ -763,6 +802,10 @@
                 badgeClass = 'badge-proposal';
                 badgeText = 'Návrh cílového stavu';
                 colorHex = '#0288d1';
+            } else if (type === 'proposal2') {
+                badgeClass = 'badge-proposal2';
+                badgeText = 'Návrh cílového stavu 2';
+                colorHex = '#00897b';
             } else if (type === 'usage') {
                 badgeClass = 'badge-usage';
                 badgeText = 'Aktuální uživatel';
