@@ -32,7 +32,7 @@
     <div class="panel">
         <h1>Místnosti A1 a A2 – cílový stav</h1>
         <p><b>A1:</b> 885/1 (1,50 × 3,30 m), 885/6 a 885/8 (2,10 × 2,00 m). <b>A2:</b> 885/9 (1,85 × 2,00 m), 885/2 (1,50 × 3,30 m).</p>
-        <p>Jediný vstup z chodby C1 před 885/9, do A1 průchodem bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
+        <p>Přístup z chodby C1 otevřený v celé šířce 885/9 (1,85 m), do A1 průchodem bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
         <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2. Rozměry dle půdorysu, výška stropu 2,80 m, stěny s opravenou omítkou. Okna a rozvody v A1 a A2 nejsou zakresleny (nemám podklad). Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Pohled od vstupu</button>
@@ -214,7 +214,7 @@
         wall(-T, 0, 0, C1Z + C1D, 'plaster');                                          // západní obvodová
         wall(A1W, 0, OX, DEP, 'plaster', [{ a: 2.325, b: 3.125, h: 2.0 }]);            // A1 | A2 – průchod v místě současných dveří
         wall(0, DEP, OX, C1Z, 'plaster');                                              // A1 | C1 – plná zeď
-        wall(OX, DEP, OX + 1.85, C1Z, 'plaster', [{ a: OX + 0.425, b: OX + 1.425, h: 2.0 }]); // A2 | C1 – jediný vstup před 885/9
+        // A2 | C1: v šířce 885/9 (1,85 m) zcela otevřeno do chodby, bez stěny
         wall(OX + A2W, 0, OX + A2W + PT, C1Z, 'plaster');                              // A2 | schodiště
         wall(0, C1Z + C1D, XEND, C1Z + C1D + PT, 'plaster', [], { cut: true });        // jižní stěna chodby C1
         wall(XEND, C1Z, XEND + PT, C1Z + C1D, 'plaster', [], { cut: true });
