@@ -34,10 +34,11 @@
         <p><b>A1:</b> 885/1 (1,20 × 3,45 m), 885/6 a 885/8 (2,25 × 1,85 m) – všechny kolem 4,15 m². <b>A2:</b> 885/9 (2,20 × 1,85 m), 885/2 (1,15 × 3,65 m).</p>
         <p>Dřevěná příčka před A2 vybourána, přístup z chodby C1 otevřený v celé šířce 885/9 (2,20 m); do A1 průchodem 1,00 m bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m, nad dveřmi větrací mřížka 600 × 150 mm.</p>
         <p>Elektro podle Elektroinstalace 2: v každé kóji zásuvka 230 V (B16, vlastní elektroměr) a svítidlo LED, společné osvětlení přístupů a chodby s čidlem pohybu, kabelové lišty pod stropem z RS v A3.</p>
-        <p class="note">Vizualizace podle Návrhu cílového stavu 2 a přesného zaměření: A1 6,00 × 3,449 m, A2 3,50 × 3,80 m, chodba C1 1,55 m, světlá výška 2,60 m, okna 1,13 × 0,50 m s parapetem ve 2,00 m. Myší lze pohled otáčet a přibližovat.</p>
+        <p class="note">Vizualizace podle Návrhu cílového stavu 2 a přesného zaměření: A1 6,00 × 3,449 m, A2 3,50 × 3,80 m, chodba C1 1,55 m, světlá výška 2,60 m, okna 1,13 × 0,50 m s parapetem ve 2,00 m. Chodba C1 se vstupy do B1 a B2, oknem na západním konci a schodištěm S1. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Pohled od vstupu</button>
             <button data-view="a1">Přístup v A1</button>
+            <button data-view="c1">Chodba C1</button>
             <button data-view="cutaway">Řez shora</button>
             <a href="/">← Zpět na plánek</a>
         </div>
@@ -61,6 +62,7 @@
         const XEND = OX + A2W + 0.62 + 1.4;            // kus chodby za A2 (u schodiště)
         const WIN_SILL = 2.0, WIN_TOP = 2.5;           // okna 1,13 × 0,50 m, parapet 2,00 m
         const WINDOWS = [[0.60, 1.73], [3.67, 4.80], [OX + 0.38, OX + 1.51]];
+        const C1W = [4.01, 5.14];                      // okno na západním konci chodby C1
         const DOOR_W = 0.80, DOOR_H = 1.97;
 
         const params = new URLSearchParams(location.search);
@@ -214,13 +216,40 @@
         // ---------- Stávající stěny (omítka) ----------
         const T = 0.45;
         wall(-T, -T, XEND, 0, 'plaster', WINDOWS.map(([a, b]) => ({ a, b, y0: WIN_SILL, h: WIN_TOP })), { cut: false }); // severní obvodová s okny
-        wall(-T, 0, 0, C1Z + C1D, 'plaster');                                          // západní obvodová
+        wall(-T, 0, 0, C1Z + C1D, 'plaster', [{ a: C1W[0], b: C1W[1], y0: WIN_SILL, h: WIN_TOP }]); // západní obvodová, okno na konci C1
         wall(A1W, 0, OX, C1Z, 'plaster', [{ a: 2.0, b: 3.0, h: 2.0 }]);                // A1 | A2 (0,30 m) – průchod 1,00 m v místě současných dveří
         wall(0, D1, A1W, C1Z, 'plaster');                                              // A1 | C1 – nosná zeď 0,35 m
         // A2 | C1: dřevěná příčka vybourána, v šířce 885/9 (1,85 m) zcela otevřeno do chodby
         wall(OX + A2W, 0, OX + A2W + 0.62, C1Z, 'plaster');                            // A2 | schodiště (0,62 m)
-        wall(0, C1Z + C1D, XEND, C1Z + C1D + 0.3, 'plaster', [], { cut: true });       // jižní stěna chodby C1
+        // jižní stěna chodby C1 (0,78 m) se vstupy do B1 (0,90 m) a B2 (1,00 m)
+        wall(0, C1Z + C1D, XEND, C1Z + C1D + 0.78, 'plaster', [{ a: 0.90, b: 1.80, h: DOOR_H }, { a: 8.55, b: 9.55, h: 2.0 }], { cut: true });
+        // schodiště S1 (1,085 × 4,20 m) stoupající od chodby C1 k severu, zeď S1 | A3
+        const SX0 = OX + A2W + 0.62, SX1 = SX0 + 1.085;
+        wall(SX1, -T, XEND, C1Z, 'plaster');
+        const stepMat = std({ color: '#a39d93', roughness: 0.95 });
+        for (let i = 0; i < 15; i++) {
+            const top = (i + 1) * 0.175, z1 = C1Z - i * 0.28;
+            if (top > H + 0.3) break;
+            add(box(SX1 - SX0, top, 0.28), stepMat, (SX0 + SX1) / 2, top / 2, z1 - 0.14);
+        }
+        // madlo na západní stěně schodiště
+        const rail = add(box(0.04, 0.04, 3.4), std({ color: '#6d6a64', metalness: 0.5, roughness: 0.5 }), SX0 + 0.06, 0, C1Z - 1.9);
+        rail.rotation.x = Math.atan(0.175 / 0.28); rail.position.y = 0.9 + 1.9 * 0.175 / 0.28;
         wall(XEND, C1Z, XEND + PT, C1Z + C1D, 'plaster', [], { cut: true });
+        // dveře do B1 (stávající, zavřené) a mřížová vrata do B2
+        add(box(0.88, DOOR_H - 0.02, 0.04), std({ color: '#8a6a4a', roughness: 0.8 }), 1.35, DOOR_H / 2, C1Z + C1D + 0.06, { cut: true });
+        const gate = std({ color: '#3d4247', metalness: 0.6, roughness: 0.5 });
+        add(box(1.0, 2.0, 0.02), std({ color: '#1e2124', roughness: 1 }), 9.05, 1.0, C1Z + C1D + 0.7, { cast: false, cut: true });
+        for (let k = 0; k <= 8; k++) add(box(0.02, 1.96, 0.02), gate, 8.57 + k * 0.12, 0.98, C1Z + C1D + 0.06, { cut: true });
+        [0.05, 0.98, 1.95].forEach(y => add(box(0.98, 0.03, 0.03), gate, 9.05, y, C1Z + C1D + 0.06, { cut: true }));
+        // okno na západním konci C1 (stejné jako v A1, A2)
+        {
+            const w = C1W[1] - C1W[0], cz = (C1W[0] + C1W[1]) / 2, cy = (WIN_SILL + WIN_TOP) / 2;
+            const g = new THREE.Mesh(new THREE.PlaneGeometry(w, WIN_TOP - WIN_SILL), new THREE.MeshStandardMaterial({ color: '#dfe9e2', emissive: '#e8f0ff', emissiveIntensity: 1.4, roughness: 0.4 }));
+            g.position.set(-T + 0.08, cy, cz); g.rotation.y = Math.PI / 2; scene.add(g);
+            const bar = std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 });
+            for (let k = 1; k < 5; k++) add(box(0.012, WIN_TOP - WIN_SILL, 0.012), bar, -T + 0.2, cy, C1W[0] + k * w / 5);
+        }
         // okna: sklo s mříží
         WINDOWS.forEach(([a, b]) => {
             const w = b - a, cx = (a + b) / 2, cy = (WIN_SILL + WIN_TOP) / 2;
@@ -367,6 +396,7 @@
         controls.enableDamping = true;
         const VIEWS = {
             entry: { pos: [OX + 1.45, 1.6, 3.45], target: [OX - 1.5, 1.0, 2.5], fov: 80 },
+            c1: { pos: [XEND - 0.5, 1.6, C1Z + 0.8], target: [0, 1.2, C1Z + 0.8], fov: 70 },
             a1: { pos: [A1W - 0.2, 1.6, 2.9], target: [1.0, 1.0, 2.6], fov: 75 },
             cutaway: { pos: [XEND / 2 + 3.0, 12.5, C1Z + 6.5], target: [XEND / 2 - 0.6, 0, 1.7], fov: 44 }
         };
