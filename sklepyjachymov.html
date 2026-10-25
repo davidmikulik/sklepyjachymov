@@ -443,7 +443,7 @@
                     <text x="412" y="150" class="label-title">A2 (3,50 × 3,50 m)</text>
                     <rect x="506.8" y="64" width="43.4" height="168" class="stairs-work" onclick="selectItem('working', 'S1', 'Vstupní schodiště', '1,085 x 4,20 m', 'Schody')"></rect>
                     <text x="528.5" y="148" class="label-title" fill="#e65100" transform="rotate(-90 528.5 148)">SCHODY 1,085 × 4,20</text>
-                    <rect x="563.4" y="80" width="60" height="148" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,70 m (5,55 m²)', 'Vstup uprostřed, zárubeň 0,60 m')"></rect>
+                    <rect x="563.4" y="80" width="60" height="148" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,70 m (5,55 m²)', 'Stěna do chodby C1 ze sádrokartonu se zárubní 0,60 m (bude nahrazena zděnou příčkou)')"></rect>
                     <text x="593.4" y="146" class="label-title">A3</text>
                     <text x="593.4" y="164" class="label-sub">1,50 × 3,70</text>
                     <rect x="655.4" y="80" width="104" height="152" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,80 m (9,88 m²)', 'Dřevěná kóje: jižní a východní stěna dřevěné (budou nahrazeny příčkami), vstup 0,90 m u boční chodby, bez okna')"></rect>
@@ -549,6 +549,7 @@
                     <rect x="90" y="80" width="240" height="137.96" fill="#f5f5f5" stroke="none"></rect>
                     <rect x="342" y="80" width="140" height="152" fill="#f5f5f5" stroke="none"></rect>
                     <rect x="655.4" y="80" width="118.4" height="152" fill="#f5f5f5" stroke="none"></rect>
+                    <rect x="563.4" y="80" width="60" height="152" fill="#f5f5f5" stroke="none"></rect>
                     <rect x="90" y="80" width="48" height="137.96" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/1', 'Sklepní kóje – cílový stav', '1,20 x 3,45 m (4,14 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                     <text x="114" y="142.98" class="label-title" fill="#0d47a1" style="font-size:11px;">885/1</text>
                     <text x="114" y="156.18" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,20 × 3,45</text>
@@ -579,9 +580,9 @@
                     <rect x="288" y="473.84" width="136" height="68.32" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                     <text x="344" y="490.64" class="label-title" fill="#0d47a1" style="font-size:11px;">885/4</text>
                     <text x="344" y="503.84" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">3,40 × 1,71</text>
-                    <rect x="563.4" y="80" width="60" height="148" class="proposed-unit" onclick="selectItem('proposal2', 'A3', 'Společný prostor', '1,50 x 3,70 m (5,55 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                    <text x="593.4" y="148" class="label-title" fill="#0d47a1" style="font-size:11px;">A3</text>
-                    <text x="593.4" y="161.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 3,70</text>
+                    <rect x="563.4" y="80" width="60" height="146" class="proposed-unit" onclick="selectItem('proposal2', 'A3', 'Společný prostor', '1,50 x 3,65 m (5,47 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="593.4" y="147" class="label-title" fill="#0d47a1" style="font-size:11px;">A3</text>
+                    <text x="593.4" y="160.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 3,65</text>
                     <rect x="773.8" y="80" width="60" height="78" class="proposed-unit" onclick="selectItem('proposal2', 'A6', 'Společný prostor', '1,50 x 1,95 m (2,92 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                     <text x="803.8" y="96.8" class="label-title" fill="#0d47a1" style="font-size:11px;">A6</text>
                     <text x="803.8" y="110" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 1,95</text>
@@ -602,6 +603,7 @@
                     <rect x="773.8" y="158" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
                     <rect x="655.4" y="226" width="118.4" height="6" fill="#546e7a" pointer-events="none"></rect>
                     <rect x="767.8" y="80" width="6" height="146" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="563.4" y="226" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
                     <!-- Dveře 0,80 m, otevírání dovnitř -->
                     <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/1', 'Vstupní dveře 885/1', 'Šířka 0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1, závěs na jižní straně')">
                         <rect x="138" y="172.8" width="6" height="32" class="door-gap"></rect>
@@ -648,10 +650,10 @@
                         <path d="M 787.8 158 L 787.8 126 A 32 32 0 0 1 819.8 158 Z" class="door-swing"></path>
                         <line x1="787.8" y1="158" x2="787.8" y2="126" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A3', 'Vstupní dveře A3', 'Šířka 0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, otvor rozšířen z 0,60 na 0,80 m')">
-                        <rect x="577.4" y="228" width="32" height="4" class="door-gap"></rect>
-                        <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="door-swing"></path>
-                        <line x1="577.4" y1="228" x2="577.4" y2="196" class="door-leaf"></line>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A3', 'Vstupní dveře A3', 'Šířka 0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo sádrokartonové stěny), nová zárubeň')">
+                        <rect x="577.4" y="226" width="32" height="6" class="door-gap"></rect>
+                        <path d="M 577.4 226 L 577.4 194 A 32 32 0 0 1 609.4 226 Z" class="door-swing"></path>
+                        <line x1="577.4" y1="226" x2="577.4" y2="194" class="door-leaf"></line>
                     </g>
                     <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře 885/10', 'Šířka 0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo dřevěné stěny), v místě stávajícího vstupu')">
                         <rect x="731.8" y="226" width="32" height="6" class="door-gap"></rect>
@@ -869,7 +871,7 @@
                         <rect x="288" y="325.2" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/5', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                         <rect x="288" y="399.52" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/X', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                         <rect x="288" y="473.84" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="563.4" y="80" width="60" height="148" class="v2-shared" onclick="selectItem('vis2', 'A3', 'Společný prostor', '1,50 x 3,70 m (5,55 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="563.4" y="80" width="60" height="146" class="v2-shared" onclick="selectItem('vis2', 'A3', 'Společný prostor', '1,50 x 3,65 m (5,47 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                         <rect x="773.8" y="80" width="60" height="78" class="v2-shared" onclick="selectItem('vis2', 'A6', 'Společný prostor', '1,50 x 1,95 m (2,92 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
                         <rect x="330" y="160" width="12" height="40" class="v2-opening"><title>Průchod A1/A2: šířka 1,00 m, 2,00 m od severní zdi</title></rect>
                         <rect x="432" y="294" width="40" height="31.2" class="v2-opening"><title>Vstup do B2: 1,00 m, 3,60 m od rohu u B1</title></rect>
@@ -898,6 +900,7 @@
                             <rect x="773.8" y="158" width="60" height="6" class="v2-partition"></rect>
                             <rect x="655.4" y="226" width="118.4" height="6" class="v2-partition"></rect>
                             <rect x="767.8" y="80" width="6" height="146" class="v2-partition"></rect>
+                            <rect x="563.4" y="226" width="60" height="6" class="v2-partition"></rect>
                         </g>
                         <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/1', 'Vstupní dveře 885/1', '0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1, závěs na jižní straně')">
                             <rect x="138" y="172.8" width="6" height="32" class="v2-door-gap"></rect>
@@ -944,10 +947,10 @@
                             <path d="M 787.8 158 L 787.8 126 A 32 32 0 0 1 819.8 158 Z" class="v2-door-swing"></path>
                             <line x1="787.8" y1="158" x2="787.8" y2="126" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A3', 'Vstupní dveře A3', '0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, otvor rozšířen z 0,60 na 0,80 m')">
-                            <rect x="577.4" y="228" width="32" height="4" class="v2-door-gap"></rect>
-                            <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="v2-door-swing"></path>
-                            <line x1="577.4" y1="228" x2="577.4" y2="196" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A3', 'Vstupní dveře A3', '0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo sádrokartonové stěny), nová zárubeň')">
+                            <rect x="577.4" y="226" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 577.4 226 L 577.4 194 A 32 32 0 0 1 609.4 226 Z" class="v2-door-swing"></path>
+                            <line x1="577.4" y1="226" x2="577.4" y2="194" class="v2-door-leaf"></line>
                         </g>
                         <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo dřevěné stěny), v místě stávajícího vstupu')">
                             <rect x="731.8" y="226" width="32" height="6" class="v2-door-gap"></rect>
@@ -968,6 +971,7 @@
                         <rect x="424" y="421.68" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/X', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
                         <rect x="424" y="496" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/4', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
                         <rect x="791.8" y="158" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání A6', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="581.4" y="226" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání A3', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
                         <rect x="735.8" y="226" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/10', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
                         <text x="114" y="132" class="v2-num v2-num-s">885/1</text>
                         <text x="114" y="144.8" class="v2-dim">1,20 × 3,45</text>
@@ -1000,8 +1004,8 @@
                         <text x="344" y="503.44" class="v2-dim">3,40 × 1,71</text>
                         <text x="344" y="514.64" class="v2-area">5,81 m²</text>
                         <text x="593.4" y="132" class="v2-num v2-num-s"  fill="#2e7d32">A3</text>
-                        <text x="593.4" y="144.8" class="v2-dim"  fill="#2e7d32">1,50 × 3,70</text>
-                        <text x="593.4" y="156" class="v2-area"  fill="#2e7d32">5,55 m²</text>
+                        <text x="593.4" y="144.8" class="v2-dim"  fill="#2e7d32">1,50 × 3,65</text>
+                        <text x="593.4" y="156" class="v2-area"  fill="#2e7d32">5,47 m²</text>
                         <text x="803.8" y="96.8" class="v2-num v2-num-s"  fill="#2e7d32">A6</text>
                         <text x="803.8" y="109.6" class="v2-dim"  fill="#2e7d32">1,50 × 1,95</text>
                         <text x="803.8" y="120.8" class="v2-area"  fill="#2e7d32">2,92 m²</text>
@@ -1040,7 +1044,7 @@
                             <rect x="170" y="628" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
                             <rect x="210" y="628" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
                             <text x="90" y="644" class="v2-legend">0</text><text x="250" y="644" class="v2-legend">4 m</text>
-                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 37,4 m · rozměry vnitřní</text>
+                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 38,9 m · rozměry vnitřní</text>
                         </g>
                     </g>
 
@@ -1522,7 +1526,7 @@
             } else if (mode === 'visualization2') {
                 // Samostatný čistý půdorys cílového stavu dle Návrhu 2
                 layerVis2.style.display = 'block';
-                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (37,4 m), dveře 0,80 m, rozměry vnitřní');
+                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (38,9 m), dveře 0,80 m, rozměry vnitřní');
             } else if (mode === 'electric2') {
                 // Elektroinstalace 2 nad vizualizací cílového stavu 2
                 layerVis2.style.display = 'block';
