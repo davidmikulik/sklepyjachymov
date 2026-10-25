@@ -213,6 +213,7 @@
         .v2-mass { fill: #8a9399; }
         .v2-win { fill: #e1f5fe; stroke: #4fc3f7; stroke-width: 1; cursor: pointer; }
         .v2-hatch { fill: #78909c; stroke: #37474f; stroke-width: 1; cursor: pointer; }
+        .v2-vent { fill: #e3f2fd; stroke: #1565c0; stroke-width: 1; stroke-dasharray: 3 2; cursor: pointer; }
         .dim-text-small { font-size: 8.5px; }
         .btn-layer-photo.active { background: #6a1b9a; color: #fff; border-color: #6a1b9a; }
         .photo-pin { cursor: pointer; }
@@ -483,13 +484,15 @@
                     <rect x="581.4" y="228" width="24" height="4" class="opening"><title>Dveře A3: stávající zárubeň 0,60 m</title></rect>
                     <rect x="719.4" y="232" width="36" height="4" class="opening"><title>Vstup A4: stávající 0,90 m, bude předělán</title></rect>
                     <rect x="450" y="220" width="32" height="12" class="opening"><title>Dveře v dřevěné příčce: 0,80 m u pravého okraje</title></rect>
-                    <rect x="114" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                    <rect x="236.8" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                    <rect x="357.2" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                    <rect x="863.4" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                    <rect x="789" y="64" width="44.8" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                    <rect x="324.8" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď')"></rect>
-                    <rect x="429" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď')"></rect>
+                    <rect x="114" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="236.8" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="357.2" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="863.4" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="789" y="64" width="44.8" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="324.8" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď · výměna v další etapě')"></rect>
+                    <rect x="429" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď · výměna v další etapě')"></rect>
+                    <rect x="74" y="240.4" width="16" height="45.2" class="win" onclick="selectItem('working', 'Okno C1', 'Okno na konci chodby C1', '1,13 x 0,50 m', 'Západní konec chodby C1 · parapet 2,00 m · výměna v další etapě')"></rect>
+                    <rect x="1088.2" y="240.4" width="16" height="45.2" class="win" onclick="selectItem('working', 'Okno C1', 'Okno na konci chodby C1', '1,13 x 0,50 m', 'Východní konec chodby (za B6) – poloha k ověření · parapet 2,00 m · výměna v další etapě')"></rect>
                 </g>
 
                 <!-- VRSTVA 2: OFICIÁLNÍ STAV -->
@@ -871,13 +874,15 @@
                         <rect x="330" y="160" width="12" height="40" class="v2-opening"><title>Průchod A1/A2: šířka 1,00 m, 2,00 m od severní zdi</title></rect>
                         <rect x="432" y="294" width="40" height="31.2" class="v2-opening"><title>Vstup do B2: 1,00 m, 3,60 m od rohu u B1</title></rect>
                         <rect x="126" y="294" width="36" height="31.2" class="v2-opening"><title>Vstup do B1: 0,90 m, 0,90 m od začátku chodby C1</title></rect>
-                        <rect x="114" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                        <rect x="236.8" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                        <rect x="357.2" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                        <rect x="863.4" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                        <rect x="789" y="64" width="44.8" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
-                        <rect x="324.8" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď')"></rect>
-                        <rect x="429" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď')"></rect>
+                        <rect x="114" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="236.8" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="357.2" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="863.4" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="789" y="64" width="44.8" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="324.8" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď · výměna v další etapě')"></rect>
+                        <rect x="429" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď · výměna v další etapě')"></rect>
+                        <rect x="74" y="240.4" width="16" height="45.2" class="v2-win" onclick="selectItem('working', 'Okno C1', 'Okno na konci chodby C1', '1,13 x 0,50 m', 'Západní konec chodby C1 · parapet 2,00 m · výměna v další etapě')"></rect>
+                        <rect x="1088.2" y="240.4" width="16" height="45.2" class="v2-win" onclick="selectItem('working', 'Okno C1', 'Okno na konci chodby C1', '1,13 x 0,50 m', 'Východní konec chodby (za B6) – poloha k ověření · parapet 2,00 m · výměna v další etapě')"></rect>
                         <rect x="437.8" y="490.16" width="32" height="32" class="v2-hatch" onclick="selectItem('vis2', 'Poklop', 'Poklop k přívodu vody', '0,80 x 0,80 m', '0,50 m od venkovní zdi a 0,80 m od zdi k výsepu')"></rect>
                         <rect x="497" y="494.16" width="4.8" height="8" class="v2-hatch" onclick="selectItem('vis2', 'Kryt vody', 'Kryt přívodu vody', '0,20 x 0,12 m', 'Na stěně k výsepu, 1,00 m od rohu u venkovní zdi')"></rect>
                         <g filter="url(#v2-shadow)" pointer-events="none">
@@ -954,6 +959,16 @@
                             <path d="M 848.2 166 L 882.2 166 A 34 34 0 0 1 848.2 200 Z" class="v2-door-swing"></path>
                             <line x1="848.2" y1="166" x2="882.2" y2="166" class="v2-door-leaf"></line>
                         </g>
+                        <rect x="138" y="176.8" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/1', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="177" y="154" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/6', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="273" y="154" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/8', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="374" y="154" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/9', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="430" y="184" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/2', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="424" y="347.36" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/5', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="424" y="421.68" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/X', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="424" y="496" width="6" height="24" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/4', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="791.8" y="158" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání A6', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
+                        <rect x="735.8" y="226" width="24" height="6" class="v2-vent" onclick="selectItem('vis2', 'Větrání 885/10', 'Větrací otvor nad dveřmi', '600 x 150 mm, výška 2,30–2,45 m', 'Průchozí otvor v příčce s mřížkou z obou stran (proti hmyzu), zajišťuje provětrání kóje')"></rect>
                         <text x="114" y="132" class="v2-num v2-num-s">885/1</text>
                         <text x="114" y="144.8" class="v2-dim">1,20 × 3,45</text>
                         <text x="114" y="156" class="v2-area">4,14 m²</text>

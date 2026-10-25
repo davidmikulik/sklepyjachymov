@@ -31,7 +31,7 @@
     <div id="view"></div>
     <div class="panel">
         <h1>Místnost B2 – cílový stav</h1>
-        <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,71 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2 (šířka 1,795 m).</p>
+        <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,71 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2, nad dveřmi větrací mřížka 600 × 150 mm (šířka 1,795 m).</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu 2, fotografie a přesného zaměření: B2 5,345 × 5,424 m, světlá výška 2,60 m, okna 1,16 × 1,40 a 1,16 × 1,20 m, vstup 1,00 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="photo" class="active">Pohled od vstupu</button>
@@ -305,9 +305,25 @@
         const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
         const leafMat = std({ color: '#5f7080', metalness: 0.35, roughness: 0.5 });
         const handleMat = std({ color: '#cfd8dc', metalness: 0.9, roughness: 0.25 });
+        // Větrací mřížka 600 × 150 mm nad dveřmi kóje (otvor 2,30–2,45 m, mřížka z obou stran příčky)
+        const ventMat = (() => {
+            const c = document.createElement('canvas'); c.width = 240; c.height = 60;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#e8e8e6'; ctx.fillRect(0, 0, 240, 60);
+            ctx.fillStyle = '#3a3f44'; ctx.fillRect(10, 8, 220, 44);
+            ctx.fillStyle = '#c9ccce';
+            for (let y = 12; y < 50; y += 7) ctx.fillRect(12, y, 216, 3);
+            return std({ map: canvasTex(c), roughness: 0.6 });
+        })();
+        const VENT_Y = 2.375;
+        function vent(axis, along, f1, f2) {
+            [f1, f2].forEach(f => add(axis === 'x' ? box(0.60, 0.15, 0.012) : box(0.012, 0.15, 0.60), ventMat,
+                axis === 'x' ? along : f, VENT_Y, axis === 'x' ? f : along, { cast: false }));
+        }
         const doorOpen = { '885/X': -0.5 };
         KOJE.forEach((name, i) => {
             const zc = doorZ(i), xf = KX + PT + 0.005;
+            vent('z', zc, KX + PT + 0.006, KX - 0.006);
             add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, xf, (DOOR_H + 0.04) / 2, zc - DOOR_W / 2 - 0.012);
             add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, xf, (DOOR_H + 0.04) / 2, zc + DOOR_W / 2 + 0.012);
             add(box(0.03, 0.035, DOOR_W + 0.06), frameMat, xf, DOOR_H + 0.018, zc);
