@@ -53,7 +53,7 @@
         // Rozměry v metrech: x = od západní stěny (kóje), z = od chodby C1 k oknům, y = výška
         const W = 5.345, D = 5.424, H = 2.6;
         const KX = 3.40, PT = 0.15;               // šířka kójí a tloušťka příčky
-        const KD = (D - 2 * PT) / 3;              // hloubka kóje 1,667 m
+        const KD = (D - 2 * PT) / 3;              // hloubka kóje 1,708 m
         const KOJE = ['885/5', '885/X', '885/4'];
 
         const params = new URLSearchParams(location.search);
@@ -222,7 +222,14 @@
         // Masivní obvodové zdi (tloušťka) – vrhají stíny, okna v nich mají hluboká ostění
         const massMat = std({ color: '#6d6258' });
         const T = 0.55;
-        add(box(W + 2 * T, H, T), massMat, W / 2, H / 2, -T / 2).userData.cutaway = true;
+        // severní zeď k chodbě C1 (0,78 m) se vstupem 1,00 m, 3,60–4,60 m od rohu u B1
+        const TN = 0.78;
+        [[-T, 3.60, 0, H], [4.60, W + T, 0, H], [3.60, 4.60, 2.0, H]].forEach(([a, b, y0, y1]) => {
+            add(box(b - a, y1 - y0, TN), massMat, (a + b) / 2, (y0 + y1) / 2, -TN / 2).userData.cutaway = true;
+        });
+        const jamb = std({ color: '#ece9e3' });
+        [3.60, 4.60].forEach(x => add(box(0.02, 2.0, TN), jamb, x + (x < 4 ? 0.01 : -0.01), 1.0, -TN / 2).userData.cutaway = true);
+        add(box(1.0, 0.02, TN), jamb, 4.10, 1.99, -TN / 2).userData.cutaway = true;
         add(box(T, H, D + 2 * T), massMat, -T / 2, H / 2, D / 2);
         // východní zeď s otvorem
         add(box(T, H, D + 2 * T), massMat, W + T / 2, H / 2, D / 2).userData.cutaway = true;
