@@ -1372,6 +1372,16 @@
                         <circle cx="426" cy="194" r="8.5" class="photo-dot"></circle>
                         <text x="426" y="197.2" class="photo-num">14</text>
                     </g>
+                    <g class="photo-pin" onclick="showPhoto(15, 'Pohled do B5, druhý záběr (součást nebytové jednotky 885/12)')">
+                        <path d="M 994 334 L 1008.08 360.49 A 30 30 0 0 1 979.92 360.49 Z" class="photo-cone"></path>
+                        <circle cx="994" cy="334" r="8.5" class="photo-dot"></circle>
+                        <text x="994" y="337.2" class="photo-num">15</text>
+                    </g>
+                    <g class="photo-pin" onclick="showPhoto(16, 'B6 (součást nebytové jednotky 885/12), vpravo dveře')">
+                        <path d="M 860 262 L 886.49 247.92 A 30 30 0 0 1 886.49 276.08 Z" class="photo-cone"></path>
+                        <circle cx="860" cy="262" r="8.5" class="photo-dot"></circle>
+                        <text x="860" y="265.2" class="photo-num">16</text>
+                    </g>
                 </g>
             </svg>
         </div>
@@ -1508,7 +1518,7 @@
                 layerWork.style.display = 'block';
                 layerPhotos.style.display = 'block';
                 layerWork.removeAttribute('opacity');
-                document.getElementById('panel-body').innerHTML = '<p style="color:#555;">Fotodokumentace současného stavu (14 fotek). Klikněte na číslo v plánku – výseč ukazuje směr pohledu.</p>';
+                document.getElementById('panel-body').innerHTML = '<p style="color:#555;">Fotodokumentace současného stavu (16 fotek). Klikněte na číslo v plánku – výseč ukazuje směr pohledu.</p>';
             } else if (mode === 'electric') {
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';
