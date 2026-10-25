@@ -256,14 +256,16 @@
                 axis === 'x' ? along : f, VENT_Y, axis === 'x' ? f : along, { cast: false }));
         }
 
-        function door(name, axis, face, into, a, open = 0, dw = DOOR_W) {
+        // flip = závěs na konci otvoru (a + dw) místo na začátku
+        function door(name, axis, face, into, a, open = 0, dw = DOOR_W, flip = false) {
             const hinge = new THREE.Group();
+            const h = flip ? a + dw - 0.01 : a + 0.01;
             if (axis === 'x') {
-                hinge.position.set(a + 0.01, 0, face + into * 0.03);
-                hinge.rotation.y = -into * open;
+                hinge.position.set(h, 0, face + into * 0.03);
+                hinge.rotation.y = flip ? Math.PI + into * open : -into * open;
             } else {
-                hinge.position.set(face + into * 0.03, 0, a + 0.01);
-                hinge.rotation.y = -Math.PI / 2 + into * open;
+                hinge.position.set(face + into * 0.03, 0, h);
+                hinge.rotation.y = flip ? Math.PI / 2 - into * open : -Math.PI / 2 + into * open;
             }
             scene.add(hinge);
             if (name !== '885/7') vent(axis, a + dw / 2, face - into * 0.006, face + into * (PT + 0.006));
@@ -284,9 +286,9 @@
                 add(box(0.03, 0.035, dw + 0.06), frameMat, out, DOOR_H + 0.018, a + dw / 2);
             }
         }
-        door('885/10', 'x', C1Z, -1, 16.045, 0.6);
+        door('885/10', 'x', C1Z, -1, 16.045, 0.6, DOOR_W, true);
         door('A6', 'x', 2.10, -1, 17.445);
-        door('885/7', 'z', SCX1, 1, 2.15, 0, 0.85);
+        door('885/7', 'z', SCX1, 1, 2.15, 0, 0.85, true);
 
         // ---------- Vybavení: regály, svítidla ----------
         const shelfMat = std({ color: '#9aa5ab', metalness: 0.6, roughness: 0.45 });
