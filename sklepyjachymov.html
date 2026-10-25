@@ -437,7 +437,7 @@
                     <rect x="563.4" y="80" width="60" height="148" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,70 m (5,55 m²)', 'Vstup uprostřed, zárubeň 0,60 m')"></rect>
                     <text x="593.4" y="146" class="label-title">A3</text>
                     <text x="593.4" y="164" class="label-sub">1,50 × 3,70</text>
-                    <rect x="655.4" y="80" width="104" height="152" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,80 m (9,88 m²)', 'Vstup 0,90 m na konci u boční chodby, bez okna')"></rect>
+                    <rect x="655.4" y="80" width="104" height="152" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,80 m (9,88 m²)', 'Dřevěná kóje: jižní a východní stěna dřevěné (budou nahrazeny příčkami), vstup 0,90 m u boční chodby, bez okna')"></rect>
                     <text x="707.4" y="148" class="label-title">A4</text>
                     <text x="707.4" y="166" class="label-sub">2,60 × 3,80</text>
                     <rect x="773.8" y="80" width="60" height="152" class="corridor-work" onclick="selectItem('working', 'C2', 'Boční chodba', '1,50 x 3,80 m', 'Prodloužení chodby k A5')"></rect>
@@ -588,6 +588,8 @@
                     <rect x="288" y="467.84" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
                     <rect x="424" y="325.2" width="6" height="216.96" fill="#546e7a" pointer-events="none"></rect>
                     <rect x="773.8" y="158" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="655.4" y="232" width="110" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="759.4" y="80" width="6" height="152" fill="#546e7a" pointer-events="none"></rect>
                     <!-- Dveře 0,80 m, otevírání dovnitř -->
                     <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/1', 'Vstupní dveře 885/1', 'Šířka 0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1, závěs na jižní straně')">
                         <rect x="138" y="172.8" width="6" height="32" class="door-gap"></rect>
@@ -639,8 +641,8 @@
                         <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="door-swing"></path>
                         <line x1="577.4" y1="228" x2="577.4" y2="196" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře 885/10', 'Šířka 0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, v místě stávajícího vstupu')">
-                        <rect x="723.4" y="232" width="32" height="4" class="door-gap"></rect>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře 885/10', 'Šířka 0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo dřevěné stěny), v místě stávajícího vstupu')">
+                        <rect x="723.4" y="232" width="32" height="6" class="door-gap"></rect>
                         <path d="M 723.4 232 L 723.4 200 A 32 32 0 0 1 755.4 232 Z" class="door-swing"></path>
                         <line x1="723.4" y1="232" x2="723.4" y2="200" class="door-leaf"></line>
                     </g>
@@ -880,6 +882,8 @@
                             <rect x="288" y="467.84" width="136" height="6" class="v2-partition"></rect>
                             <rect x="424" y="325.2" width="6" height="216.96" class="v2-partition"></rect>
                             <rect x="773.8" y="158" width="60" height="6" class="v2-partition"></rect>
+                            <rect x="655.4" y="232" width="110" height="6" class="v2-partition"></rect>
+                            <rect x="759.4" y="80" width="6" height="152" class="v2-partition"></rect>
                         </g>
                         <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/1', 'Vstupní dveře 885/1', '0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1, závěs na jižní straně')">
                             <rect x="138" y="172.8" width="6" height="32" class="v2-door-gap"></rect>
@@ -931,8 +935,8 @@
                             <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="v2-door-swing"></path>
                             <line x1="577.4" y1="228" x2="577.4" y2="196" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, v místě stávajícího vstupu')">
-                            <rect x="723.4" y="232" width="32" height="4" class="v2-door-gap"></rect>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 'v nové příčce z chodby C1 (místo dřevěné stěny), v místě stávajícího vstupu')">
+                            <rect x="723.4" y="232" width="32" height="6" class="v2-door-gap"></rect>
                             <path d="M 723.4 232 L 723.4 200 A 32 32 0 0 1 755.4 232 Z" class="v2-door-swing"></path>
                             <line x1="723.4" y1="232" x2="723.4" y2="200" class="v2-door-leaf"></line>
                         </g>
@@ -1012,7 +1016,7 @@
                             <rect x="170" y="628" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
                             <rect x="210" y="628" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
                             <text x="90" y="644" class="v2-legend">0</text><text x="250" y="644" class="v2-legend">4 m</text>
-                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 30,8 m · rozměry vnitřní</text>
+                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 37,4 m · rozměry vnitřní</text>
                         </g>
                     </g>
 
@@ -1408,7 +1412,7 @@
             } else if (mode === 'visualization2') {
                 // Samostatný čistý půdorys cílového stavu dle Návrhu 2
                 layerVis2.style.display = 'block';
-                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (30,8 m), dveře 0,80 m, rozměry vnitřní');
+                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (37,4 m), dveře 0,80 m, rozměry vnitřní');
             } else if (mode === 'electric2') {
                 // Elektroinstalace 2 nad vizualizací cílového stavu 2
                 layerVis2.style.display = 'block';
