@@ -197,6 +197,8 @@
             transition: all 0.2s;
         }
         .usage-room:hover { fill: #e1bee7; }
+        .usage-free { fill: #eceff1; stroke: #90a4ae; }
+        .usage-free:hover { fill: #cfd8dc; }
 
         /* Vizualizace dělících kójí */
         .cage-wall { fill: url(#block-pattern); stroke: #424242; stroke-width: 1; }
@@ -745,9 +747,9 @@
                     <text x="183" y="370" class="label-title" fill="#4a148c">B1</text>
                     <text x="183" y="390" class="label-title" fill="#4a148c">Rutrich</text>
 
-                    <rect x="276" y="274.4" width="220" height="212" class="usage-room" onclick="selectItem('usage', 'B2', 'Místnost B2', '29,15 m²', 'Využití: ping pong')"></rect>
-                    <text x="386" y="370" class="label-title" fill="#4a148c">B2</text>
-                    <text x="386" y="390" class="label-title" fill="#4a148c">Ping pong</text>
+                    <rect x="276" y="274.4" width="220" height="212" class="usage-room usage-free" onclick="selectItem('usage', 'B2', 'Místnost B2', '29,15 m²', 'Bez přiděleného uživatele, využití: ping pong')"></rect>
+                    <text x="386" y="370" class="label-title" fill="#546e7a">B2</text>
+                    <text x="386" y="390" class="label-title" fill="#546e7a">Ping pong</text>
 
                     <rect x="592" y="274.4" width="96" height="212" class="usage-room" onclick="selectItem('usage', 'B3', 'Místnost B3', '12,72 m²', 'Uživatel: Čabinová (byt č. 6)')"></rect>
                     <text x="640" y="370" class="label-title" fill="#4a148c">B3</text>
