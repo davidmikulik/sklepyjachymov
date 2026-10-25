@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D vizualizace A4 – kóje 885/10</title>
+    <title>3D vizualizace A3 a A4 – kóje 885/10</title>
     <meta name="description" content="Orientační 3D vizualizace cílového stavu A4 (kóje 885/10) s boční chodbou a společnou kójí A6.">
     <style>
         html, body { margin: 0; height: 100%; background: #1c1f22; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #eceff1; overflow: hidden; }
@@ -30,15 +30,17 @@
 <body>
     <div id="view"></div>
     <div class="panel">
-        <h1>A4 – kóje 885/10 – cílový stav</h1>
+        <h1>A3 a A4 (kóje 885/10) – cílový stav</h1>
         <p><b>885/10:</b> 2,81 × 3,65 m (10,26 m²). Dnešní dřevěné stěny (jižní do chodby C1 a východní k A6 a boční chodbě) se vybourají a nahradí příčkami z tvárnic 15 cm až ke stropu.</p>
         <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby, nad nimi větrací mřížka 600 × 150 mm. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
+        <p><b>A3</b> (společný sklep s rozvaděčem RS, cílově 1,50 × 3,65 m): sádrokartonová stěna do chodby C1 se vybourá a nahradí zděnou příčkou č. 13 v zákrytu se zdí, s novou zárubní, dveřmi 0,80 m a větrací mřížkou.</p>
         <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace 2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu 2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Z chodby C1</button>
             <button data-view="side">Boční chodba a A6</button>
             <button data-view="koje">Uvnitř 885/10</button>
+            <button data-view="a3">A3 a rozvaděč</button>
             <button data-view="cutaway">Řez shora</button>
             <a href="/">← Zpět na plánek</a>
         </div>
@@ -55,7 +57,8 @@
 
         // Souřadnice v metrech podle plánku: x = od západní stěny A1 k východu, z = od severní stěny k chodbě C1, y = výška.
         const H = 2.6, PT = 0.15;
-        const XS = 13.335, XE = 19.40;                 // výřez: od zdi A3/A4 po zeď boční chodby/A5
+        const XS = 11.505, XE = 19.40;                 // výřez: od zdi schodiště/A3 po zeď boční chodby/A5
+        const A3X0 = 11.835, A3X1 = 13.335;            // A3 – vnitřní šířka 1,50 m
         const A4X0 = 14.135, A4X1 = 16.945, A4Z = 3.65; // 885/10 – vnitřní rozměr 2,81 × 3,65 m
         const SCX0 = 17.095, SCX1 = 18.595;            // boční chodba a A6 (1,50 m)
         const C1Z = 3.80, C1D = 1.55;                  // chodba C1 a uzel u boční chodby
@@ -213,7 +216,8 @@
         // ---------- Stávající stěny (omítka) ----------
         const T = 0.40;
         wall(XS, -T, XE, 0, 'plaster', WINDOWS.map(([a, b]) => ({ a, b, y0: WIN_SILL, h: WIN_TOP })));   // severní obvodová (okno A6)
-        wall(XS, 0, A4X0, C1Z, 'plaster');                                                // A3 | A4 (0,80 m)
+        wall(XS, 0, A3X0, C1Z, 'plaster');                                                // schodiště | A3 (0,33 m)
+        wall(A3X1, 0, A4X0, C1Z, 'plaster');                                              // A3 | A4 (0,80 m)
         wall(XS - PT, C1Z, XS, D, 'plaster', [], { cut: true });                         // řez chodbou C1 na západě
         wall(SCX1, 0, SCX1 + 0.36, D, 'plaster', [{ a: 2.15, b: 3.00, h: DOOR_H }]);     // boční chodba | A5 a uzel | B6, dveře 885/7
         wall(SCX1 + 0.36, 0, XE, D, 'plaster');                                          // A5 / B6 (mimo řešení)
@@ -231,6 +235,7 @@
 
         // ---------- Nové příčky z tvárnic 15 cm (místo dřevěných stěn A4) ----------
         wall(A4X0, A4Z, SCX0, C1Z, 'block', [{ a: 16.045, b: 16.845, h: DOOR_H }]);     // č. 11: 885/10 do C1, v zákrytu se zdí
+        wall(A3X0, A4Z, A3X1, C1Z, 'block', [{ a: 12.185, b: 12.985, h: DOOR_H }]);     // č. 13: A3 do C1 místo sádrokartonu
         wall(A4X1, 0, SCX0, A4Z, 'block');                                                // č. 12: 885/10 | A6 a boční chodba
         wall(SCX0, 1.95, SCX1, 2.10, 'block', [{ a: 17.445, b: 18.245, h: DOOR_H }]);    // A6 do boční chodby
 
@@ -288,6 +293,7 @@
         }
         door('885/10', 'x', C1Z, -1, 16.045, 0.6, DOOR_W, true);
         door('A6', 'x', 2.10, -1, 17.445);
+        door('A3', 'x', C1Z, -1, 12.185, 0.5);
         door('885/7', 'z', SCX1, 1, 2.15, 0, 0.85, true);
 
         // ---------- Vybavení: regály, svítidla ----------
@@ -314,7 +320,7 @@
         shelf(A4X0 + 0.6, 0, A4X1, A4Z, 'n', 92);    // 885/10 – regál u severní stěny
         shelf(SCX0, 0, SCX1, 1.95, 'n', 93);         // A6 – společná kóje
         // svítidla v kójích (Elektroinstalace 2): 885/10 okruh O2, A6 okruh O1
-        [[15.18, 0.60, 2.5], [17.30, 1.45, 2.5]].forEach(([x, z, i]) => {
+        [[15.18, 0.60, 2.5], [17.30, 1.45, 2.5], [12.75, 0.45, 2.5]].forEach(([x, z, i]) => {
             add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), x, H - 0.03, z, { cast: false, cut: true });
             const pl = new THREE.PointLight('#ffe9cc', i, 6, 2); pl.position.set(x, H - 0.25, z); scene.add(pl);
         });
@@ -323,9 +329,12 @@
         const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
         const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
         const tray = (xa, za, xb, zb) => add(box(Math.abs(xb - xa) + 0.06, 0.04, Math.abs(zb - za) + 0.06), pvc, (xa + xb) / 2, H - 0.02, (za + zb) / 2, { cast: false, cut: true });
-        tray(XS, 4.05, 17.30, 4.05); tray(17.30, 4.05, 17.30, 1.0); tray(17.30, 1.0, SCX1, 1.0); tray(14.50, 4.05, 14.50, 3.55); tray(17.30, 4.65, SCX1, 4.65);
+        tray(XS, 4.05, 17.30, 4.05); tray(17.30, 4.05, 17.30, 1.0); tray(17.30, 1.0, SCX1, 1.0); tray(14.50, 4.05, 14.50, 3.55); tray(17.30, 4.65, SCX1, 4.65); tray(11.985, 0.75, 11.985, 4.05);
+        // podružný rozvaděč RS na západní stěně A3
+        add(box(0.16, 0.9, 0.6), std({ color: '#eceff1', roughness: 0.5 }), A3X0 + 0.08, 1.55, 0.95);
+        add(box(0.01, 0.5, 0.36), std({ color: '#90a4ae', roughness: 0.4 }), A3X0 + 0.165, 1.6, 0.95);
         // zásuvky: 885/10 (K9) na příčce č. 11, A6 (Z1) u východní stěny
-        [[14.50, A4Z - 0.03, 'z'], [SCX1 - 0.03, 1.0, 'x']].forEach(([x, z, n]) => {
+        [[14.50, A4Z - 0.03, 'z'], [SCX1 - 0.03, 1.0, 'x'], [A3X1 - 0.03, 1.8, 'x']].forEach(([x, z, n]) => {
             add(n === 'x' ? box(0.05, 0.08, 0.08) : box(0.08, 0.08, 0.05), pvc, x, 1.2, z);
             add(box(0.03, H - 1.25, 0.03), pvc, x, (H + 1.25) / 2, z, { cast: false });
         });
@@ -339,7 +348,7 @@
 
         // ---------- Osvětlení ----------
         scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
-        [[15.6, 2.3, C1Z + 0.8, 6], [17.8, 2.3, 4.4, 5], [17.85, 2.3, 2.9, 4], [15.5, 2.3, 1.8, 4]].forEach(([x, y, z, i]) => {
+        [[15.6, 2.3, C1Z + 0.8, 6], [17.8, 2.3, 4.4, 5], [17.85, 2.3, 2.9, 4], [15.5, 2.3, 1.8, 4], [12.6, 2.3, C1Z + 0.8, 4], [12.6, 2.3, 1.6, 3]].forEach(([x, y, z, i]) => {
             const l = new THREE.PointLight('#fff3e2', i, 9, 2);
             l.position.set(x, y, z); l.castShadow = true; l.shadow.mapSize.set(1024, 1024); l.shadow.bias = -0.002;
             scene.add(l);
@@ -353,6 +362,7 @@
             entry: { pos: [15.0, 1.6, 5.25], target: [16.9, 1.0, 2.2], fov: 78 },
             side: { pos: [17.85, 1.6, 5.1], target: [17.85, 1.0, 0.6], fov: 72 },
             koje: { pos: [16.5, 1.6, 3.3], target: [14.3, 0.9, 0.4], fov: 78 },
+            a3: { pos: [13.1, 1.6, 5.25], target: [12.2, 1.0, 1.0], fov: 78 },
             cutaway: { pos: [(XS + XE) / 2 + 2.0, 10.5, D + 5.5], target: [(XS + XE) / 2 - 0.2, 0, 2.0], fov: 44 }
         };
         function setView(name) {
