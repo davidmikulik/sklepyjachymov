@@ -33,6 +33,7 @@
         <h1>Místnosti A1 a A2 – cílový stav</h1>
         <p><b>A1:</b> 885/1 (1,20 × 3,45 m), 885/6 a 885/8 (2,25 × 1,85 m) – všechny kolem 4,15 m². <b>A2:</b> 885/9 (2,20 × 1,85 m), 885/2 (1,15 × 3,65 m).</p>
         <p>Dřevěná příčka před A2 vybourána, přístup z chodby C1 otevřený v celé šířce 885/9 (2,20 m); do A1 průchodem 1,00 m bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
+        <p>Elektro podle Elektroinstalace 2: v každé kóji zásuvka 230 V (B16, vlastní elektroměr) a svítidlo LED, společné osvětlení přístupů a chodby s čidlem pohybu, kabelové lišty pod stropem z RS v A3.</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu 2 a přesného zaměření: A1 6,00 × 3,449 m, A2 3,50 × 3,80 m, chodba C1 1,55 m, světlá výška 2,60 m, okna 1,13 × 0,50 m s parapetem ve 2,00 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Pohled od vstupu</button>
@@ -289,6 +290,7 @@
         const shelfMat = std({ color: '#9aa5ab', metalness: 0.6, roughness: 0.45 });
         const boxCols = ['#b48a5a', '#a07a4c', '#c49a68', '#5d7f99', '#7a8b5c'];
         // kóje: [x0, z0, x1, z1, strana regálu ('n' = u severní stěny, 'w' = u západní)]
+        const KLIGHT = { '885/1': [0.60, 0.40], '885/6': [3.22, 1.25], '885/8': [5.55, 1.25], '885/9': [8.10, 1.25], '885/2': [9.22, 0.60] };
         const KOJE = { '885/1': [0, 0, 1.20, D1, 'w'], '885/6': [1.35, 0, 3.60, 1.85, 'n'], '885/8': [3.75, 0, A1W, 1.85, 'n'],
             '885/9': [OX, 0, OX + 2.20, 1.85, 'n'], '885/2': [OX + 2.35, 0, OX + A2W, 3.65, 'w'] };
         Object.entries(KOJE).forEach(([name, [x0, z0, x1, z1, side]], i) => {
@@ -308,7 +310,7 @@
                         cx + (side === 'n' ? along : 0), y + bh / 2, cz + (side === 'n' ? 0 : along));
                 }
             });
-            const lx = (x0 + x1) / 2, lz = (z0 + z1) / 2;
+            const [lx, lz] = KLIGHT[name];   // svítidlo podle Elektroinstalace 2
             add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), lx, H - 0.03, lz, { cast: false, cut: true });
             const pl = new THREE.PointLight('#ffe9cc', name === '885/8' ? 5 : 2.5, 6, 2);
             pl.position.set(lx, H - 0.25, lz); scene.add(pl);
@@ -317,14 +319,21 @@
         // ---------- Elektro v přístupových plochách a v chodbě ----------
         const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
         const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
-        add(box(OX + 1.3 - 0.15, 0.04, 0.06), pvc, (OX + 1.3 + 0.15) / 2, H - 0.02, 3.30, { cast: false, cut: true });   // kabelová lišta
-        [[4.9, 2.72, 1.2], [OX + 1.0, 2.9, 0.6], [2.0, C1Z + C1D / 2, 1.2], [OX - 0.5, C1Z + C1D / 2, 1.2]].forEach(([x, z, l]) => {
+        // kabelové lišty pod stropem (trasy z RS v A3 podle Elektroinstalace 2)
+        const tray = (xa, za, xb, zb) => add(box(Math.abs(xb - xa) + 0.06, 0.04, Math.abs(zb - za) + 0.06), pvc, (xa + xb) / 2, H - 0.02, (za + zb) / 2, { cast: false, cut: true });
+        tray(0.15, 3.30, 7.6, 3.30); tray(7.6, 3.30, 7.6, 4.05); tray(7.6, 3.42, 9.65, 3.42); tray(2.0, 4.05, XEND, 4.05);
+        // zásuvky 230 V IP44 v kójích (K1–K5) se svislým vývodem z lišty
+        [[0.03, 3.05, 'x'], [3.45, 1.82, 'z'], [5.80, 1.82, 'z'], [8.35, 1.82, 'z'], [OX + A2W - 0.03, 3.30, 'x']].forEach(([x, z, n]) => {
+            add(n === 'x' ? box(0.05, 0.08, 0.08) : box(0.08, 0.08, 0.05), pvc, x, 1.2, z);
+            add(box(0.03, H - 1.25, 0.03), pvc, x, (H + 1.25) / 2, z, { cast: false });
+        });
+        [[4.9, 2.72, 1.2], [6.85, 2.75, 0.6], [2.0, C1Z + C1D / 2, 1.2], [OX - 0.5, C1Z + C1D / 2, 1.2]].forEach(([x, z, l]) => {
             add(box(l, 0.05, 0.12), pvc, x, H - 0.025, z, { cast: false, cut: true });
             add(box(l - 0.05, 0.01, 0.09), ledMat, x, H - 0.052, z, { cast: false, cut: true });
             const ra = new THREE.RectAreaLight('#fff6ea', 9, l - 0.05, 0.1);
             ra.position.set(x, H - 0.06, z); ra.lookAt(x, 0, z); scene.add(ra);
         });
-        const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, OX + 0.9, H - 0.05, C1Z + 0.25, { cut: true });
+        const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, 6.75, H - 0.05, 3.98, { cut: true });
         pir.rotation.x = Math.PI;
 
         // ---------- Osvětlení ----------
