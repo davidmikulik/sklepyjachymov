@@ -269,8 +269,8 @@
         /* Vrstva Kóty a Rozměry */
         .dim-line { stroke: #d32f2f; stroke-width: 1.5; marker-end: url(#arrow-end); marker-start: url(#arrow-start); }
         .dim-line-outer { stroke: #2e7d32; stroke-width: 2; marker-end: url(#arrow-end-green); marker-start: url(#arrow-start-green); }
-        .dim-text { font-size: 11px; font-weight: bold; fill: #c62828; text-anchor: middle; dominant-baseline: middle; }
-        .dim-text-outer { font-size: 13px; font-weight: bold; fill: #1b5e20; text-anchor: middle; dominant-baseline: middle; }
+        .dim-text { font-size: 10.5px; font-weight: bold; fill: #c62828; text-anchor: middle; dominant-baseline: middle; paint-order: stroke; stroke: #ffffff; stroke-width: 3px; }
+        .dim-text-outer { font-size: 11.5px; font-weight: bold; fill: #1b5e20; text-anchor: middle; dominant-baseline: middle; paint-order: stroke; stroke: #ffffff; stroke-width: 3px; }
         .dim-guide { stroke: #9e9e9e; stroke-width: 1; stroke-dasharray: 3 3; }
 
         .label-title { font-size: 12px; font-weight: bold; pointer-events: none; text-anchor: middle; dominant-baseline: middle; }
@@ -1241,33 +1241,85 @@
                         </g>
                     </g>
 
-                <!-- VRSTVA KÓTY A ROZMĚRY -->
+                <!-- VRSTVA KÓTY A ROZMĚRY – světlé rozměry fyzických místností dle zaměření (40 px = 1 m) -->
                 <g id="layer-dimensions" style="display: none;">
-                    <line x1="40" y1="80" x2="40" y2="486.4" class="dim-line-outer"></line>
-                    <line x1="35" y1="80" x2="85" y2="80" class="dim-guide"></line>
-                    <line x1="35" y1="486.4" x2="85" y2="486.4" class="dim-guide"></line>
-                    <text x="25" y="283" class="dim-text-outer" transform="rotate(-90 25 283)">CELKOVÁ VÝŠKA: 10,16 m</text>
-
-                    <!-- Kóty A -->
-                    <line x1="90" y1="50" x2="330" y2="50" class="dim-line"></line>
-                    <line x1="90" y1="45" x2="90" y2="75" class="dim-guide"></line>
-                    <line x1="330" y1="45" x2="330" y2="75" class="dim-guide"></line>
-                    <text x="210" y="50" class="dim-text">A1: 3 KÓJE (2,0 m × 1,4 m)</text>
-
-                    <line x1="330" y1="50" x2="470" y2="50" class="dim-line"></line>
-                    <line x1="330" y1="45" x2="330" y2="75" class="dim-guide"></line>
-                    <line x1="470" y1="45" x2="470" y2="75" class="dim-guide"></line>
-                    <text x="400" y="50" class="dim-text">A2: 2 KÓJE (1,75 m × 1,4 m)</text>
-
-                    <!-- Kóty B -->
-                    <line x1="90" y1="510" x2="276" y2="510" class="dim-line"></line>
-                    <line x1="90" y1="495" x2="90" y2="525" class="dim-guide"></line>
-                    <line x1="276" y1="495" x2="276" y2="525" class="dim-guide"></line>
-                    <text x="183" y="510" class="dim-text">B1: 4,65 m</text>
-
-                    <line x1="276" y1="510" x2="496" y2="510" class="dim-line"></line>
-                    <line x1="496" y1="495" x2="496" y2="525" class="dim-guide"></line>
-                    <text x="386" y="510" class="dim-text">B2: 5,50 m (kóje 885/4 a 885/5)</text>
+                    <!-- Řada A (sever): šířky místností -->
+                    <line x1="90" y1="56" x2="330" y2="56" class="dim-line"></line>
+                    <text x="210" y="49" class="dim-text">A1 6,00</text>
+                    <line x1="330" y1="56" x2="470" y2="56" class="dim-line"></line>
+                    <text x="400" y="49" class="dim-text">A2 3,50</text>
+                    <line x1="470" y1="56" x2="550" y2="56" class="dim-line"></line>
+                    <text x="510" y="49" class="dim-text">S1 2,00</text>
+                    <line x1="550" y1="56" x2="610" y2="56" class="dim-line"></line>
+                    <text x="580" y="49" class="dim-text">A3 1,50</text>
+                    <line x1="610" y1="56" x2="714" y2="56" class="dim-line"></line>
+                    <text x="662" y="49" class="dim-text">A4 2,60</text>
+                    <line x1="714" y1="56" x2="774" y2="56" class="dim-line"></line>
+                    <text x="744" y="49" class="dim-text">C2 1,50</text>
+                    <line x1="774" y1="56" x2="1014" y2="56" class="dim-line"></line>
+                    <text x="894" y="49" class="dim-text">A5 6,00</text>
+                    <line x1="90" y1="52" x2="90" y2="84" class="dim-guide"></line>
+                    <line x1="330" y1="52" x2="330" y2="84" class="dim-guide"></line>
+                    <line x1="470" y1="52" x2="470" y2="84" class="dim-guide"></line>
+                    <line x1="550" y1="52" x2="550" y2="84" class="dim-guide"></line>
+                    <line x1="610" y1="52" x2="610" y2="84" class="dim-guide"></line>
+                    <line x1="714" y1="52" x2="714" y2="84" class="dim-guide"></line>
+                    <line x1="774" y1="52" x2="774" y2="84" class="dim-guide"></line>
+                    <line x1="1014" y1="52" x2="1014" y2="84" class="dim-guide"></line>
+                    <line x1="90" y1="30" x2="1014" y2="30" class="dim-line-outer"></line>
+                    <text x="552" y="23" class="dim-text-outer">Celkem řada A: 23,10 m</text>
+                    <line x1="90" y1="26" x2="90" y2="60" class="dim-guide"></line>
+                    <line x1="1014" y1="26" x2="1014" y2="60" class="dim-guide"></line>
+                    <!-- Řada B (jih): šířky místností -->
+                    <line x1="90" y1="512" x2="276" y2="512" class="dim-line"></line>
+                    <text x="183" y="505" class="dim-text">B1 4,65</text>
+                    <line x1="276" y1="512" x2="496" y2="512" class="dim-line"></line>
+                    <text x="386" y="505" class="dim-text">B2 5,50</text>
+                    <line x1="496" y1="512" x2="592" y2="512" class="dim-line"></line>
+                    <text x="544" y="505" class="dim-text">V0 2,40</text>
+                    <line x1="592" y1="512" x2="688" y2="512" class="dim-line"></line>
+                    <text x="640" y="505" class="dim-text">B3 2,40</text>
+                    <line x1="688" y1="512" x2="820" y2="512" class="dim-line"></line>
+                    <text x="754" y="505" class="dim-text">B4 3,30</text>
+                    <line x1="820" y1="512" x2="1012" y2="512" class="dim-line"></line>
+                    <text x="916" y="505" class="dim-text">B5 4,80</text>
+                    <line x1="90" y1="482.4" x2="90" y2="516" class="dim-guide"></line>
+                    <line x1="276" y1="482.4" x2="276" y2="516" class="dim-guide"></line>
+                    <line x1="496" y1="482.4" x2="496" y2="516" class="dim-guide"></line>
+                    <line x1="592" y1="482.4" x2="592" y2="516" class="dim-guide"></line>
+                    <line x1="688" y1="482.4" x2="688" y2="516" class="dim-guide"></line>
+                    <line x1="820" y1="482.4" x2="820" y2="516" class="dim-guide"></line>
+                    <line x1="1012" y1="482.4" x2="1012" y2="516" class="dim-guide"></line>
+                    <line x1="90" y1="540" x2="1012" y2="540" class="dim-line-outer"></line>
+                    <text x="551" y="533" class="dim-text-outer">Celkem řada B: 23,05 m</text>
+                    <line x1="90" y1="508" x2="90" y2="544" class="dim-guide"></line>
+                    <line x1="1012" y1="508" x2="1012" y2="544" class="dim-guide"></line>
+                    <!-- Hloubky vlevo: řada A, chodba C1, řada B -->
+                    <line x1="62" y1="80" x2="62" y2="212" class="dim-line"></line>
+                    <text x="54" y="146" class="dim-text" transform="rotate(-90 54 146)">A 3,30</text>
+                    <line x1="62" y1="212" x2="62" y2="274.4" class="dim-line"></line>
+                    <text x="54" y="243.2" class="dim-text" transform="rotate(-90 54 243.2)">C1 1,56</text>
+                    <line x1="62" y1="274.4" x2="62" y2="486.4" class="dim-line"></line>
+                    <text x="54" y="380.4" class="dim-text" transform="rotate(-90 54 380.4)">B 5,30</text>
+                    <line x1="58" y1="80" x2="94" y2="80" class="dim-guide"></line>
+                    <line x1="58" y1="212" x2="94" y2="212" class="dim-guide"></line>
+                    <line x1="58" y1="274.4" x2="94" y2="274.4" class="dim-guide"></line>
+                    <line x1="58" y1="486.4" x2="94" y2="486.4" class="dim-guide"></line>
+                    <line x1="36" y1="80" x2="36" y2="486.4" class="dim-line-outer"></line>
+                    <text x="28" y="283.2" class="dim-text-outer" transform="rotate(-90 28 283.2)">Celkem: 10,16 m</text>
+                    <line x1="32" y1="80" x2="66" y2="80" class="dim-guide"></line>
+                    <line x1="32" y1="486.4" x2="66" y2="486.4" class="dim-guide"></line>
+                    <!-- Hloubky vpravo: A5, B6, B5 -->
+                    <line x1="1040" y1="80" x2="1040" y2="212" class="dim-line"></line>
+                    <text x="1048" y="146" class="dim-text" transform="rotate(-90 1048 146)">A5 3,30</text>
+                    <line x1="1040" y1="212" x2="1040" y2="274.4" class="dim-line"></line>
+                    <text x="1048" y="243.2" class="dim-text" transform="rotate(-90 1048 243.2)">B6 1,56</text>
+                    <line x1="1040" y1="274.4" x2="1040" y2="486.4" class="dim-line"></line>
+                    <text x="1048" y="380.4" class="dim-text" transform="rotate(-90 1048 380.4)">B5 5,30</text>
+                    <line x1="1010" y1="80" x2="1044" y2="80" class="dim-guide"></line>
+                    <line x1="1010" y1="212" x2="1044" y2="212" class="dim-guide"></line>
+                    <line x1="1010" y1="274.4" x2="1044" y2="274.4" class="dim-guide"></line>
+                    <line x1="1010" y1="486.4" x2="1044" y2="486.4" class="dim-guide"></line>
                 </g>
             </svg>
         </div>
