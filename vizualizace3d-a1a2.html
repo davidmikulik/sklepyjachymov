@@ -31,8 +31,8 @@
     <div id="view"></div>
     <div class="panel">
         <h1>Místnosti A1 a A2 – cílový stav</h1>
-        <p><b>A1:</b> 885/1 (1,50 × 3,45 m), 885/6 a 885/8 (2,10 × 1,85 m). <b>A2:</b> 885/9 (1,85 × 1,85 m), 885/2 (1,50 × 3,65 m).</p>
-        <p>Dřevěná příčka před A2 vybourána, přístup z chodby C1 otevřený v celé šířce 885/9 (1,85 m); do A1 průchodem 1,00 m bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
+        <p><b>A1:</b> 885/1 (1,50 × 3,45 m), 885/6 a 885/8 (2,10 × 1,85 m). <b>A2:</b> 885/9 (2,20 × 1,85 m), 885/2 (1,15 × 3,65 m).</p>
+        <p>Dřevěná příčka před A2 vybourána, přístup z chodby C1 otevřený v celé šířce 885/9 (2,20 m); do A1 průchodem 1,00 m bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu 2 a přesného zaměření: A1 6,00 × 3,449 m, A2 3,50 × 3,80 m, chodba C1 1,55 m, světlá výška 2,60 m, okna 1,13 × 0,50 m s parapetem ve 2,00 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Pohled od vstupu</button>
@@ -235,9 +235,9 @@
         wall(1.5, 0, 1.65, D1, 'block', [{ a: 2.32, b: 3.12, h: DOOR_H }]);                          // 885/1 | přístup A1
         wall(1.65, 1.85, A1W, 2.0, 'block', [{ a: 2.3, b: 3.1, h: DOOR_H }, { a: 4.55, b: 5.35, h: DOOR_H }]); // čelo 885/6 + 885/8
         wall(3.75, 0, 3.9, 1.85, 'block');                                                            // 885/6 | 885/8
-        wall(OX, 1.85, OX + 1.85, 2.0, 'block', [{ a: OX + 0.525, b: OX + 1.325, h: DOOR_H }]);       // čelo 885/9
-        wall(OX + 1.85, 0, OX + 2.0, C1Z, 'block', [{ a: 2.50, b: 3.30, h: DOOR_H }]);               // 885/9 + přístup | 885/2
-        wall(OX + 2.0, 3.65, OX + A2W, C1Z, 'block');                                                 // 885/2 do chodby C1
+        wall(OX, 1.85, OX + 2.20, 2.0, 'block', [{ a: OX + 0.70, b: OX + 1.50, h: DOOR_H }]);        // čelo 885/9
+        wall(OX + 2.20, 0, OX + 2.35, C1Z, 'block', [{ a: 2.50, b: 3.30, h: DOOR_H }]);              // 885/9 + přístup | 885/2
+        wall(OX + 2.35, 3.65, OX + A2W, C1Z, 'block');                                                // 885/2 do chodby C1
 
         // ---------- Dveře ----------
         const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
@@ -276,8 +276,8 @@
         door('885/1', 'z', 1.65, -1, 2.32);
         door('885/6', 'x', 2.0, -1, 2.3);
         door('885/8', 'x', 2.0, -1, 4.55, 0.55);
-        door('885/9', 'x', 2.0, -1, OX + 0.525);
-        door('885/2', 'z', OX + 1.85, 1, 2.50);
+        door('885/9', 'x', 2.0, -1, OX + 0.70);
+        door('885/2', 'z', OX + 2.20, 1, 2.50);
 
         // Průchod A2 → A1 (1,00 m): jen otvor s ocelovou zárubní, bez křídla
         [[A1W, 2.0 - 0.012], [A1W, 3.0 + 0.012]].forEach(([x, z]) => add(box(0.33, 2.02, 0.03), frameMat, x + 0.15, 1.01, z));
@@ -288,7 +288,7 @@
         const boxCols = ['#b48a5a', '#a07a4c', '#c49a68', '#5d7f99', '#7a8b5c'];
         // kóje: [x0, z0, x1, z1, strana regálu ('n' = u severní stěny, 'w' = u západní)]
         const KOJE = { '885/1': [0, 0, 1.5, D1, 'w'], '885/6': [1.65, 0, 3.75, 1.85, 'n'], '885/8': [3.9, 0, A1W, 1.85, 'n'],
-            '885/9': [OX, 0, OX + 1.85, 1.85, 'n'], '885/2': [OX + 2.0, 0, OX + A2W, 3.65, 'w'] };
+            '885/9': [OX, 0, OX + 2.20, 1.85, 'n'], '885/2': [OX + 2.35, 0, OX + A2W, 3.65, 'w'] };
         Object.entries(KOJE).forEach(([name, [x0, z0, x1, z1, side]], i) => {
             const r = rng(90 + i);
             const sd = 0.45;
