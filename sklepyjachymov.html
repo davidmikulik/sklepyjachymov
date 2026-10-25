@@ -1405,6 +1405,36 @@
                 layerWork.removeAttribute('opacity');
                 selectItem('elec', 'Elektroinstalace', 'Cílové zapojení IP44', 'Kompletní síť', 'Všechna světla a zásuvky (vč. kójí 885/4 a 885/5)');
             }
+            resolveLabelOverlaps();
+        }
+
+        // Skryje popisky podkladových vrstev, které by se překrývaly s popisky vrstev nad nimi.
+        // Pořadí důležitosti: fyzický stav < oficiální stav < rozměry < ostatní (zvolená) vrstva.
+        const LABEL_RANK = { 'layer-working': 0, 'layer-official': 1, 'layer-dimensions': 2 };
+        function resolveLabelOverlaps() {
+            const texts = [...document.querySelectorAll('#main-svg text')];
+            texts.forEach(t => { if (t.dataset.overlapHidden) { t.style.visibility = ''; delete t.dataset.overlapHidden; } });
+            const shown = t => {
+                for (let e = t; e && e.id !== 'main-svg'; e = e.parentElement) {
+                    if (getComputedStyle(e).display === 'none') return false;
+                }
+                return t.textContent.trim() !== '';
+            };
+            const items = texts.filter(shown).map(t => {
+                const layer = t.closest('g[id^="layer-"]');
+                const id = layer ? layer.id : '';
+                return { t, r: t.getBoundingClientRect(), rank: id in LABEL_RANK ? LABEL_RANK[id] : 3 };
+            });
+            const overlaps = (a, b) => {
+                const ix = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+                const iy = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+                if (ix <= 1 || iy <= 1) return false;
+                return ix * iy > 0.08 * Math.min(a.width * a.height, b.width * b.height);
+            };
+            items.sort((a, b) => a.rank - b.rank).forEach((low, i) => {
+                const hit = items.slice(i + 1).some(high => high.rank > low.rank && !high.t.dataset.overlapHidden && overlaps(low.r, high.r));
+                if (hit) { low.t.style.visibility = 'hidden'; low.t.dataset.overlapHidden = '1'; }
+            });
         }
 
         function toggleDimensions() {
@@ -1421,6 +1451,7 @@
                 btnDim.classList.remove('active');
                 btnDim.innerText = '📐 Vrstva rozměrů (Vypnuta)';
             }
+            resolveLabelOverlaps();
         }
 
         function selectItem(type, id, name, dim, use) {
