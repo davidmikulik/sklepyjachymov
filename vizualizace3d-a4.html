@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D vizualizace A4 – kóje 885/10</title>
+    <meta name="description" content="Orientační 3D vizualizace cílového stavu A4 (kóje 885/10) s boční chodbou a společnou kójí A6.">
+    <style>
+        html, body { margin: 0; height: 100%; background: #1c1f22; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #eceff1; overflow: hidden; }
+        #view { position: fixed; inset: 0; }
+        .panel { position: fixed; top: 12px; left: 12px; max-width: 380px; background: rgba(28, 31, 34, 0.86); border: 1px solid #455a64; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.45; }
+        .panel h1 { font-size: 15px; margin: 0 0 6px; color: #ffcc80; }
+        .panel p { margin: 4px 0; }
+        .panel .note { color: #90a4ae; font-size: 11.5px; }
+        .buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .buttons button, .buttons a { background: #37474f; color: #eceff1; border: 1px solid #607d8b; border-radius: 5px; padding: 5px 9px; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .buttons button.active { background: #ef6c00; border-color: #ef6c00; }
+        body.render .panel { display: none; }
+        @media (max-width: 600px) { .panel { left: 8px; right: 8px; max-width: none; } }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="view"></div>
+    <div class="panel">
+        <h1>A4 – kóje 885/10 – cílový stav</h1>
+        <p><b>885/10:</b> 2,81 × 3,65 m (10,26 m²). Dnešní dřevěné stěny (jižní do chodby C1 a východní k A6 a boční chodbě) se vybourají a nahradí příčkami z tvárnic 15 cm až ke stropu.</p>
+        <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
+        <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace 2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
+        <p class="note">Vizualizace podle Návrhu cílového stavu 2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
+        <div class="buttons">
+            <button data-view="entry" class="active">Z chodby C1</button>
+            <button data-view="side">Boční chodba a A6</button>
+            <button data-view="koje">Uvnitř 885/10</button>
+            <button data-view="cutaway">Řez shora</button>
+            <a href="/">← Zpět na plánek</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+        // Souřadnice v metrech podle plánku: x = od západní stěny A1 k východu, z = od severní stěny k chodbě C1, y = výška.
+        const H = 2.6, PT = 0.15;
+        const XS = 13.335, XE = 19.40;                 // výřez: od zdi A3/A4 po zeď boční chodby/A5
+        const A4X0 = 14.135, A4X1 = 16.945, A4Z = 3.65; // 885/10 – vnitřní rozměr 2,81 × 3,65 m
+        const SCX0 = 17.095, SCX1 = 18.595;            // boční chodba a A6 (1,50 m)
+        const C1Z = 3.80, C1D = 1.55;                  // chodba C1 a uzel u boční chodby
+        const WIN_SILL = 2.0, WIN_TOP = 2.5;           // okno A6 1,12 × 0,50 m, parapet 2,00 m
+        const WINDOWS = [[17.475, 18.595]];
+        const DOOR_W = 0.80, DOOR_H = 1.97;
+
+        const params = new URLSearchParams(location.search);
+        const renderMode = params.has('render');
+        if (renderMode) document.body.classList.add('render');
+        const outW = parseInt(params.get('w') || '0', 10);
+        const outH = parseInt(params.get('h') || '0', 10);
+
+        // ---------- Procedurální textury ----------
+        function rng(seed) {
+            return function () {
+                seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+                let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+        function canvasTex(canvas, srgb = true) {
+            const t = new THREE.CanvasTexture(canvas);
+            if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+            t.anisotropy = 8;
+            t.wrapS = t.wrapT = THREE.RepeatWrapping;
+            return t;
+        }
+        function speckle(ctx, w, h, r, count, colors, size) {
+            for (let i = 0; i < count; i++) {
+                ctx.fillStyle = colors[Math.floor(r() * colors.length)];
+                ctx.globalAlpha = 0.04 + r() * 0.12;
+                const s = size * (0.3 + r());
+                ctx.beginPath();
+                ctx.arc(r() * w, r() * h, s, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+        // Opravená omítka s bílým nátěrem a šedým soklem (dlaždice 2 m × výška stropu)
+        function plasterCanvas(seed) {
+            const PX = 160, w = 2 * PX, h = Math.round(H * PX);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(seed);
+            ctx.fillStyle = '#efede8'; ctx.fillRect(0, 0, w, h);
+            speckle(ctx, w, h, r, 240, ['#e2dfd8', '#f8f7f3', '#dcd8cf'], 26);
+            speckle(ctx, w, h, r, 3200, ['#d8d4cb', '#ffffff'], 1.4);
+            const sh = 0.10 * PX;
+            ctx.fillStyle = '#8f9295'; ctx.fillRect(0, h - sh, w, sh);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)'; ctx.fillRect(0, h - sh - 1.5, w, 1.5);
+            return c;
+        }
+        // Betonové tvárnice 50 × 25 cm (dlaždice 2 m × výška stropu)
+        function blockCanvas(seed) {
+            const PX = 200, w = 2 * PX, h = Math.round(H * PX);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(seed);
+            ctx.fillStyle = '#aaa59d'; ctx.fillRect(0, 0, w, h);
+            const bw = 0.5 * PX, bh = 0.25 * PX, j = 0.01 * PX;
+            for (let row = 0, y = h; y > -bh; row++, y -= bh) {
+                for (let x = -(row % 2) * bw / 2; x < w; x += bw) {
+                    ctx.fillStyle = `hsl(${30 + r() * 15}, ${4 + r() * 5}%, ${60 + r() * 7}%)`;
+                    ctx.fillRect(x + j, y - bh + j, bw - 2 * j, bh - 2 * j);
+                }
+            }
+            speckle(ctx, w, h, r, 10000, ['#8d8d8d', '#bdbdbd', '#6d6d6d'], 1.1);
+            return c;
+        }
+        function floorCanvas() {
+            const PX = 120, w = Math.round((XE - XS) * PX), h = Math.round((C1Z + C1D) * PX);
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); const r = rng(7);
+            ctx.fillStyle = '#8d867b'; ctx.fillRect(0, 0, w, h);
+            speckle(ctx, w, h, r, 9000, ['#6f675c', '#a9a294', '#5d554b', '#c2b9a8'], 20);
+            speckle(ctx, w, h, r, 40000, ['#6f675c', '#a9a294'], 2.5);
+            ctx.strokeStyle = 'rgba(55, 48, 40, 0.22)'; ctx.lineWidth = 1.2;
+            for (let i = 0; i < 8; i++) {
+                let x = r() * w, y = r() * h, a = r() * 6.28; ctx.beginPath(); ctx.moveTo(x, y);
+                for (let k = 0; k < 30; k++) { a += (r() - 0.5) * 0.6; x += Math.cos(a) * 10; y += Math.sin(a) * 10; ctx.lineTo(x, y); }
+                ctx.stroke();
+            }
+            return c;
+        }
+        function signTexture(text) {
+            const c = document.createElement('canvas'); c.width = 256; c.height = 128;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, 256, 128);
+            ctx.strokeStyle = '#263238'; ctx.lineWidth = 8; ctx.strokeRect(4, 4, 248, 120);
+            ctx.fillStyle = '#263238'; ctx.font = 'bold 70px system-ui, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 128, 68);
+            return canvasTex(c);
+        }
+
+        // ---------- Scéna ----------
+        const container = document.getElementById('view');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: renderMode });
+        renderer.setPixelRatio(renderMode ? 1 : Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        container.appendChild(renderer.domElement);
+        RectAreaLightUniformsLib.init();
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color('#15181b');
+        const std = (opts) => new THREE.MeshStandardMaterial(Object.assign({ roughness: 0.9, metalness: 0 }, opts));
+        function add(geo, mat, x, y, z, opts = {}) {
+            const m = new THREE.Mesh(geo, mat);
+            m.position.set(x, y, z);
+            m.castShadow = opts.cast !== false; m.receiveShadow = true;
+            if (opts.cut) m.userData.cutaway = true;
+            (opts.parent || scene).add(m);
+            return m;
+        }
+        const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+
+        // Materiály stěn s texturou opakovanou podle délky stěny
+        const plasterBase = plasterCanvas(3), blockBase = blockCanvas(41);
+        function tiledMat(canvas, len, h, extra = {}) {
+            const t = canvasTex(canvas); t.repeat.set(Math.max(len, 0.05) / 2, h / H);
+            t.offset.set(0, 0);
+            return std(Object.assign({ map: t, bumpMap: t, bumpScale: 0.6 }, extra));
+        }
+        // Stěna jako kvádr od (x0, z0) do (x1, z1), od y0 do y1; otvory na délce stěny {a, b, h}
+        function wall(x0, z0, x1, z1, kind, openings = [], opts = {}) {
+            const alongX = (x1 - x0) >= (z1 - z0);
+            const from = alongX ? x0 : z0, to = alongX ? x1 : z1;
+            const t0 = alongX ? z0 : x0, t1 = alongX ? z1 : x1;
+            const canvas = kind === 'block' ? blockBase : plasterBase;
+            const parts = [];
+            let cur = from;
+            const ops = openings.slice().sort((p, q) => p.a - q.a);
+            ops.forEach(o => { parts.push([cur, o.a, 0, H]); parts.push([o.a, o.b, o.h, H]); if (o.y0) parts.push([o.a, o.b, 0, o.y0]); cur = o.b; });
+            parts.push([cur, to, 0, H]);
+            parts.forEach(([a, b, y0, y1]) => {
+                if (b - a < 0.001 || y1 - y0 < 0.001) return;
+                const len = b - a, hh = y1 - y0, th = t1 - t0;
+                const mat = tiledMat(canvas, len, hh);
+                mat.map.offset.y = y0 / H;
+                const g = alongX ? box(len, hh, th) : box(th, hh, len);
+                const cx = alongX ? (a + b) / 2 : (t0 + t1) / 2, cz = alongX ? (t0 + t1) / 2 : (a + b) / 2;
+                add(g, mat, cx, (y0 + y1) / 2, cz, opts);
+            });
+        }
+
+        // Podlaha a strop
+        const W = XE - XS, D = C1Z + C1D;
+        const floor = add(new THREE.PlaneGeometry(W, D), std({ map: canvasTex(floorCanvas()), roughness: 0.95 }), (XS + XE) / 2, 0, D / 2, { cast: false });
+        floor.rotation.x = -Math.PI / 2;
+        const ceil = add(new THREE.PlaneGeometry(W, D), std({ color: '#e9e6e0' }), (XS + XE) / 2, H, D / 2, { cast: false, cut: true });
+        ceil.rotation.x = Math.PI / 2;
+
+        // ---------- Stávající stěny (omítka) ----------
+        const T = 0.40;
+        wall(XS, -T, XE, 0, 'plaster', WINDOWS.map(([a, b]) => ({ a, b, y0: WIN_SILL, h: WIN_TOP })));   // severní obvodová (okno A6)
+        wall(XS, 0, A4X0, C1Z, 'plaster');                                                // A3 | A4 (0,80 m)
+        wall(XS - PT, C1Z, XS, D, 'plaster', [], { cut: true });                         // řez chodbou C1 na západě
+        wall(SCX1, 0, SCX1 + 0.36, D, 'plaster', [{ a: 2.15, b: 3.00, h: DOOR_H }]);     // boční chodba | A5 a uzel | B6, dveře 885/7
+        wall(SCX1 + 0.36, 0, XE, D, 'plaster');                                          // A5 / B6 (mimo řešení)
+        wall(XS, D, XE, D + 0.3, 'plaster', [], { cut: true });                          // jižní stěna chodby C1
+        // okna: sklo s mříží
+        WINDOWS.forEach(([a, b]) => {
+            const w = b - a, cx = (a + b) / 2, cy = (WIN_SILL + WIN_TOP) / 2;
+            const glass = new THREE.Mesh(new THREE.PlaneGeometry(w, WIN_TOP - WIN_SILL), new THREE.MeshStandardMaterial({ color: '#dfe9e2', emissive: '#e8f0ff', emissiveIntensity: 1.4, roughness: 0.4 }));
+            glass.position.set(cx, cy, -T + 0.08); scene.add(glass);
+            const bar = std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 });
+            for (let k = 1; k < 5; k++) add(box(0.012, WIN_TOP - WIN_SILL, 0.012), bar, a + k * w / 5, cy, -T + 0.2);
+            const ra = new THREE.RectAreaLight('#eaf1ff', 3, w, WIN_TOP - WIN_SILL);
+            ra.position.set(cx, cy, -0.02); ra.lookAt(cx, cy - 0.5, 3); scene.add(ra);
+        });
+
+        // ---------- Nové příčky z tvárnic 15 cm (místo dřevěných stěn A4) ----------
+        wall(A4X0, A4Z, SCX0, C1Z, 'block', [{ a: 16.045, b: 16.845, h: DOOR_H }]);     // č. 11: 885/10 do C1, v zákrytu se zdí
+        wall(A4X1, 0, SCX0, A4Z, 'block');                                                // č. 12: 885/10 | A6 a boční chodba
+        wall(SCX0, 1.95, SCX1, 2.10, 'block', [{ a: 17.445, b: 18.245, h: DOOR_H }]);    // A6 do boční chodby
+
+        // ---------- Dveře ----------
+        const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
+        const leafMat = std({ color: '#5f7080', metalness: 0.35, roughness: 0.5 });
+        const handleMat = std({ color: '#cfd8dc', metalness: 0.9, roughness: 0.25 });
+        // axis: 'x' = dveře ve stěně vedené podél x, 'z' = podél z; face = souřadnice líce na straně přístupu;
+        // into = -1/+1 směr do kóje; a = začátek otvoru; open = úhel otevření (rad); dw = šířka
+        function door(name, axis, face, into, a, open = 0, dw = DOOR_W) {
+            const hinge = new THREE.Group();
+            if (axis === 'x') {
+                hinge.position.set(a + 0.01, 0, face + into * 0.03);
+                hinge.rotation.y = -into * open;
+            } else {
+                hinge.position.set(face + into * 0.03, 0, a + 0.01);
+                hinge.rotation.y = -Math.PI / 2 + into * open;
+            }
+            scene.add(hinge);
+            add(box(dw - 0.02, DOOR_H - 0.02, 0.04), leafMat, (dw - 0.02) / 2, DOOR_H / 2, 0, { parent: hinge });
+            [-1, 1].forEach(sd => {
+                add(box(0.13, 0.02, 0.06), handleMat, dw - 0.12, 1.05, sd * 0.045, { parent: hinge });
+                const sign = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.11), new THREE.MeshStandardMaterial({ map: signTexture(name), roughness: 0.5 }));
+                sign.position.set(dw / 2, 1.62, sd * 0.022); if (sd < 0) sign.rotation.y = Math.PI; hinge.add(sign);
+            });
+            const out = face - into * 0.012;
+            if (axis === 'x') {
+                add(box(0.035, DOOR_H + 0.04, 0.03), frameMat, a - 0.012, (DOOR_H + 0.04) / 2, out);
+                add(box(0.035, DOOR_H + 0.04, 0.03), frameMat, a + dw + 0.012, (DOOR_H + 0.04) / 2, out);
+                add(box(dw + 0.06, 0.035, 0.03), frameMat, a + dw / 2, DOOR_H + 0.018, out);
+            } else {
+                add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, out, (DOOR_H + 0.04) / 2, a - 0.012);
+                add(box(0.03, DOOR_H + 0.04, 0.035), frameMat, out, (DOOR_H + 0.04) / 2, a + dw + 0.012);
+                add(box(0.03, 0.035, dw + 0.06), frameMat, out, DOOR_H + 0.018, a + dw / 2);
+            }
+        }
+        door('885/10', 'x', C1Z, -1, 16.045, 0.6);
+        door('A6', 'x', 2.10, -1, 17.445);
+        door('885/7', 'z', SCX1, 1, 2.15, 0, 0.85);
+
+        // ---------- Vybavení: regály, svítidla ----------
+        const shelfMat = std({ color: '#9aa5ab', metalness: 0.6, roughness: 0.45 });
+        const boxCols = ['#b48a5a', '#a07a4c', '#c49a68', '#5d7f99', '#7a8b5c'];
+        function shelf(x0, z0, x1, z1, side, seed) {
+            const r = rng(seed), sd = 0.45;
+            const len = side === 'n' ? (x1 - x0) - 0.3 : (z1 - z0) - 0.6;
+            const cx = side === 'n' ? (x0 + x1) / 2 : x0 + 0.05 + sd / 2;
+            const cz = side === 'n' ? z0 + 0.05 + sd / 2 : z0 + 0.1 + len / 2;
+            [0.15, 0.75, 1.35, 1.95].forEach(y => add(side === 'n' ? box(len, 0.03, sd) : box(sd, 0.03, len), shelfMat, cx, y, cz));
+            [-1, 1].forEach(e => [-1, 1].forEach(f => add(box(0.03, 2.0, 0.03), shelfMat,
+                cx + (side === 'n' ? e * len / 2 : f * sd / 2), 1.0, cz + (side === 'n' ? f * sd / 2 : e * len / 2))));
+            [0.17, 0.77, 1.37].forEach(y => {
+                for (let k = 0; k < Math.floor(len / 0.5); k++) {
+                    if (r() < 0.3) continue;
+                    const bh = 0.25 + r() * 0.2, along = -len / 2 + 0.25 + k * 0.5;
+                    add(box(side === 'n' ? 0.4 : 0.36, bh, side === 'n' ? 0.36 : 0.4), std({ color: boxCols[Math.floor(r() * boxCols.length)] }),
+                        cx + (side === 'n' ? along : 0), y + bh / 2, cz + (side === 'n' ? 0 : along));
+                }
+            });
+        }
+        shelf(A4X0, 0, A4X1, A4Z, 'w', 91);          // 885/10 – regál u západní stěny
+        shelf(A4X0 + 0.6, 0, A4X1, A4Z, 'n', 92);    // 885/10 – regál u severní stěny
+        shelf(SCX0, 0, SCX1, 1.95, 'n', 93);         // A6 – společná kóje
+        // svítidla v kójích (Elektroinstalace 2): 885/10 okruh O2, A6 okruh O1
+        [[15.18, 0.60, 2.5], [17.30, 1.45, 2.5]].forEach(([x, z, i]) => {
+            add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), x, H - 0.03, z, { cast: false, cut: true });
+            const pl = new THREE.PointLight('#ffe9cc', i, 6, 2); pl.position.set(x, H - 0.25, z); scene.add(pl);
+        });
+
+        // ---------- Elektro ----------
+        const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
+        const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
+        const tray = (xa, za, xb, zb) => add(box(Math.abs(xb - xa) + 0.06, 0.04, Math.abs(zb - za) + 0.06), pvc, (xa + xb) / 2, H - 0.02, (za + zb) / 2, { cast: false, cut: true });
+        tray(XS, 4.05, 17.30, 4.05); tray(17.30, 4.05, 17.30, 1.0); tray(17.30, 1.0, SCX1, 1.0); tray(14.50, 4.05, 14.50, 3.55); tray(17.30, 4.65, SCX1, 4.65);
+        // zásuvky: 885/10 (K9) na příčce č. 11, A6 (Z1) u východní stěny
+        [[14.50, A4Z - 0.03, 'z'], [SCX1 - 0.03, 1.0, 'x']].forEach(([x, z, n]) => {
+            add(n === 'x' ? box(0.05, 0.08, 0.08) : box(0.08, 0.08, 0.05), pvc, x, 1.2, z);
+            add(box(0.03, H - 1.25, 0.03), pvc, x, (H + 1.25) / 2, z, { cast: false });
+        });
+        // společné osvětlení chodby C1 a uzlu (LED lišty), čidlo pohybu
+        [[15.6, C1Z + C1D / 2, 1.2], [17.65, C1Z + C1D / 2, 1.2], [17.85, 3.0, 0.6]].forEach(([x, z, l]) => {
+            add(box(l, 0.05, 0.12), pvc, x, H - 0.025, z, { cast: false, cut: true });
+            add(box(l - 0.05, 0.01, 0.09), ledMat, x, H - 0.052, z, { cast: false, cut: true });
+            const ra = new THREE.RectAreaLight('#fff6ea', 9, l - 0.05, 0.1);
+            ra.position.set(x, H - 0.06, z); ra.lookAt(x, 0, z); scene.add(ra);
+        });
+
+        // ---------- Osvětlení ----------
+        scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
+        [[15.6, 2.3, C1Z + 0.8, 6], [17.8, 2.3, 4.4, 5], [17.85, 2.3, 2.9, 4], [15.5, 2.3, 1.8, 4]].forEach(([x, y, z, i]) => {
+            const l = new THREE.PointLight('#fff3e2', i, 9, 2);
+            l.position.set(x, y, z); l.castShadow = true; l.shadow.mapSize.set(1024, 1024); l.shadow.bias = -0.002;
+            scene.add(l);
+        });
+
+        // ---------- Kamera, pohledy ----------
+        const camera = new THREE.PerspectiveCamera(60, 1, 0.05, 80);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        const VIEWS = {
+            entry: { pos: [15.0, 1.6, 5.25], target: [16.9, 1.0, 2.2], fov: 78 },
+            side: { pos: [17.85, 1.6, 5.1], target: [17.85, 1.0, 0.6], fov: 72 },
+            koje: { pos: [16.5, 1.6, 3.3], target: [14.3, 0.9, 0.4], fov: 78 },
+            cutaway: { pos: [(XS + XE) / 2 + 2.0, 10.5, D + 5.5], target: [(XS + XE) / 2 - 0.2, 0, 2.0], fov: 44 }
+        };
+        function setView(name) {
+            const v = VIEWS[name];
+            camera.position.set(...v.pos); controls.target.set(...v.target); camera.fov = v.fov;
+            camera.updateProjectionMatrix(); controls.update();
+            const cut = name === 'cutaway';
+            scene.traverse(o => { if (o.userData.cutaway) o.visible = !cut; });
+            document.querySelectorAll('.buttons button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+        }
+        document.querySelectorAll('.buttons button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+        let composer = null;
+        function resize() {
+            const w = outW || window.innerWidth, h = outH || window.innerHeight;
+            renderer.setSize(w, h, !renderMode);
+            camera.aspect = w / h; camera.updateProjectionMatrix();
+            if (composer) composer.setSize(w, h);
+        }
+        try {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            const ao = new GTAOPass(scene, camera, 1, 1);
+            ao.updateGtaoMaterial({ radius: 0.5, distanceExponent: 1.5, thickness: 1.5, scale: 1.2 });
+            composer.addPass(ao);
+            composer.addPass(new OutputPass());
+        } catch (e) {
+            console.warn('Post-processing nedostupné:', e);
+            composer = null;
+        }
+        window.addEventListener('resize', resize);
+        setView(params.get('view') || 'entry');
+        resize();
+
+        function frame() {
+            controls.update();
+            if (composer) composer.render(); else renderer.render(scene, camera);
+        }
+        if (renderMode) {
+            frame(); frame();
+            window.__rendered = true;
+        } else {
+            renderer.setAnimationLoop(frame);
+        }
+    </script>
+</body>
+</html>
