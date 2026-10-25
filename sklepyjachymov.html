@@ -1352,6 +1352,26 @@
                         <circle cx="634" cy="282" r="8.5" class="photo-dot"></circle>
                         <text x="634" y="285.2" class="photo-num">10</text>
                     </g>
+                    <g class="photo-pin" onclick="showPhoto(11, 'Pohled do B5 (součást nebytové jednotky 885/12)')">
+                        <path d="M 930 334 L 944.08 360.49 A 30 30 0 0 1 915.92 360.49 Z" class="photo-cone"></path>
+                        <circle cx="930" cy="334" r="8.5" class="photo-dot"></circle>
+                        <text x="930" y="337.2" class="photo-num">11</text>
+                    </g>
+                    <g class="photo-pin" onclick="showPhoto(12, 'B2 od vstupu z chodby C1, ocelová mřížová vrata vpravo')">
+                        <path d="M 480 336 L 481.57 365.96 A 30 30 0 0 1 456.04 354.05 Z" class="photo-cone"></path>
+                        <circle cx="480" cy="336" r="8.5" class="photo-dot"></circle>
+                        <text x="480" y="339.2" class="photo-num">12</text>
+                    </g>
+                    <g class="photo-pin" onclick="showPhoto(13, 'Z A1 do A2 přes současné dveře 1,00 m (budoucí průchod), vzadu dveře v dřevěné příčce A2')">
+                        <path d="M 226 194 L 252.49 179.92 A 30 30 0 0 1 252.49 208.08 Z" class="photo-cone"></path>
+                        <circle cx="226" cy="194" r="8.5" class="photo-dot"></circle>
+                        <text x="226" y="197.2" class="photo-num">13</text>
+                    </g>
+                    <g class="photo-pin" onclick="showPhoto(14, 'Z A2 do A1 přes současné dveře 1,00 m (budoucí průchod), vlevo dřevěná příčka A2 do C1')">
+                        <path d="M 426 194 L 399.51 208.08 A 30 30 0 0 1 399.51 179.92 Z" class="photo-cone"></path>
+                        <circle cx="426" cy="194" r="8.5" class="photo-dot"></circle>
+                        <text x="426" y="197.2" class="photo-num">14</text>
+                    </g>
                 </g>
             </svg>
         </div>
@@ -1488,7 +1508,7 @@
                 layerWork.style.display = 'block';
                 layerPhotos.style.display = 'block';
                 layerWork.removeAttribute('opacity');
-                document.getElementById('panel-body').innerHTML = '<p style="color:#555;">Fotodokumentace současného stavu (10 fotek). Klikněte na číslo v plánku – výseč ukazuje směr pohledu.</p>';
+                document.getElementById('panel-body').innerHTML = '<p style="color:#555;">Fotodokumentace současného stavu (14 fotek). Klikněte na číslo v plánku – výseč ukazuje směr pohledu.</p>';
             } else if (mode === 'electric') {
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';
