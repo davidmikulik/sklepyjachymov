@@ -206,6 +206,14 @@
         .cage-door { fill: #37474f; fill-opacity: 0.4; stroke: #102a43; stroke-width: 2; cursor: pointer; }
         .cage-door:hover { fill: #455a64; fill-opacity: 0.7; }
 
+        .wall-mass { fill: #cfd4d8; }
+        .wood-wall { fill: #a1887f; stroke: #6d4c41; stroke-width: 1; cursor: pointer; }
+        .opening { fill: #f5f5f5; stroke: none; }
+        .win { fill: #b3e5fc; stroke: #0277bd; stroke-width: 1; cursor: pointer; }
+        .v2-mass { fill: #8a9399; }
+        .v2-win { fill: #e1f5fe; stroke: #4fc3f7; stroke-width: 1; cursor: pointer; }
+        .v2-hatch { fill: #78909c; stroke: #37474f; stroke-width: 1; cursor: pointer; }
+        .dim-text-small { font-size: 8.5px; }
         /* Vizualizace kójí 2 */
         .v2-unit { fill: #bbdefb; stroke: none; cursor: pointer; transition: fill 0.2s; }
         .v2-unit:hover { fill: #90caf9; }
@@ -373,7 +381,7 @@
                 <input type="file" id="file-input" accept="image/*" onchange="loadCustomImage(event)" style="font-size:11px;">
             </div>
 
-            <svg viewBox="0 0 1100 560" id="main-svg">
+            <svg viewBox="0 0 1190 650" id="main-svg">
                 <defs>
                     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
                         <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"></path>
@@ -408,6 +416,11 @@
                 </defs>
                 <rect width="100%" height="100%" fill="url(#grid)"></rect>
 
+                <!-- PODKLAD: zdivo (vše mimo místnosti) -->
+                <g id="layer-base" pointer-events="none">
+                    <rect x="74" y="48" width="1030.2" height="510.16" class="wall-mass"></rect>
+                </g>
+
                 <!-- VRSTVA 0: OBRÁZEK Z PROHLÁŠENÍ VLASTNÍKA -->
                 <g id="layer-doc" style="display: none;">
                     <image id="doc-image" href="sklepyzprohlasenivlastnika.png " x="80" y="70" width="940" height="420" opacity="0.85" preserveAspectRatio="none" onerror="handleImageError(this)" onclick="window.open('https://drive.google.com/uc?export=view&id=1EJGbXu_3tZ3E7xuVpOS0kPoH5D7D6bfz', '_blank')" style="cursor: pointer;"/>
@@ -415,912 +428,863 @@
 
                 <!-- VRSTVA 1: FYZICKÉ MÍSTNOSTI -->
                 <g id="layer-working" style="display: block;">
-                    <rect x="90" y="80" width="240" height="132" class="working-room" onclick="selectItem('working', 'A1', 'Fyzická místnost A1', '6,00 x 3,30 m (19,80 m²)', 'Místnost s kójemi 885/1, 885/2, 885/6')"></rect>
-                    <text x="210" y="185" class="label-title">A1 (6,0 × 3,3 m)</text>
-
-                    <rect x="330" y="80" width="140" height="132" class="working-room" onclick="selectItem('working', 'A2', 'Fyzická místnost A2', '3,50 x 3,30 m (11,55 m²)', 'Místnost s kójemi 885/8 a 885/9')"></rect>
-                    <text x="400" y="185" class="label-title">A2 (3,5 × 3,3 m)</text>
-
-                    <rect x="470" y="80" width="80" height="132" class="stairs-work" onclick="selectItem('working', 'S1', 'Vstupní schodiště', '2,00 x 3,30 m', 'Schody')"></rect>
-                    <text x="510" y="146" class="label-title" fill="#e65100">SCHODY</text>
-
-                    <rect x="550" y="80" width="60" height="132" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,30 m (4,95 m²)', 'Sklad')"></rect>
-                    <text x="580" y="146" class="label-title" font-size="11px">A3 (1,5m)</text>
-
-                    <rect x="610" y="80" width="104" height="132" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,30 m (8,58 m²)', 'Kóje 885/10')"></rect>
-                    <text x="662" y="146" class="label-title">A4 (2,6 m)</text>
-
-                    <rect x="714" y="80" width="60" height="132" class="corridor-work" onclick="selectItem('working', 'C2', 'Odbočka chodby', '1,50 x 3,30 m', 'Prodloužení chodby')"></rect>
-                    <text x="744" y="146" class="label-sub" fill="#444" transform="rotate(-90 744 146)">CHODBA (1,5m)</text>
-
-                    <rect x="774" y="80" width="240" height="132" class="working-room" onclick="selectItem('working', 'A5', 'Fyzická místnost A5', '6,00 x 3,30 m (19,80 m²)', 'Sklad / Kóje 885/7')"></rect>
-                    <text x="894" y="146" class="label-title">A5 (6,0 × 3,3 m)</text>
-
-                    <rect x="90" y="212" width="624" height="62.4" class="corridor-work" onclick="selectItem('working', 'C1 (Hlavní)', 'Hlavní chodba', '15,60 x 1,56 m', 'Páteřní chodba sklepů')"></rect>
-                    <text x="402" y="243" class="label-title" fill="#555">SPOLEČNÁ CHODBA C1 (1,56 m)</text>
-
-                    <rect x="714" y="212" width="60" height="62.4" class="corridor-work" onclick="selectItem('working', 'C1-Uzel', 'Spojovací uzel chodby', '1,50 x 1,56 m', 'Propojení chodby')"></rect>
-
-                    <rect x="774" y="212" width="240" height="62.4" class="working-room" style="fill: #e8eaf6;" onclick="selectItem('working', 'B6', 'Fyzická místnost / Prostor B6', '6,00 x 1,56 m (9,36 m²)', 'Součást nebytové jednotky 885/12')"></rect>
-                    <text x="894" y="243" class="label-title" fill="#3f51b5">B6 (6,0 × 1,56 m)</text>
-
-                    <rect x="90" y="274.4" width="186" height="212" class="working-room" onclick="selectItem('working', 'B1', 'Fyzická místnost B1', '4,65 x 5,30 m (24,65 m²)', 'Nebytová jednotka 885/11')"></rect>
-                    <text x="183" y="380" class="label-title">B1 (4,65 × 5,3 m)</text>
-
-                    <rect x="276" y="274.4" width="220" height="212" class="working-room" onclick="selectItem('working', 'B2', 'Fyzická místnost B2', '5,50 x 5,30 m (29,15 m²)', 'Sklepní prostor pro kóje 885/4 a 885/5')"></rect>
-                    <text x="386" y="380" class="label-title">B2 (5,5 × 5,3 m)</text>
-
-                    <rect x="496" y="274.4" width="98" height="212" class="unusable-room" onclick="selectItem('unusable', 'V0', 'Nepoužitelný prostor', '2,45 x 5,30 m', 'Výsep pod schodištěm')"></rect>
-                    <text x="544" y="370" class="label-title" fill="#455a64">V0</text>
-                    <text x="544" y="390" class="label-sub" fill="#37474f" font-weight="bold">VÝSEP</text>
-
-                    <rect x="594" y="274.4" width="96" height="212" class="working-room" onclick="selectItem('working', 'B3', 'Fyzická místnost B3', '2,40 x 5,30 m (12,72 m²)', 'Součást nb. j. 885/12')"></rect>
-                    <text x="640" y="380" class="label-title">B3 (2,4m)</text>
-
-                    <rect x="690" y="274.4" width="132" height="212" class="working-room" onclick="selectItem('working', 'B4', 'Fyzická místnost B4', '3,30 x 5,30 m (17,49 m²)', 'Součást nb. j. 885/12')"></rect>
-                    <text x="754" y="380" class="label-title">B4 (3,3m)</text>
-
-                    <rect x="822" y="274.4" width="192" height="212" class="working-room" onclick="selectItem('working', 'B5', 'Fyzická místnost B5', '4,80 x 5,30 m (25,44 m²)', 'Součást nb. j. 885/12')"></rect>
-                    <text x="916" y="380" class="label-title">B5 (4,8 × 5,3 m)</text>
+                    <rect x="90" y="80" width="240" height="137.96" class="working-room" onclick="selectItem('working', 'A1', 'Fyzická místnost A1', '6,00 x 3,449 m (20,69 m²)', 'K nosné zdi, okna 2× 1,13 x 0,50 m')"></rect>
+                    <text x="210" y="148.98" class="label-title">A1 (6,00 × 3,45 m)</text>
+                    <rect x="342" y="80" width="140" height="140" class="working-room" onclick="selectItem('working', 'A2', 'Fyzická místnost A2', '3,50 x 3,50 m (12,25 m²)', 'K dřevěné příčce; po vybourání příčky 3,50 x 3,80 m')"></rect>
+                    <text x="412" y="150" class="label-title">A2 (3,50 × 3,50 m)</text>
+                    <rect x="506.8" y="64" width="43.4" height="168" class="stairs-work" onclick="selectItem('working', 'S1', 'Vstupní schodiště', '1,085 x 4,20 m', 'Schody')"></rect>
+                    <text x="528.5" y="148" class="label-title" fill="#e65100" transform="rotate(-90 528.5 148)">SCHODY 1,085 × 4,20</text>
+                    <rect x="563.4" y="80" width="60" height="148" class="working-room" onclick="selectItem('working', 'A3', 'Fyzická místnost A3', '1,50 x 3,70 m (5,55 m²)', 'Vstup uprostřed, zárubeň 0,60 m')"></rect>
+                    <text x="593.4" y="146" class="label-title">A3</text>
+                    <text x="593.4" y="164" class="label-sub">1,50 × 3,70</text>
+                    <rect x="655.4" y="80" width="104" height="152" class="working-room" onclick="selectItem('working', 'A4', 'Fyzická místnost A4', '2,60 x 3,80 m (9,88 m²)', 'Vstup 0,90 m na konci u boční chodby, bez okna')"></rect>
+                    <text x="707.4" y="148" class="label-title">A4</text>
+                    <text x="707.4" y="166" class="label-sub">2,60 × 3,80</text>
+                    <rect x="773.8" y="80" width="60" height="152" class="corridor-work" onclick="selectItem('working', 'C2', 'Boční chodba', '1,50 x 3,80 m', 'Prodloužení chodby k A5')"></rect>
+                    <text x="803.8" y="156" class="label-sub" transform="rotate(-90 803.8 156)">CHODBA 1,50 × 3,80</text>
+                    <rect x="848.2" y="80" width="240" height="120" class="working-room" onclick="selectItem('working', 'A5', 'Fyzická místnost A5', '6,00 x 3,00 m (18,00 m²)', 'Dveře 0,85 m z boční chodby')"></rect>
+                    <text x="968.2" y="140" class="label-title">A5 (6,00 × 3,00 m)</text>
+                    <rect x="90" y="232" width="669.4" height="62" class="corridor-work" onclick="selectItem('working', 'C1 (Hlavní)', 'Hlavní chodba', '16,71 x 1,55 m', 'Páteřní chodba sklepů')"></rect>
+                    <text x="424.7" y="263" class="label-title">SPOLEČNÁ CHODBA C1 (16,71 × 1,55 m)</text>
+                    <rect x="759.4" y="232" width="74.4" height="62" class="corridor-work" onclick="selectItem('working', 'C1-Uzel', 'Spojovací uzel chodby', '1,86 x 1,55 m', 'Propojení s boční chodbou')"></rect>
+                    <rect x="848.2" y="232" width="240" height="62" class="working-room" style="fill: #e8eaf6;" onclick="selectItem('working', 'B6', 'Fyzická místnost / Prostor B6', 'neověřeno', 'Součást nebytové jednotky 885/12')"></rect>
+                    <text x="968.2" y="255" class="label-title">B6</text>
+                    <text x="968.2" y="273" class="label-sub">(neověřeno)</text>
+                    <rect x="90" y="325.2" width="186" height="212" class="working-room" onclick="selectItem('working', 'B1', 'Fyzická místnost B1', '4,65 x 5,30 m (neověřeno)', 'Nebytová jednotka 885/11, vstup 0,90 m')"></rect>
+                    <text x="183" y="423.2" class="label-title">B1</text>
+                    <text x="183" y="441.2" class="label-sub">(neověřeno)</text>
+                    <rect x="288" y="325.2" width="213.8" height="216.96" class="working-room" onclick="selectItem('working', 'B2', 'Fyzická místnost B2', '5,345 x 5,424 m (28,99 m²)', 'Vstup 1,00 m z chodby C1, 3,60 m od rohu u B1')"></rect>
+                    <text x="394.9" y="433.68" class="label-title">B2 (5,345 × 5,424 m)</text>
+                    <rect x="513.8" y="325.2" width="98" height="212" class="unusable-room" onclick="selectItem('unusable', 'V0', 'Nepoužitelný prostor', 'neověřeno', 'Výsep pod schodištěm')"></rect>
+                    <text x="562.8" y="423.2" class="label-title">V0</text>
+                    <text x="562.8" y="441.2" class="label-sub">VÝSEP</text>
+                    <rect x="623.8" y="325.2" width="96" height="212" class="working-room" onclick="selectItem('working', 'B3', 'Fyzická místnost B3', 'neověřeno', 'Součást nb. j. 885/12')"></rect>
+                    <text x="671.8" y="423.2" class="label-title">B3</text>
+                    <text x="671.8" y="441.2" class="label-sub">(neověřeno)</text>
+                    <rect x="731.8" y="325.2" width="132" height="212" class="working-room" onclick="selectItem('working', 'B4', 'Fyzická místnost B4', 'neověřeno', 'Součást nb. j. 885/12')"></rect>
+                    <text x="797.8" y="423.2" class="label-title">B4</text>
+                    <text x="797.8" y="441.2" class="label-sub">(neověřeno)</text>
+                    <rect x="875.8" y="325.2" width="192" height="212" class="working-room" onclick="selectItem('working', 'B5', 'Fyzická místnost B5', 'neověřeno', 'Součást nb. j. 885/12')"></rect>
+                    <text x="971.8" y="423.2" class="label-title">B5</text>
+                    <text x="971.8" y="441.2" class="label-sub">(neověřeno)</text>
+                    <rect x="342" y="220" width="140" height="12" class="wood-wall" onclick="selectItem('working', 'Dřevěná příčka', 'Stávající dřevěná příčka před A2', 'tl. cca 0,30 m, dveře 0,80 m u pravého okraje', 'Bude vybourána, A2 pak 3,80 m hluboká')"></rect>
+                    <rect x="330" y="160" width="12" height="40" class="opening"><title>Dveře A1/A2: šířka 1,00 m, 2,00 m od severní zdi</title></rect>
+                    <rect x="432" y="294" width="40" height="31.2" class="opening"><title>Vstup do B2: 1,00 m, 3,60 m od rohu u B1</title></rect>
+                    <rect x="126" y="294" width="36" height="31.2" class="opening"><title>Vstup do B1: 0,90 m, 0,90 m od začátku chodby C1</title></rect>
+                    <rect x="833.8" y="166" width="14.4" height="34" class="opening"><title>Dveře 885/7: 0,85 m z boční chodby</title></rect>
+                    <rect x="581.4" y="228" width="24" height="4" class="opening"><title>Dveře A3: stávající zárubeň 0,60 m</title></rect>
+                    <rect x="719.4" y="232" width="36" height="4" class="opening"><title>Vstup A4: stávající 0,90 m, bude předělán</title></rect>
+                    <rect x="450" y="220" width="32" height="12" class="opening"><title>Dveře v dřevěné příčce: 0,80 m u pravého okraje</title></rect>
+                    <rect x="114" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                    <rect x="236.8" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                    <rect x="357.2" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                    <rect x="863.4" y="64" width="45.2" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                    <rect x="789" y="64" width="44.8" height="16" class="win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                    <rect x="324.8" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď')"></rect>
+                    <rect x="429" y="542.16" width="46.4" height="16" class="win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď')"></rect>
                 </g>
 
                 <!-- VRSTVA 2: OFICIÁLNÍ STAV -->
                 <g id="layer-official" style="display: none;">
                     <rect x="90" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/1', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
                     <text x="130" y="108" class="label-title" fill="#d84315">885/1</text>
-
                     <rect x="170" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/6', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
                     <text x="210" y="108" class="label-title" fill="#d84315">885/6</text>
-
                     <rect x="250" y="80" width="80" height="56" class="official-unit" onclick="selectItem('official', '885/8', 'Sklepní kóje', '2,00 x 1,40 m (2,80 m²)', 'Příslušenství k bytu v A1')"></rect>
                     <text x="290" y="108" class="label-title" fill="#d84315">885/8</text>
-
-                    <rect x="330" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/9', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
-                    <text x="365" y="108" class="label-title" fill="#d84315">885/9</text>
-
-                    <rect x="400" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/2', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
-                    <text x="435" y="108" class="label-title" fill="#d84315">885/2</text>
-
-                    <rect x="610" y="80" width="104" height="132" class="official-unit" onclick="selectItem('official', '885/10', 'Sklepní kóje', 'Odpovídá A4', 'Příslušenství k bytu')"></rect>
-                    <text x="662" y="146" class="label-title" fill="#d84315">885/10</text>
-
-                    <rect x="714" y="80" width="60" height="132" class="official-unit" style="stroke:#757575; fill:#eee; fill-opacity:0.3;" onclick="selectItem('official', 'Společná chodba', 'Společný prostor', 'Šířka 1,5m', 'Chodba vymezená v Prohlášení')"></rect>
-
-                    <rect x="774" y="80" width="240" height="132" class="official-unit" onclick="selectItem('official', '885/7', 'Sklepní kóje', 'Odpovídá A5', 'Příslušenství k bytu')"></rect>
-                    <text x="894" y="146" class="label-title" fill="#d84315">885/7 (A5)</text>
-
-                    <rect x="90" y="274.4" width="186" height="212" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/11', 'Nebytová jednotka', 'Výměra z PV: 27,83 m²', 'Právně ucelený prostor (B1)')"></rect>
-                    <text x="183" y="370" class="label-title" fill="#d84315">nb. j. č. 885/11</text>
-                    <text x="183" y="390" class="label-title" fill="#d84315" font-size="11px">(27,83 m²)</text>
-
-                    <path d="M 594,274.4 L 774,274.4 L 774,212 L 1014,212 L 1014,486.4 L 594,486.4 Z" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/12', 'Nebytová jednotka', 'Výměra z PV: 59,03 m²', 'Společný blok: B3 + B4 + B5 + B6')"></path>
-                    <text x="802" y="370" class="label-title" fill="#d84315">nb. j. č. 885/12</text>
-                    <text x="802" y="390" class="label-title" fill="#d84315" font-size="11px">(59,03 m²)</text>
+                    <rect x="342" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/9', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
+                    <text x="377" y="108" class="label-title" fill="#d84315">885/9</text>
+                    <rect x="412" y="80" width="70" height="56" class="official-unit" onclick="selectItem('official', '885/2', 'Sklepní kóje', '1,75 x 1,40 m (2,45 m²)', 'Příslušenství k bytu v A2')"></rect>
+                    <text x="447" y="108" class="label-title" fill="#d84315">885/2</text>
+                    <rect x="655.4" y="80" width="104" height="152" class="official-unit" onclick="selectItem('official', '885/10', 'Sklepní kóje', 'Odpovídá A4', 'Příslušenství k bytu')"></rect>
+                    <text x="707.4" y="156" class="label-title" fill="#d84315">885/10</text>
+                    <rect x="773.8" y="80" width="60" height="152" class="official-unit" style="stroke:#757575; fill:#eee; fill-opacity:0.3;" onclick="selectItem('official', 'Společná chodba', 'Společný prostor', 'Šířka 1,5 m', 'Chodba vymezená v Prohlášení')"></rect>
+                    <rect x="848.2" y="80" width="240" height="120" class="official-unit" onclick="selectItem('official', '885/7', 'Sklepní kóje', 'Odpovídá A5', 'Příslušenství k bytu')"></rect>
+                    <text x="968.2" y="140" class="label-title" fill="#d84315">885/7 (A5)</text>
+                    <rect x="90" y="325.2" width="186" height="212" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/11', 'Nebytová jednotka', 'Výměra z PV: 27,83 m²', 'Právně ucelený prostor (B1)')"></rect>
+                    <text x="183" y="421.2" class="label-title" fill="#d84315">nb. j. č. 885/11</text>
+                    <text x="183" y="441.2" class="label-title" fill="#d84315" font-size="11px">(27,83 m²)</text>
+                    <rect x="623.8" y="325.2" width="444" height="212" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/12', 'Nebytová jednotka', 'Výměra z PV: 59,03 m²', 'Společný blok: B3 + B4 + B5 + B6')"></rect>
+                    <text x="845.8" y="421.2" class="label-title" fill="#d84315">nb. j. č. 885/12</text>
+                    <text x="845.8" y="441.2" class="label-title" fill="#d84315" font-size="11px">(59,03 m²)</text>
+                    <rect x="848.2" y="232" width="240" height="62" class="official-unit" onclick="selectItem('official', 'nb. j. č. 885/12', 'Nebytová jednotka', 'Výměra z PV: 59,03 m²', 'Společný blok: B3 + B4 + B5 + B6')"></rect>
                 </g>
 
                 <!-- VRSTVA 4: NÁVRH CÍLOVÉHO STAVU (Obsahuje Kóje 885/4 a 885/5) -->
                 <g id="layer-proposal" style="display: none;">
-                    <rect x="550" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal', 'A3', 'Společný sklep A3', '1,50 x 3,30 m (4,95 m²)', 'Společný prostor v cílovém stavu')"></rect>
-                    <text x="580" y="136" class="label-title" fill="#0d47a1">A3</text>
-                    <text x="580" y="156" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+                    <rect x="563.4" y="80" width="60" height="148" class="proposed-unit" onclick="selectItem('proposal', 'A3', 'Společný sklep A3', '1,50 x 3,30 m (4,95 m²)', 'Společný prostor v cílovém stavu')"></rect>
+                    <text x="593.4" y="142.79" class="label-title" fill="#0d47a1">A3</text>
+                    <text x="593.4" y="165.21" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
 
-                    <rect x="714" y="80" width="60" height="60" class="proposed-unit" onclick="selectItem('proposal', 'A6', 'Společná část A6', '2,00 x 1,50 m (3,00 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
-                    <text x="744" y="110" class="label-title" fill="#0d47a1">A6</text>
-                    <text x="744" y="126" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
+                    <rect x="773.8" y="80" width="60" height="69.09" class="proposed-unit" onclick="selectItem('proposal', 'A6', 'Společná část A6', '2,00 x 1,50 m (3,00 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
+                    <text x="803.8" y="114.55" class="label-title" fill="#0d47a1">A6</text>
+                    <text x="803.8" y="132.97" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
 
-                    <rect x="714" y="140" width="60" height="72" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
-                    <text x="744" y="180" class="label-sub" fill="#455a64" font-size="10px">CHODBA (1,5 m)</text>
+                    <rect x="773.8" y="149.09" width="60" height="82.91" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
+                    <text x="803.8" y="195.15" class="label-sub" fill="#455a64" font-size="10px">CHODBA (1,5 m)</text>
 
-                    <rect x="276" y="362.4" width="136" height="124" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '1,70 x 3,10 m (5,27 m²)', 'Nová kóje v levé části B2, příčky tvárnice/kov, dveře v pravé stěně')"></rect>
-                    <text x="340" y="424" class="label-title" fill="#0d47a1">885/4</text>
-                    <text x="340" y="440" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 3,1 m)</text>
+                    <rect x="288" y="415.26" width="132.17" height="126.9" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '1,70 x 3,10 m (5,27 m²)', 'Nová kóje v levé části B2, příčky tvárnice/kov, dveře v pravé stěně')"></rect>
+                    <text x="350.2" y="478.3" class="label-title" fill="#0d47a1">885/4</text>
+                    <text x="350.2" y="494.67" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 3,1 m)</text>
 
-                    <rect x="276" y="274.4" width="136" height="88" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '1,70 x 2,20 m (3,74 m²)', 'Nová kóje vedle 885/4 v místnosti B2, dveře v pravé stěně')"></rect>
-                    <text x="340" y="318" class="label-title" fill="#0d47a1">885/5</text>
-                    <text x="340" y="334" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 2,2 m)</text>
+                    <rect x="288" y="325.2" width="132.17" height="90.06" class="proposed-unit" onclick="selectItem('proposal', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '1,70 x 2,20 m (3,74 m²)', 'Nová kóje vedle 885/4 v místnosti B2, dveře v pravé stěně')"></rect>
+                    <text x="350.2" y="369.82" class="label-title" fill="#0d47a1">885/5</text>
+                    <text x="350.2" y="386.19" class="label-title" fill="#0d47a1" font-size="10px">(3,4 × 2,2 m)</text>
                 </g>
 
                 <!-- VRSTVA 4b: NÁVRH CÍLOVÉHO STAVU 2 (výchozí kopie vrstvy 4, bude dále upravována) -->
                 <g id="layer-proposal2" style="display: none;">
-                    <!-- A1: 885/1 přes celou hloubku, 885/6 a 885/8 hloubka 2 m, příčky 15 cm (měřítko 40 px = 1 m) -->
-                    <rect x="90" y="80" width="240" height="132" fill="#f5f5f5" stroke="none"></rect>
-                    <rect x="90" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/1', 'Prodloužená sklepní kóje', '1,50 x 3,30 m (4,95 m²)', 'Kóje 885/1 na celou hloubku místnosti A1 (původně 2,00 x 1,40 m)')"></rect>
-                    <text x="120" y="136" class="label-title" fill="#0d47a1">885/1</text>
-                    <text x="120" y="156" class="label-title" fill="#0d47a1" font-size="9px">1,5 × 3,3</text>
-
-                    <rect x="156" y="80" width="84" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/6', 'Upravená sklepní kóje', '2,10 x 2,00 m (4,20 m²)', 'Kóje v místnosti A1, hloubka 2 m, příčky 15 cm (původně 2,00 x 1,40 m)')"></rect>
-                    <text x="198" y="98" class="label-title" fill="#0d47a1">885/6</text>
-                    <text x="198" y="114" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
-
-                    <rect x="246" y="80" width="84" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/8', 'Upravená sklepní kóje', '2,10 x 2,00 m (4,20 m²)', 'Kóje v místnosti A1, hloubka 2 m, příčky 15 cm (původně 2,00 x 1,40 m)')"></rect>
-                    <text x="288" y="98" class="label-title" fill="#0d47a1">885/8</text>
-                    <text x="288" y="114" class="label-title" fill="#0d47a1" font-size="10px">(2,1 × 2,0 m)</text>
-
-                    <rect x="156" y="166" width="174" height="46" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'A1 – volný prostor', 'Přístupová plocha před kójemi', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/6 a 885/8 z chodby C1')"></rect>
-                    <text x="243" y="189" class="label-sub" fill="#455a64" font-size="10px">PŘÍSTUP (4,35 × 1,15 m)</text>
-
-                    <!-- Příčky 15 cm -->
-                    <rect x="150" y="80" width="6" height="132" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="240" y="80" width="6" height="80" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="156" y="160" width="174" height="6" fill="#546e7a" pointer-events="none"></rect>
-
-                    <!-- A2: 885/2 šířka 1,5 m přes celou hloubku, 885/9 hloubka 2 m a zbylá šířka, příčky 15 cm -->
-                    <rect x="330" y="80" width="140" height="132" fill="#f5f5f5" stroke="none"></rect>
-                    <rect x="410" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/2', 'Prodloužená sklepní kóje', '1,50 x 3,30 m (4,95 m²)', 'Kóje 885/2 na celou hloubku místnosti A2 (původně 1,75 x 1,40 m)')"></rect>
-                    <text x="440" y="136" class="label-title" fill="#0d47a1">885/2</text>
-                    <text x="440" y="156" class="label-title" fill="#0d47a1" font-size="9px">1,5 × 3,3</text>
-
-                    <rect x="330" y="80" width="74" height="80" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/9', 'Upravená sklepní kóje', '1,85 x 2,00 m (3,70 m²)', 'Kóje v místnosti A2, hloubka 2 m, příčky 15 cm (původně 1,75 x 1,40 m)')"></rect>
-                    <text x="367" y="98" class="label-title" fill="#0d47a1">885/9</text>
-                    <text x="367" y="114" class="label-title" fill="#0d47a1" font-size="9px">1,85 × 2,0</text>
-
-                    <rect x="330" y="166" width="74" height="46" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'A2 – volný prostor', 'Přístupová plocha před kójí', '1,85 x 1,15 m (2,13 m²)', 'Přístup ke kóji 885/9 z chodby C1')"></rect>
-                    <text x="367" y="186" class="label-sub" fill="#455a64" font-size="9px">PŘÍSTUP</text>
-                    <text x="367" y="198" class="label-sub" fill="#455a64" font-size="9px">1,85 × 1,15</text>
-
-                    <!-- Příčky 15 cm -->
-                    <rect x="404" y="80" width="6" height="132" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="330" y="160" width="74" height="6" fill="#546e7a" pointer-events="none"></rect>
-
-                    <rect x="550" y="80" width="60" height="132" class="proposed-unit" onclick="selectItem('proposal2', 'A3', 'Společný sklep A3', '1,50 x 3,30 m (4,95 m²)', 'Společný prostor v cílovém stavu')"></rect>
-                    <text x="580" y="136" class="label-title" fill="#0d47a1">A3</text>
-                    <text x="580" y="156" class="label-title" fill="#0d47a1" font-size="10px">Společná</text>
-
-                    <rect x="714" y="80" width="60" height="84" class="proposed-unit" onclick="selectItem('proposal2', 'A6', 'Společná část A6', '1,50 x 2,10 m (3,15 m²)', 'Kóje A6 umístěná v chodbě 1,5 m v cílovém stavu')"></rect>
-                    <text x="744" y="96" class="label-title" fill="#0d47a1">A6</text>
-                    <text x="744" y="110" class="label-title" fill="#0d47a1" font-size="9px">1,5 × 2,1</text>
-
-                    <rect x="714" y="170" width="60" height="42" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"></rect>
-                    <text x="742" y="200" class="label-sub" fill="#455a64" font-size="8px">CHODBA</text>
-
-                    <!-- B2: tři stejné kóje 885/5, 885/X, 885/4 (vnitřní 3,40 × 1,67 m), příčky 15 cm -->
-                    <rect x="276" y="274.4" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/5', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Kóje v levé části B2 (1/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="330" y="300" class="label-title" fill="#0d47a1">885/5</text>
-                    <text x="330" y="318" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
-
-                    <rect x="276" y="347.07" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/X', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Nová kóje v levé části B2 (2/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="330" y="373" class="label-title" fill="#0d47a1">885/X</text>
-                    <text x="330" y="391" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
-
-                    <rect x="276" y="419.73" width="136" height="66.67" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/4', 'Navrhovaná sklepní kóje', '3,40 x 1,67 m (5,67 m²)', 'Kóje v levé části B2 (3/3), příčky 15 cm, dveře v pravé stěně')"></rect>
-                    <text x="330" y="446" class="label-title" fill="#0d47a1">885/4</text>
-                    <text x="330" y="464" class="label-title" fill="#0d47a1" font-size="10px">(3,40 × 1,67 m)</text>
-
-                    <!-- Příčky 15 cm -->
-                    <rect x="276" y="341.07" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="276" y="413.73" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
-
-                    <!-- Příčka 15 cm podél pravé strany kójí v B2 -->
-                    <rect x="412" y="274.4" width="6" height="212" fill="#546e7a" pointer-events="none"></rect>
-
-                    <!-- Nové příčky 15 cm na hranicích: 885/2 dole, 885/10 dole a vpravo, A6 dole, A3 dole -->
-                    <rect x="404" y="209" width="66" height="6" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="610" y="209" width="107" height="6" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="711" y="80" width="6" height="132" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="714" y="164" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
-                    <rect x="550" y="209" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
-
-                    <!-- DVEŘE: šířka 0,80 m, otevírání dovnitř kóje -->
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/1', 'Vstupní dveře kóje 885/1', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V příčce do přístupové plochy A1')">
-                        <rect x="150" y="173" width="6" height="32" class="door-gap"></rect>
-                        <line x1="150" y1="173" x2="118" y2="173" class="door-leaf"></line>
-                        <path d="M 150 173 L 118 173 A 32 32 0 0 0 150 205 Z" class="door-swing"></path>
+                    <!-- Návrh cílového stavu 2 podle přesného zaměření; rozměry kójí světlé, příčky 15 cm -->
+                    <rect x="90" y="80" width="240" height="137.96" fill="#f5f5f5" stroke="none"></rect>
+                    <rect x="342" y="80" width="140" height="152" fill="#f5f5f5" stroke="none"></rect>
+                    <rect x="90" y="80" width="60" height="137.96" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/1', 'Sklepní kóje – cílový stav', '1,50 x 3,45 m (5,17 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="120" y="142.98" class="label-title" fill="#0d47a1" style="font-size:11px;">885/1</text>
+                    <text x="120" y="156.18" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 3,45</text>
+                    <rect x="156" y="80" width="84" height="74" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/6', 'Sklepní kóje – cílový stav', '2,10 x 1,85 m (3,89 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="198" y="96.8" class="label-title" fill="#0d47a1" style="font-size:11px;">885/6</text>
+                    <text x="198" y="110" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">2,10 × 1,85</text>
+                    <rect x="246" y="80" width="84" height="74" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/8', 'Sklepní kóje – cílový stav', '2,10 x 1,85 m (3,89 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="288" y="96.8" class="label-title" fill="#0d47a1" style="font-size:11px;">885/8</text>
+                    <text x="288" y="110" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">2,10 × 1,85</text>
+                    <rect x="342" y="80" width="74" height="74" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/9', 'Sklepní kóje – cílový stav', '1,85 x 1,85 m (3,42 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="379" y="96.8" class="label-title" fill="#0d47a1" style="font-size:11px;">885/9</text>
+                    <text x="379" y="110" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,85 × 1,85</text>
+                    <rect x="422" y="80" width="60" height="146" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/2', 'Sklepní kóje – cílový stav', '1,50 x 3,65 m (5,47 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="452" y="147" class="label-title" fill="#0d47a1" style="font-size:11px;">885/2</text>
+                    <text x="452" y="160.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 3,65</text>
+                    <rect x="655.4" y="80" width="104" height="152" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/10', 'Sklepní kóje – cílový stav', '2,60 x 3,80 m (9,88 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="707.4" y="150" class="label-title" fill="#0d47a1" style="font-size:11px;">885/10</text>
+                    <text x="707.4" y="163.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">2,60 × 3,80</text>
+                    <rect x="848.2" y="80" width="240" height="120" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/7', 'Sklepní kóje – cílový stav', '6,00 x 3,00 m (18,00 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="968.2" y="134" class="label-title" fill="#0d47a1" style="font-size:11px;">885/7</text>
+                    <text x="968.2" y="147.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">6,00 × 3,00</text>
+                    <rect x="288" y="325.2" width="136" height="68.32" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/5', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="344" y="342" class="label-title" fill="#0d47a1" style="font-size:11px;">885/5</text>
+                    <text x="344" y="355.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">3,40 × 1,71</text>
+                    <rect x="288" y="399.52" width="136" height="68.32" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/X', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="344" y="416.32" class="label-title" fill="#0d47a1" style="font-size:11px;">885/X</text>
+                    <text x="344" y="429.52" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">3,40 × 1,71</text>
+                    <rect x="288" y="473.84" width="136" height="68.32" class="proposed-unit" onclick="selectItem('proposal2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="344" y="490.64" class="label-title" fill="#0d47a1" style="font-size:11px;">885/4</text>
+                    <text x="344" y="503.84" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">3,40 × 1,71</text>
+                    <rect x="563.4" y="80" width="60" height="148" class="proposed-unit" onclick="selectItem('proposal2', 'A3', 'Společný prostor', '1,50 x 3,70 m (5,55 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="593.4" y="148" class="label-title" fill="#0d47a1" style="font-size:11px;">A3</text>
+                    <text x="593.4" y="161.2" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 3,70</text>
+                    <rect x="773.8" y="80" width="60" height="78" class="proposed-unit" onclick="selectItem('proposal2', 'A6', 'Společný prostor', '1,50 x 1,95 m (2,92 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                    <text x="803.8" y="96.8" class="label-title" fill="#0d47a1" style="font-size:11px;">A6</text>
+                    <text x="803.8" y="110" class="label-title" fill="#0d47a1" style="font-size:9px; font-weight:normal;">1,50 × 1,95</text>
+                    <rect x="156" y="160" width="174" height="57.96" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,45 m (6,30 m²)', 'Přístup ke kójím 885/1, 885/6 a 885/8 průchodem z A2')"></rect>
+                    <rect x="342" y="160" width="74" height="72" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,80 m (3,33 m²)', 'Otevřeno do chodby C1 v celé šířce 885/9 (1,85 m); přístup k 885/9 a 885/2, průchodem doleva do A1')"></rect>
+                    <rect x="430" y="325.2" width="71.8" height="216.96" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'Přístup B2', 'Volná část B2', '1,79 x 5,42 m (9,74 m²)', 'Přístup ke kójím 885/5, 885/X a 885/4')"></rect>
+                    <rect x="773.8" y="164" width="60" height="68" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1" style="cursor: pointer;" onclick="selectItem('proposal2', 'Boční chodba', 'Boční chodba', '1,50 x 1,70 m (2,55 m²)', 'Přístup ke kójím A6 a 885/7')"></rect>
+                    <!-- Nové příčky 15 cm -->
+                    <rect x="150" y="80" width="6" height="137.96" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="240" y="80" width="6" height="74" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="156" y="154" width="174" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="342" y="154" width="74" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="416" y="80" width="6" height="152" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="422" y="226" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="288" y="393.52" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="288" y="467.84" width="136" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="424" y="325.2" width="6" height="216.96" fill="#546e7a" pointer-events="none"></rect>
+                    <rect x="773.8" y="158" width="60" height="6" fill="#546e7a" pointer-events="none"></rect>
+                    <!-- Dveře 0,80 m, otevírání dovnitř -->
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/1', 'Vstupní dveře 885/1', 'Šířka 0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1')">
+                        <rect x="150" y="172.8" width="6" height="32" class="door-gap"></rect>
+                        <path d="M 150 172.8 L 118 172.8 A 32 32 0 0 0 150 204.8 Z" class="door-swing"></path>
+                        <line x1="150" y1="172.8" x2="118" y2="172.8" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/6', 'Vstupní dveře kóje 885/6', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A1')">
-                        <rect x="182" y="160" width="32" height="6" class="door-gap"></rect>
-                        <line x1="182" y1="160" x2="182" y2="128" class="door-leaf"></line>
-                        <path d="M 182 160 L 182 128 A 32 32 0 0 1 214 160 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/6', 'Vstupní dveře 885/6', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A1')">
+                        <rect x="182" y="154" width="32" height="6" class="door-gap"></rect>
+                        <path d="M 182 154 L 182 122 A 32 32 0 0 1 214 154 Z" class="door-swing"></path>
+                        <line x1="182" y1="154" x2="182" y2="122" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/8', 'Vstupní dveře kóje 885/8', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A1')">
-                        <rect x="272" y="160" width="32" height="6" class="door-gap"></rect>
-                        <line x1="272" y1="160" x2="272" y2="128" class="door-leaf"></line>
-                        <path d="M 272 160 L 272 128 A 32 32 0 0 1 304 160 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/8', 'Vstupní dveře 885/8', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A1')">
+                        <rect x="272" y="154" width="32" height="6" class="door-gap"></rect>
+                        <path d="M 272 154 L 272 122 A 32 32 0 0 1 304 154 Z" class="door-swing"></path>
+                        <line x1="272" y1="154" x2="272" y2="122" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/9', 'Vstupní dveře kóje 885/9', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V čelní příčce, z přístupové plochy A2')">
-                        <rect x="351" y="160" width="32" height="6" class="door-gap"></rect>
-                        <line x1="351" y1="160" x2="351" y2="128" class="door-leaf"></line>
-                        <path d="M 351 160 L 351 128 A 32 32 0 0 1 383 160 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/9', 'Vstupní dveře 885/9', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A2')">
+                        <rect x="363" y="154" width="32" height="6" class="door-gap"></rect>
+                        <path d="M 363 154 L 363 122 A 32 32 0 0 1 395 154 Z" class="door-swing"></path>
+                        <line x1="363" y1="154" x2="363" y2="122" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/2', 'Vstupní dveře kóje 885/2', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V příčce do přístupové plochy A2')">
-                        <rect x="404" y="173" width="6" height="32" class="door-gap"></rect>
-                        <line x1="410" y1="173" x2="442" y2="173" class="door-leaf"></line>
-                        <path d="M 410 173 L 442 173 A 32 32 0 0 1 410 205 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/2', 'Vstupní dveře 885/2', 'Šířka 0,80 m, otevírání dovnitř', 'v boční příčce, z přístupové plochy A2')">
+                        <rect x="416" y="180" width="6" height="32" class="door-gap"></rect>
+                        <path d="M 422 180 L 454 180 A 32 32 0 0 1 422 212 Z" class="door-swing"></path>
+                        <line x1="422" y1="180" x2="454" y2="180" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/5', 'Vstupní dveře kóje 885/5', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
-                        <rect x="412" y="291.73" width="6" height="32" class="door-gap"></rect>
-                        <line x1="412" y1="291.73" x2="380" y2="291.73" class="door-leaf"></line>
-                        <path d="M 412 291.73 L 380 291.73 A 32 32 0 0 0 412 323.73 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/5', 'Vstupní dveře 885/5', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                        <rect x="424" y="343.36" width="6" height="32" class="door-gap"></rect>
+                        <path d="M 424 343.36 L 392 343.36 A 32 32 0 0 0 424 375.36 Z" class="door-swing"></path>
+                        <line x1="424" y1="343.36" x2="392" y2="343.36" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/X', 'Vstupní dveře kóje 885/X', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
-                        <rect x="412" y="364.4" width="6" height="32" class="door-gap"></rect>
-                        <line x1="412" y1="364.4" x2="380" y2="364.4" class="door-leaf"></line>
-                        <path d="M 412 364.4 L 380 364.4 A 32 32 0 0 0 412 396.4 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/X', 'Vstupní dveře 885/X', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                        <rect x="424" y="417.68" width="6" height="32" class="door-gap"></rect>
+                        <path d="M 424 417.68 L 392 417.68 A 32 32 0 0 0 424 449.68 Z" class="door-swing"></path>
+                        <line x1="424" y1="417.68" x2="392" y2="417.68" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/4', 'Vstupní dveře kóje 885/4', 'Šířka 0,80 m, otevírání dovnitř kóje', 'V pravé příčce, z volné části místnosti B2')">
-                        <rect x="412" y="437.06" width="6" height="32" class="door-gap"></rect>
-                        <line x1="412" y1="437.06" x2="380" y2="437.06" class="door-leaf"></line>
-                        <path d="M 412 437.06 L 380 437.06 A 32 32 0 0 0 412 469.06 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/4', 'Vstupní dveře 885/4', 'Šířka 0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                        <rect x="424" y="492" width="6" height="32" class="door-gap"></rect>
+                        <path d="M 424 492 L 392 492 A 32 32 0 0 0 424 524 Z" class="door-swing"></path>
+                        <line x1="424" y1="492" x2="392" y2="492" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A3', 'Vstupní dveře A3', 'Šířka 0,80 m, otevírání dovnitř', 'Ze společné chodby C1 do společného sklepa A3')">
-                        <rect x="564" y="209" width="32" height="6" class="door-gap"></rect>
-                        <line x1="564" y1="212" x2="564" y2="180" class="door-leaf"></line>
-                        <path d="M 564 212 L 564 180 A 32 32 0 0 1 596 212 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A6', 'Vstupní dveře A6', 'Šířka 0,80 m, otevírání dovnitř', 'v příčce z boční chodby')">
+                        <rect x="787.8" y="158" width="32" height="6" class="door-gap"></rect>
+                        <path d="M 787.8 158 L 787.8 126 A 32 32 0 0 1 819.8 158 Z" class="door-swing"></path>
+                        <line x1="787.8" y1="158" x2="787.8" y2="126" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A6', 'Vstupní dveře A6', 'Šířka 0,80 m, otevírání dovnitř', 'Z chodby (1,5 m) do společné kóje A6')">
-                        <rect x="728" y="164" width="32" height="6" class="door-gap"></rect>
-                        <line x1="728" y1="164" x2="728" y2="132" class="door-leaf"></line>
-                        <path d="M 728 164 L 728 132 A 32 32 0 0 1 760 164 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře A3', 'Vstupní dveře A3', 'Šířka 0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, otvor rozšířen z 0,60 na 0,80 m')">
+                        <rect x="577.4" y="228" width="32" height="4" class="door-gap"></rect>
+                        <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="door-swing"></path>
+                        <line x1="577.4" y1="228" x2="577.4" y2="196" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře kóje 885/10', 'Šířka 0,80 m, otevírání dovnitř', 'Ze společné chodby C1 do kóje 885/10 (A4)')">
-                        <rect x="646" y="209" width="32" height="6" class="door-gap"></rect>
-                        <line x1="646" y1="212" x2="646" y2="180" class="door-leaf"></line>
-                        <path d="M 646 212 L 646 180 A 32 32 0 0 1 678 212 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/10', 'Vstupní dveře 885/10', 'Šířka 0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, v místě stávajícího vstupu')">
+                        <rect x="723.4" y="232" width="32" height="4" class="door-gap"></rect>
+                        <path d="M 723.4 232 L 723.4 200 A 32 32 0 0 1 755.4 232 Z" class="door-swing"></path>
+                        <line x1="723.4" y1="232" x2="723.4" y2="200" class="door-leaf"></line>
                     </g>
-                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/7', 'Vstupní dveře kóje 885/7', 'Šířka 0,80 m, otevírání dovnitř', 'Z chodby (1,5 m) do kóje 885/7 (A5)')">
-                        <rect x="771" y="175" width="6" height="32" class="door-gap"></rect>
-                        <line x1="774" y1="175" x2="806" y2="175" class="door-leaf"></line>
-                        <path d="M 774 175 L 806 175 A 32 32 0 0 1 774 207 Z" class="door-swing"></path>
+                    <g class="door-proposal" onclick="selectItem('proposal2', 'Dveře 885/7', 'Vstupní dveře 885/7', 'Šířka 0,80 m, otevírání dovnitř', 'stávající otvor 0,85 m z boční chodby')">
+                        <rect x="833.8" y="166" width="14.4" height="34" class="door-gap"></rect>
+                        <path d="M 848.2 166 L 882.2 166 A 34 34 0 0 1 848.2 200 Z" class="door-swing"></path>
+                        <line x1="848.2" y1="166" x2="882.2" y2="166" class="door-leaf"></line>
                     </g>
                 </g>
 
                 <!-- VRSTVA 6: ELEKTROINSTALACE (Kompletní cílový stav) -->
                 <g id="layer-electric" style="display: none;">
                     <!-- Elektroinstalace - Stávající kóje v A1 -->
-                    <circle cx="130" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/1', 'Svítidlo v kóji 885/1', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
-                    <rect x="150" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/1', 'Zásuvka v kóji 885/1', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+                    <circle cx="130" cy="109.26" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/1', 'Svítidlo v kóji 885/1', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="150" y="85.23" width="8" height="8.36" class="elec-socket" onclick="selectItem('elec', 'Z-885/1', 'Zásuvka v kóji 885/1', '230V IP44', 'Vyhrazená zásuvka')"></rect>
 
-                    <circle cx="210" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/2', 'Svítidlo v kóji 885/2', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
-                    <rect x="230" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/2', 'Zásuvka v kóji 885/2', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+                    <circle cx="210" cy="109.26" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/2', 'Svítidlo v kóji 885/2', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="230" y="85.23" width="8" height="8.36" class="elec-socket" onclick="selectItem('elec', 'Z-885/2', 'Zásuvka v kóji 885/2', '230V IP44', 'Vyhrazená zásuvka')"></rect>
 
-                    <circle cx="290" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/6', 'Svítidlo v kóji 885/6', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
-                    <rect x="310" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/6', 'Zásuvka v kóji 885/6', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+                    <circle cx="290" cy="109.26" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/6', 'Svítidlo v kóji 885/6', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="310" y="85.23" width="8" height="8.36" class="elec-socket" onclick="selectItem('elec', 'Z-885/6', 'Zásuvka v kóji 885/6', '230V IP44', 'Vyhrazená zásuvka')"></rect>
 
                     <!-- Elektroinstalace - Stávající kóje v A2 -->
-                    <circle cx="365" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/8', 'Svítidlo v kóji 885/8', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
-                    <rect x="385" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/8', 'Zásuvka v kóji 885/8', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+                    <circle cx="377" cy="112.24" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/8', 'Svítidlo v kóji 885/8', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="397" y="85.76" width="8" height="9.21" class="elec-socket" onclick="selectItem('elec', 'Z-885/8', 'Zásuvka v kóji 885/8', '230V IP44', 'Vyhrazená zásuvka')"></rect>
 
-                    <circle cx="435" cy="108" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/9', 'Svítidlo v kóji 885/9', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
-                    <rect x="455" y="85" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/9', 'Zásuvka v kóji 885/9', '230V IP44', 'Vyhrazená zásuvka')"></rect>
+                    <circle cx="447" cy="112.24" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/9', 'Svítidlo v kóji 885/9', 'LED přisazené IP44', 'Samostatný okruh')"></circle>
+                    <rect x="467" y="85.76" width="8" height="9.21" class="elec-socket" onclick="selectItem('elec', 'Z-885/9', 'Zásuvka v kóji 885/9', '230V IP44', 'Vyhrazená zásuvka')"></rect>
 
                     <!-- Elektroinstalace - Ostatní prostory část A -->
-                    <circle cx="510" cy="146" r="9" class="elec-light" onclick="selectItem('elec', 'S-S1', 'Schodišťové svítidlo', 'LED IP44', 'Schodišťové osvětlení')"></circle>
-                    <circle cx="580" cy="130" r="7" class="elec-light" onclick="selectItem('elec', 'S-A3', 'Svítidlo A3', 'LED IP44', 'Osvětlení skladu')"></circle>
-                    <circle cx="662" cy="135" r="9" class="elec-light" onclick="selectItem('elec', 'S-885/10', 'Svítidlo v 885/10 (A4)', 'LED 18W', 'Svítidlo kóje 885/10')"></circle>
-                    <circle cx="744" cy="110" r="8" class="elec-light" onclick="selectItem('elec', 'S-A6', 'Svítidlo v A6', 'LED 18W', 'Osvětlení společné kóje A6')"></circle>
-                    <circle cx="894" cy="135" r="10" class="elec-light" onclick="selectItem('elec', 'S-885/7', 'Svítidlo v 885/7 (A5)', 'LED 36W', 'Hlavní osvětlení A5')"></circle>
+                    <circle cx="528.5" cy="148" r="9" class="elec-light" onclick="selectItem('elec', 'S-S1', 'Schodišťové svítidlo', 'LED IP44', 'Schodišťové osvětlení')"></circle>
+                    <circle cx="593.4" cy="136.06" r="7" class="elec-light" onclick="selectItem('elec', 'S-A3', 'Svítidlo A3', 'LED IP44', 'Osvětlení skladu')"></circle>
+                    <circle cx="707.4" cy="143.33" r="9" class="elec-light" onclick="selectItem('elec', 'S-885/10', 'Svítidlo v 885/10 (A4)', 'LED 18W', 'Svítidlo kóje 885/10')"></circle>
+                    <circle cx="803.8" cy="114.55" r="8" class="elec-light" onclick="selectItem('elec', 'S-A6', 'Svítidlo v A6', 'LED 18W', 'Osvětlení společné kóje A6')"></circle>
+                    <circle cx="968.2" cy="130" r="10" class="elec-light" onclick="selectItem('elec', 'S-885/7', 'Svítidlo v 885/7 (A5)', 'LED 36W', 'Hlavní osvětlení A5')"></circle>
 
                     <!-- Elektroinstalace - Chodba C1 -->
-                    <circle cx="210" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-1', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
-                    <circle cx="490" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-2', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
-                    <circle cx="744" cy="243" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-3', 'Osvětlení chodby', 'LED IP44', 'Průchozí osvětlení')"></circle>
+                    <circle cx="218.73" cy="262.8" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-1', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
+                    <circle cx="519.1" cy="262.8" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-2', 'Osvětlení chodby C1', 'LED IP44', 'Průchozí osvětlení')"></circle>
+                    <circle cx="796.6" cy="262.8" r="8" class="elec-light" onclick="selectItem('elec', 'S-C1-3', 'Osvětlení chodby', 'LED IP44', 'Průchozí osvětlení')"></circle>
 
                     <!-- Elektroinstalace - Nebytová jednotka B1 -->
-                    <circle cx="183" cy="380" r="11" class="elec-light" onclick="selectItem('elec', 'S-B1', 'Svítidlo B1 (885/11)', 'LED panel 36W IP44', 'Hlavní osvětlení nebytového prostoru')"></circle>
-                    <rect x="250" y="285" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B1-1', 'Zásuvka B1', '230V IP44', 'Zásuvkový okruh B1')"></rect>
+                    <circle cx="183" cy="430.8" r="11" class="elec-light" onclick="selectItem('elec', 'S-B1', 'Svítidlo B1 (885/11)', 'LED panel 36W IP44', 'Hlavní osvětlení nebytového prostoru')"></circle>
+                    <rect x="250" y="335.8" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B1-1', 'Zásuvka B1', '230V IP44', 'Zásuvkový okruh B1')"></rect>
 
                     <!-- Elektroinstalace - Kóje 885/4 a 885/5 (Nové) -->
-                    <circle cx="378" cy="424" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/4', 'Svítidlo v kóji 885/4', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 3,1 m kóji')"></circle>
-                    <rect x="393" y="370" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/4', 'Zásuvka v kóji 885/4', '230V IP44', 'Zásuvka pro kóji 885/4 (1,7 x 3,1 m)')"></rect>
+                    <circle cx="387.13" cy="478.3" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/4', 'Svítidlo v kóji 885/4', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 3,1 m kóji')"></circle>
+                    <rect x="401.7" y="423.04" width="7.77" height="8.19" class="elec-socket" onclick="selectItem('elec', 'Z-885/4', 'Zásuvka v kóji 885/4', '230V IP44', 'Zásuvka pro kóji 885/4 (1,7 x 3,1 m)')"></rect>
 
-                    <circle cx="378" cy="318" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/5', 'Svítidlo v kóji 885/5', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 2,2 m kóji')"></circle>
-                    <rect x="393" y="282" width="8" height="8" class="elec-socket" onclick="selectItem('elec', 'Z-885/5', 'Zásuvka v kóji 885/5', '230V IP44', 'Zásuvka pro kóji 885/5 (1,7 x 2,2 m)')"></rect>
+                    <circle cx="387.13" cy="369.82" r="7" class="elec-light" onclick="selectItem('elec', 'S-885/5', 'Svítidlo v kóji 885/5', 'LED přisazené IP44', 'Osvětlení pro 1,7 x 2,2 m kóji')"></circle>
+                    <rect x="401.7" y="332.98" width="7.77" height="8.19" class="elec-socket" onclick="selectItem('elec', 'Z-885/5', 'Zásuvka v kóji 885/5', '230V IP44', 'Zásuvka pro kóji 885/5 (1,7 x 2,2 m)')"></rect>
 
                     <!-- Elektroinstalace - Zbývající prostor B2 a části B3, B4, B5 -->
-                    <circle cx="460" cy="390" r="11" class="elec-light" onclick="selectItem('elec', 'S-B2', 'Svítidlo B2', 'LED 36W IP44', 'Osvětlení zbývající části B2')"></circle>
-                    <rect x="475" y="460" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B2-1', 'Zásuvka B2', '230V IP44', 'Zásuvkový okruh B2')"></rect>
+                    <circle cx="466.81" cy="443.5" r="11" class="elec-light" onclick="selectItem('elec', 'S-B2', 'Svítidlo B2', 'LED 36W IP44', 'Osvětlení zbývající části B2')"></circle>
+                    <rect x="481.39" y="515.14" width="8.75" height="9.21" class="elec-socket" onclick="selectItem('elec', 'Z-B2-1', 'Zásuvka B2', '230V IP44', 'Zásuvkový okruh B2')"></rect>
 
-                    <circle cx="640" cy="380" r="9" class="elec-light" onclick="selectItem('elec', 'S-B3', 'Svítidlo B3', 'LED 18W', 'Svítidlo pro B3 (885/12)')"></circle>
-                    <circle cx="754" cy="380" r="9" class="elec-light" onclick="selectItem('elec', 'S-B4', 'Svítidlo B4', 'LED 18W', 'Svítidlo pro B4 (885/12)')"></circle>
-                    <circle cx="916" cy="380" r="11" class="elec-light" onclick="selectItem('elec', 'S-B5', 'Svítidlo B5', 'LED 36W', 'Osvětlení skladu B5 (885/12)')"></circle>
-                    <rect x="990" y="460" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B5-1', 'Zásuvka B5', '230V IP44', 'Zásuvkový okruh B5')"></rect>
+                    <circle cx="669.8" cy="430.8" r="9" class="elec-light" onclick="selectItem('elec', 'S-B3', 'Svítidlo B3', 'LED 18W', 'Svítidlo pro B3 (885/12)')"></circle>
+                    <circle cx="795.8" cy="430.8" r="9" class="elec-light" onclick="selectItem('elec', 'S-B4', 'Svítidlo B4', 'LED 18W', 'Svítidlo pro B4 (885/12)')"></circle>
+                    <circle cx="969.8" cy="430.8" r="11" class="elec-light" onclick="selectItem('elec', 'S-B5', 'Svítidlo B5', 'LED 36W', 'Osvětlení skladu B5 (885/12)')"></circle>
+                    <rect x="1043.8" y="510.8" width="9" height="9" class="elec-socket" onclick="selectItem('elec', 'Z-B5-1', 'Zásuvka B5', '230V IP44', 'Zásuvkový okruh B5')"></rect>
                 </g>
 
                 <!-- VRSTVA 3: AKTUÁLNÍ VYUŽITÍ -->
                 <g id="layer-usage" style="display: none;">
-                    <rect x="90" y="80" width="240" height="132" class="usage-room" onclick="selectItem('usage', 'A1', 'Místnost A1', '19,80 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
-                    <text x="210" y="136" class="label-title" fill="#4a148c">A1</text>
-                    <text x="210" y="156" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
-
-                    <rect x="330" y="80" width="140" height="132" class="usage-room" onclick="selectItem('usage', 'A2', 'Místnost A2', '11,55 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
-                    <text x="400" y="136" class="label-title" fill="#4a148c">A2</text>
-                    <text x="400" y="156" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
-
-                    <rect x="470" y="80" width="80" height="132" class="stairs-work" onclick="selectItem('usage', 'S1', 'Vstupní schodiště', '2,00 x 3,30 m (6,60 m²)', 'Společné schodiště - průchozí')"></rect>
-                    <text x="510" y="136" class="label-title" fill="#4a148c">S1</text>
-                    <text x="510" y="156" class="label-title" fill="#4a148c">Schodiště</text>
-
-                    <rect x="550" y="80" width="60" height="132" class="usage-room" onclick="selectItem('usage', 'A3', 'Místnost A3', '4,95 m²', 'Uživatel: Urbanovi (byt č. 2)')"></rect>
-                    <text x="580" y="136" class="label-title" fill="#4a148c">A3</text>
-                    <text x="580" y="156" class="label-title" fill="#4a148c"><tspan x="580" dy="0">Urban</tspan><tspan x="580" dy="16">(2)</tspan></text>
-
-                    <rect x="610" y="80" width="104" height="132" class="usage-room" onclick="selectItem('usage', 'A4', 'Místnost A4', '8,58 m²', 'Uživatel: Bergauer (byt č. 9)')"></rect>
-                    <text x="662" y="136" class="label-title" fill="#4a148c">A4</text>
-                    <text x="662" y="156" class="label-title" fill="#4a148c">Bergauer (9)</text>
-
-                    <rect x="714" y="80" width="60" height="132" class="corridor-work"></rect>
-
-                    <rect x="774" y="80" width="240" height="132" class="usage-room" onclick="selectItem('usage', 'A5', 'Místnost A5', '19,80 m²', 'Uživatel: Poštová (byt č. 10)')"></rect>
-                    <text x="894" y="136" class="label-title" fill="#4a148c">A5</text>
-                    <text x="894" y="156" class="label-title" fill="#4a148c">Poštová (10)</text>
-
-                    <rect x="90" y="274.4" width="186" height="212" class="usage-room" onclick="selectItem('usage', 'B1', 'Místnost B1', '24,65 m²', 'Uživatel: Rutrich')"></rect>
-                    <text x="183" y="370" class="label-title" fill="#4a148c">B1</text>
-                    <text x="183" y="390" class="label-title" fill="#4a148c">Rutrich</text>
-
-                    <rect x="276" y="274.4" width="220" height="212" class="usage-room usage-free" onclick="selectItem('usage', 'B2', 'Místnost B2', '29,15 m²', 'Bez přiděleného uživatele, využití: ping pong')"></rect>
-                    <text x="386" y="370" class="label-title" fill="#546e7a">B2</text>
-                    <text x="386" y="390" class="label-title" fill="#546e7a">Ping pong</text>
-
-                    <rect x="594" y="274.4" width="96" height="212" class="usage-room" onclick="selectItem('usage', 'B3', 'Místnost B3', '12,72 m²', 'Uživatel: Čabinová (byt č. 6)')"></rect>
-                    <text x="640" y="370" class="label-title" fill="#4a148c">B3</text>
-                    <text x="640" y="390" class="label-title" fill="#4a148c">Čabinová (6)</text>
-
-                    <rect x="690" y="274.4" width="132" height="212" class="usage-room" onclick="selectItem('usage', 'B4', 'Místnost B4', '17,49 m²', 'Uživatel: Urban (byt č. 7)')"></rect>
-                    <text x="754" y="370" class="label-title" fill="#4a148c">B4</text>
-                    <text x="754" y="390" class="label-title" fill="#4a148c">Urban (7)</text>
+                    <rect x="90" y="80" width="240" height="137.96" class="usage-room" onclick="selectItem('usage', 'A1', 'Místnost A1', '20,69 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
+                    <text x="210" y="138.98" class="label-title" fill="#4a148c">A1</text>
+                    <text x="210" y="158.98" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
+                    <rect x="342" y="80" width="140" height="140" class="usage-room" onclick="selectItem('usage', 'A2', 'Místnost A2', '12,25 m²', 'Uživatel: Mikulíkovi (byt č. 8)')"></rect>
+                    <text x="412" y="140" class="label-title" fill="#4a148c">A2</text>
+                    <text x="412" y="160" class="label-title" fill="#4a148c">Mikulíkovi (8)</text>
+                    <rect x="506.8" y="64" width="43.4" height="168" class="stairs-work" onclick="selectItem('usage', 'S1', 'Vstupní schodiště', '1,085 x 4,20 m (4,56 m²)', 'Společné schodiště - průchozí')"></rect>
+                    <text x="528.5" y="138" class="label-title" fill="#4a148c">S1</text>
+                    <text x="528.5" y="158" class="label-title" fill="#4a148c">Schodiště</text>
+                    <rect x="563.4" y="80" width="60" height="148" class="usage-room" onclick="selectItem('usage', 'A3', 'Místnost A3', '5,55 m²', 'Uživatel: Urbanovi (byt č. 2)')"></rect>
+                    <text x="593.4" y="144" class="label-title" fill="#4a148c">A3</text>
+                    <text x="593.4" y="164" class="label-title" fill="#4a148c">Urban (2)</text>
+                    <rect x="655.4" y="80" width="104" height="152" class="usage-room" onclick="selectItem('usage', 'A4', 'Místnost A4', '9,88 m²', 'Uživatel: Bergauer (byt č. 9)')"></rect>
+                    <text x="707.4" y="146" class="label-title" fill="#4a148c">A4</text>
+                    <text x="707.4" y="166" class="label-title" fill="#4a148c">Bergauer (9)</text>
+                    <rect x="848.2" y="80" width="240" height="120" class="usage-room" onclick="selectItem('usage', 'A5', 'Místnost A5', '18,00 m²', 'Uživatel: Poštová (byt č. 10)')"></rect>
+                    <text x="968.2" y="130" class="label-title" fill="#4a148c">A5</text>
+                    <text x="968.2" y="150" class="label-title" fill="#4a148c">Poštová (10)</text>
+                    <rect x="90" y="325.2" width="186" height="212" class="usage-room" onclick="selectItem('usage', 'B1', 'Místnost B1', 'neověřeno', 'Uživatel: Rutrich')"></rect>
+                    <text x="183" y="421.2" class="label-title" fill="#4a148c">B1</text>
+                    <text x="183" y="441.2" class="label-title" fill="#4a148c">Rutrich</text>
+                    <rect x="288" y="325.2" width="213.8" height="216.96" class="usage-room usage-free" onclick="selectItem('usage', 'B2', 'Místnost B2', '28,99 m²', 'Bez přiděleného uživatele, využití: ping pong')"></rect>
+                    <text x="394.9" y="423.68" class="label-title" fill="#546e7a">B2</text>
+                    <text x="394.9" y="443.68" class="label-title" fill="#546e7a">Ping pong</text>
+                    <rect x="623.8" y="325.2" width="96" height="212" class="usage-room" onclick="selectItem('usage', 'B3', 'Místnost B3', 'neověřeno', 'Uživatel: Čabinová (byt č. 6)')"></rect>
+                    <text x="671.8" y="421.2" class="label-title" fill="#4a148c">B3</text>
+                    <text x="671.8" y="441.2" class="label-title" fill="#4a148c">Čabinová (6)</text>
+                    <rect x="731.8" y="325.2" width="132" height="212" class="usage-room" onclick="selectItem('usage', 'B4', 'Místnost B4', 'neověřeno', 'Uživatel: Urban (byt č. 7)')"></rect>
+                    <text x="797.8" y="421.2" class="label-title" fill="#4a148c">B4</text>
+                    <text x="797.8" y="441.2" class="label-title" fill="#4a148c">Urban (7)</text>
                 </g>
 
                 <!-- VRSTVA 5: VIZUALIZACE KÓJÍ DLE FOTO -->
                 <g id="layer-vis" style="display: none;">
                     <g onclick="selectItem('vis', '885/1,6,2', 'Blok kójí v A1', '3 kóje (2,0 x 1,4 m)', 'Příčky z tvárnic ode zdi ke zdi s čelními dveřmi')">
-                        <rect x="166" y="80" width="8" height="56" class="cage-wall"></rect>
-                        <rect x="246" y="80" width="8" height="56" class="cage-wall"></rect>
-                        <rect x="90" y="136" width="240" height="10" class="cage-wall"></rect>
+                        <rect x="166" y="80" width="8" height="58.53" class="cage-wall"></rect>
+                        <rect x="246" y="80" width="8" height="58.53" class="cage-wall"></rect>
+                        <rect x="90" y="138.53" width="240" height="10.45" class="cage-wall"></rect>
 
-                        <rect x="110" y="134" width="40" height="14" class="cage-door"></rect>
-                        <text x="130" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/1</text>
+                        <rect x="110" y="136.44" width="40" height="14.63" class="cage-door"></rect>
+                        <text x="130" y="109.26" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/1</text>
 
-                        <rect x="190" y="134" width="40" height="14" class="cage-door"></rect>
-                        <text x="210" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/2</text>
+                        <rect x="190" y="136.44" width="40" height="14.63" class="cage-door"></rect>
+                        <text x="210" y="109.26" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/2</text>
 
-                        <rect x="270" y="134" width="40" height="14" class="cage-door"></rect>
-                        <text x="290" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/6</text>
+                        <rect x="270" y="136.44" width="40" height="14.63" class="cage-door"></rect>
+                        <text x="290" y="109.26" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/6</text>
 
                         <!-- Tlačítko pro otevření vizualizace A1 -->
                         <g style="cursor: pointer;" onclick="window.open('vizualizacesklepyjachymov.jpg','_blank')">
-                            <circle cx="310" cy="180" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
-                            <text x="210" y="92" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
+                            <circle cx="310" cy="184.52" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
+                            <text x="210" y="92.54" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
                         </g>
                     </g>
 
                     <g onclick="selectItem('vis', '885/8,9', 'Blok kójí v A2', '2 kóje (1,75 x 1,4 m)', 'Příčky z tvárnic ode zdi ke zdi s čelními dveřmi')">
-                        <rect x="396" y="80" width="8" height="56" class="cage-wall"></rect>
-                        <rect x="330" y="136" width="140" height="10" class="cage-wall"></rect>
+                        <rect x="408" y="80" width="8" height="64.48" class="cage-wall"></rect>
+                        <rect x="342" y="144.48" width="140" height="11.52" class="cage-wall"></rect>
 
-                        <rect x="345" y="134" width="40" height="14" class="cage-door"></rect>
-                        <text x="365" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/8</text>
+                        <rect x="357" y="142.18" width="40" height="16.12" class="cage-door"></rect>
+                        <text x="377" y="112.24" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/8</text>
 
-                        <rect x="415" y="134" width="40" height="14" class="cage-door"></rect>
-                        <text x="435" y="108" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/9</text>
+                        <rect x="427" y="142.18" width="40" height="16.12" class="cage-door"></rect>
+                        <text x="447" y="112.24" font-size="10px" font-weight="bold" fill="#263238" text-anchor="middle">885/9</text>
                     </g>
                     <!-- Tlačítko pro otevření vizualizace B2 -->
                     <g style="cursor: pointer;" onclick="window.open('pingpong.png','_blank')">
-                        <circle cx="455" cy="275" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
-                        <text x="455" y="275" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
+                        <circle cx="461.96" cy="325.81" r="9" fill="#0d47a1" stroke="#37474f" stroke-width="1.5"></circle>
+                        <text x="461.96" y="325.81" font-size="8" fill="#37474f" text-anchor="middle" dominant-baseline="middle">img</text>
                     </g>
 
                     <g onclick="selectItem('vis', '885/4 a 885/5', 'Dělící příčka a pravá stěna', 'Příčka x=344, pravá stěna x=412', 'Vizualizace kójí 885/4 (3,1 m) a 885/5 (2,2 m)')">
-                        <rect x="412" y="274.4" width="8" height="212" class="cage-wall"></rect>
-                        <rect x="275" y="350" width="145" height="8" class="cage-wall"></rect>
-                        <rect x="412" y="300" width="14" height="40" class="cage-door" onclick="selectItem('vis', 'Dveře 885/4', 'Dveře kóje 885/4', 'Pravá stěna', 'Dveře na příčce')"></rect>
-                        <rect x="412" y="400" width="14" height="40" class="cage-door" onclick="selectItem('vis', 'Dveře 885/5', 'Dveře kóje 885/5', 'Pravá stěna', 'Dveře na pravé zdi')"></rect>
-                        <text x="310" y="424" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/4</text>
-                        <text x="310" y="440" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 3,1 m)</text>
-                        <text x="378" y="318" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/5</text>
-                        <text x="378" y="334" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 2,2 m)</text>
+                        <rect x="420.17" y="325.2" width="7.77" height="216.96" class="cage-wall"></rect>
+                        <rect x="287.03" y="402.57" width="140.91" height="8.19" class="cage-wall"></rect>
+                        <rect x="420.17" y="351.4" width="13.61" height="40.94" class="cage-door" onclick="selectItem('vis', 'Dveře 885/4', 'Dveře kóje 885/4', 'Pravá stěna', 'Dveře na příčce')"></rect>
+                        <rect x="420.17" y="453.74" width="13.61" height="40.94" class="cage-door" onclick="selectItem('vis', 'Dveře 885/5', 'Dveře kóje 885/5', 'Pravá stěna', 'Dveře na pravé zdi')"></rect>
+                        <text x="321.04" y="478.3" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/4</text>
+                        <text x="321.04" y="494.67" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 3,1 m)</text>
+                        <text x="387.13" y="369.82" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">885/5</text>
+                        <text x="387.13" y="386.19" font-size="10px" fill="#0d47a1" text-anchor="middle">(3,4 × 2,2 m)</text>
                     </g>
                     <!-- Nově: Vizualizace - A4 plně vyzděná -->
                     <g onclick="selectItem('vis', 'A4', 'Vizualizace A4', '2,60 x 3,30 m', 'Plně vyzděná kóje v A4')">
-                        <rect x="610" y="203" width="104" height="8" class="cage-wall"></rect>
-                        <rect x="707" y="80" width="8" height="130" class="cage-wall"></rect>
-                        <rect x="640" y="200" width="40" height="14" class="cage-door"></rect>
-                        <text x="662" y="146" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A4</text>
+                        <rect x="655.4" y="221.64" width="104" height="9.21" class="cage-wall"></rect>
+                        <rect x="752.4" y="80" width="8" height="149.7" class="cage-wall"></rect>
+                        <rect x="685.4" y="218.18" width="40" height="16.12" class="cage-door"></rect>
+                        <text x="707.4" y="156" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A4</text>
                     </g>
                     <g onclick="selectItem('vis', 'A6', 'Navrhovaná společná kóje A6', '2,00 x 1,50 m', 'A6 využívá stávající boční zdi chodby; bez viditelných bočních stěn')">
-                        <rect x="714" y="80" width="60" height="60" fill="#29b6f6" fill-opacity="0.15"></rect>
-                        <rect x="714" y="140" width="60" height="8" class="cage-wall"></rect>
-                        <rect x="730" y="136" width="24" height="14" class="cage-door"></rect>
-                        <text x="744" y="105" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A6</text>
-                        <text x="744" y="122" font-size="10px" fill="#0d47a1" text-anchor="middle">Společná</text>
+                        <rect x="773.8" y="80" width="60" height="69.09" fill="#29b6f6" fill-opacity="0.15"></rect>
+                        <rect x="773.8" y="149.09" width="60" height="9.21" class="cage-wall"></rect>
+                        <rect x="789.8" y="144.48" width="24" height="16.12" class="cage-door"></rect>
+                        <text x="803.8" y="108.79" font-size="11px" font-weight="bold" fill="#0d47a1" text-anchor="middle">A6</text>
+                        <text x="803.8" y="128.36" font-size="10px" fill="#0d47a1" text-anchor="middle">Společná</text>
                     </g>
                 </g>
 
-                    <!-- VRSTVA 5b: VIZUALIZACE KÓJÍ 2 – čistý půdorys cílového stavu dle Návrhu cílového stavu 2 (měřítko 40 px = 1 m) -->
+                    <!-- VRSTVA 5b: VIZUALIZACE KÓJÍ 2 – čistý půdorys cílového stavu dle Návrhu cílového stavu 2 podle přesného zaměření (40 px = 1 m) -->
                     <g id="layer-vis2" style="display: none;">
-                        <rect x="40" y="30" width="1020" height="525" fill="#ffffff"></rect>
-                        <!-- Prostory mimo řešení -->
-                        <rect x="90" y="274.4" width="186" height="212" class="v2-out" onclick="selectItem('vis2', 'nb. j. 885/11', 'Mimo řešení', 'B1', 'Nebytová jednotka 885/11 (B1), mimo řešení kójí')"></rect>
-                        <text x="183" y="374.4" class="v2-out-label" >nb. j. 885/11</text>
-                        <text x="183" y="389.4" class="v2-out-sub" >B1</text>
-                        <rect x="496" y="274.4" width="98" height="212" class="v2-out" onclick="selectItem('vis2', 'VÝSEP', 'Mimo řešení', 'V0', 'Nepoužitelný prostor pod schodištěm')"></rect>
-                        <text x="544" y="374.4" class="v2-out-label" >VÝSEP</text>
-                        <text x="544" y="389.4" class="v2-out-sub" >V0</text>
-                        <rect x="594" y="274.4" width="420" height="212" class="v2-out" onclick="selectItem('vis2', 'nb. j. 885/12', 'Mimo řešení', 'B3 + B4 + B5', 'Nebytová jednotka 885/12, mimo řešení kójí')"></rect>
-                        <text x="802" y="374.4" class="v2-out-label" >nb. j. 885/12</text>
-                        <text x="802" y="389.4" class="v2-out-sub" >B3 + B4 + B5</text>
-                        <rect x="774" y="212" width="240" height="62.4" class="v2-out" onclick="selectItem('vis2', '885/12', 'Mimo řešení', 'B6', 'Součást nebytové jednotky 885/12')"></rect>
-                        <text x="894" y="237.2" class="v2-out-label" >885/12</text>
-                        <text x="894" y="252.2" class="v2-out-sub" >B6</text>
-                        <!-- Schodiště -->
-                        <rect x="470" y="80" width="80" height="132" class="v2-stairs" onclick="selectItem('vis2', 'Schodiště', 'Vstupní schodiště', '2,00 x 3,30 m', 'Vstup do sklepa')"></rect>
-                        <line x1="470" y1="91" x2="550" y2="91" class="v2-tread"></line>
-                        <line x1="470" y1="102" x2="550" y2="102" class="v2-tread"></line>
-                        <line x1="470" y1="113" x2="550" y2="113" class="v2-tread"></line>
-                        <line x1="470" y1="124" x2="550" y2="124" class="v2-tread"></line>
-                        <line x1="470" y1="135" x2="550" y2="135" class="v2-tread"></line>
-                        <line x1="470" y1="146" x2="550" y2="146" class="v2-tread"></line>
-                        <line x1="470" y1="157" x2="550" y2="157" class="v2-tread"></line>
-                        <line x1="470" y1="168" x2="550" y2="168" class="v2-tread"></line>
-                        <line x1="470" y1="179" x2="550" y2="179" class="v2-tread"></line>
-                        <line x1="470" y1="190" x2="550" y2="190" class="v2-tread"></line>
-                        <line x1="470" y1="201" x2="550" y2="201" class="v2-tread"></line>
-                        <rect x="494" y="96" width="32" height="22" fill="#ffffff" fill-opacity="0.85" rx="3" pointer-events="none"></rect>
-                        <text x="510" y="108" class="v2-out-label" fill="#e65100">SCHODY</text>
-                        <!-- Komunikace a přístupové plochy -->
-                        <rect x="90" y="212" width="624" height="62.4" class="v2-corridor" onclick="selectItem('vis2', 'C1', 'Společná chodba C1', '15,60 x 1,56 m', 'Páteřní chodba sklepů')"></rect>
-                        <rect x="714" y="170" width="60" height="104.4" class="v2-corridor" onclick="selectItem('vis2', 'Chodba', 'Boční chodba', '1,50 x 1,05 m (k chodbě C1)', 'Přístup ke kójím A6 a 885/7')"></rect>
-                        <rect x="156" y="166" width="174" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,15 m (5,00 m²)', 'Přístup ke kójím 885/1, 885/6 a 885/8 průchodem z A2 (bez vlastního vstupu z C1)')"></rect>
-                        <rect x="330" y="166" width="74" height="46" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,15 m (2,13 m²)', 'Otevřeno do chodby C1 v celé šířce 885/9 (1,85 m); přístup k 885/9 a 885/2, průchodem doleva do A1')"></rect>
-                        <rect x="418" y="274.4" width="78" height="212" class="v2-corridor" onclick="selectItem('vis2', 'Přístup B2', 'Volná část B2', '1,95 x 5,30 m (10,34 m²)', 'Přístup ke kójím 885/5, 885/X a 885/4')"></rect>
-                        <text x="560" y="246" class="v2-corr-label" >SPOLEČNÁ CHODBA C1</text>
-                        <text x="210" y="186" class="v2-corr-sub" >přístup</text>
-                        <text x="367" y="182" class="v2-corr-sub" >přístup</text>
-                        <text x="457" y="380" class="v2-corr-sub" transform="rotate(-90 457 380)">PŘÍSTUP B2 · 1,95 m</text>
-                        <text x="747" y="192" class="v2-corr-sub" transform="rotate(-90 747 192)">chodba</text>
-                        <!-- Kóje (vnitřní rozměry) -->
-                        <rect x="90" y="80" width="60" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/1', 'Sklepní kóje – cílový stav', '1,50 x 3,30 m (4,95 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="156" y="80" width="84" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/6', 'Sklepní kóje – cílový stav', '2,10 x 2,00 m (4,20 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="246" y="80" width="84" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/8', 'Sklepní kóje – cílový stav', '2,10 x 2,00 m (4,20 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="330" y="80" width="74" height="80" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/9', 'Sklepní kóje – cílový stav', '1,85 x 2,00 m (3,70 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="410" y="80" width="60" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/2', 'Sklepní kóje – cílový stav', '1,50 x 3,30 m (4,95 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="610" y="80" width="104" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/10', 'Sklepní kóje – cílový stav', '2,60 x 3,30 m (8,58 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="774" y="80" width="240" height="132" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/7', 'Sklepní kóje – cílový stav', '6,00 x 3,30 m (19,80 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="276" y="274.4" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/5', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="276" y="347.07" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/X', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="276" y="419.73" width="136" height="66.67" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,67 m (5,67 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
-                        <rect x="550" y="80" width="60" height="132" class="v2-shared" onclick="selectItem('vis2', 'A3', 'Společný prostor', '1,50 x 3,30 m (4,95 m²)', 'Společně užívaný prostor')"></rect>
-                        <rect x="714" y="80" width="60" height="84" class="v2-shared" onclick="selectItem('vis2', 'A6', 'Společný prostor', '1,50 x 2,10 m (3,15 m²)', 'Společně užívaný prostor')"></rect>
-                        <!-- Stávající konstrukce dle půdorysu -->
-                        <rect x="90" y="80" width="240" height="132" class="v2-wall"></rect>
-                        <rect x="330" y="80" width="140" height="132" class="v2-wall"></rect>
-                        <rect x="470" y="80" width="80" height="132" class="v2-wall"></rect>
-                        <rect x="550" y="80" width="60" height="132" class="v2-wall"></rect>
-                        <rect x="610" y="80" width="104" height="132" class="v2-wall"></rect>
-                        <rect x="714" y="80" width="60" height="132" class="v2-wall"></rect>
-                        <rect x="774" y="80" width="240" height="132" class="v2-wall"></rect>
-                        <rect x="90" y="212" width="624" height="62.4" class="v2-wall"></rect>
-                        <rect x="774" y="212" width="240" height="62.4" class="v2-wall"></rect>
-                        <rect x="90" y="274.4" width="186" height="212" class="v2-wall"></rect>
-                        <rect x="276" y="274.4" width="220" height="212" class="v2-wall"></rect>
-                        <rect x="496" y="274.4" width="98" height="212" class="v2-wall"></rect>
-                        <rect x="594" y="274.4" width="420" height="212" class="v2-wall"></rect>
-                        <rect x="90" y="80" width="924" height="406.4" class="v2-outer"></rect>
-                        <!-- Otvory ve stávajících zdech (průchody a vstupy do místností) -->
-                        <rect x="711" y="214" width="6" height="58.4" class="v2-opening"><title>Průchod chodba C1 → boční chodba</title></rect>
-                        <rect x="716" y="209" width="56" height="6" class="v2-opening"><title>Průchod boční chodba</title></rect>
-                        <rect x="472" y="209" width="76" height="6" class="v2-opening"><title>Schodiště → chodba C1</title></rect>
-                        <rect x="332" y="209" width="72" height="6" class="v2-opening"><title>Vstup z chodby C1 k horním kójím otevřený v celé šířce 885/9 (1,85 m)</title></rect>
-                        <rect x="437" y="271.4" width="40" height="6" class="v2-opening"><title>Vstup do B2 (poloha orientační)</title></rect>
-                        <rect x="327" y="173" width="6" height="32" class="v2-opening"><title>Průchod A2 → A1 (současné dveře, ponechán jen otvor)</title></rect>
-                        <!-- Nové příčky 15 cm (tvárnice) -->
+                        <rect x="0" y="0" width="1190" height="650" fill="#ffffff"></rect>
+                        <rect x="74" y="48" width="1030.2" height="510.16" class="v2-mass"></rect>
+                        <rect x="90" y="325.2" width="186" height="212" class="v2-out" onclick="selectItem('vis2', 'nb. j. 885/11', 'Mimo řešení', 'B1', 'Nebytová jednotka 885/11 (B1), mimo řešení kójí')"></rect>
+                        <text x="183" y="427.2" class="v2-out-label">nb. j. 885/11</text>
+                        <text x="183" y="443.2" class="v2-out-sub">B1</text>
+                        <rect x="513.8" y="325.2" width="98" height="212" class="v2-out" onclick="selectItem('vis2', 'VÝSEP', 'Mimo řešení', 'V0', 'Nepoužitelný prostor pod schodištěm')"></rect>
+                        <text x="562.8" y="427.2" class="v2-out-label">VÝSEP</text>
+                        <text x="562.8" y="443.2" class="v2-out-sub">V0</text>
+                        <rect x="623.8" y="325.2" width="96" height="212" class="v2-out" onclick="selectItem('vis2', 'B3', 'Mimo řešení', '885/12', 'Součást nebytové jednotky 885/12')"></rect>
+                        <text x="671.8" y="427.2" class="v2-out-label">B3</text>
+                        <text x="671.8" y="443.2" class="v2-out-sub">885/12</text>
+                        <rect x="731.8" y="325.2" width="132" height="212" class="v2-out" onclick="selectItem('vis2', 'B4', 'Mimo řešení', '885/12', 'Součást nebytové jednotky 885/12')"></rect>
+                        <text x="797.8" y="427.2" class="v2-out-label">B4</text>
+                        <text x="797.8" y="443.2" class="v2-out-sub">885/12</text>
+                        <rect x="875.8" y="325.2" width="192" height="212" class="v2-out" onclick="selectItem('vis2', 'B5', 'Mimo řešení', '885/12', 'Součást nebytové jednotky 885/12')"></rect>
+                        <text x="971.8" y="427.2" class="v2-out-label">B5</text>
+                        <text x="971.8" y="443.2" class="v2-out-sub">885/12</text>
+                        <rect x="848.2" y="232" width="240" height="62" class="v2-out" onclick="selectItem('vis2', 'B6', 'Mimo řešení', '885/12', 'Součást nebytové jednotky 885/12')"></rect>
+                        <text x="968.2" y="259" class="v2-out-label">B6</text>
+                        <text x="968.2" y="275" class="v2-out-sub">885/12</text>
+                        <rect x="506.8" y="64" width="43.4" height="168" class="v2-stairs" onclick="selectItem('vis2', 'Schodiště', 'Vstupní schodiště', '1,085 x 4,20 m', 'Vstup do sklepa')"></rect>
+                        <line x1="506.8" y1="75.2" x2="550.2" y2="75.2" class="v2-tread"></line>
+                        <line x1="506.8" y1="86.4" x2="550.2" y2="86.4" class="v2-tread"></line>
+                        <line x1="506.8" y1="97.6" x2="550.2" y2="97.6" class="v2-tread"></line>
+                        <line x1="506.8" y1="108.8" x2="550.2" y2="108.8" class="v2-tread"></line>
+                        <line x1="506.8" y1="120" x2="550.2" y2="120" class="v2-tread"></line>
+                        <line x1="506.8" y1="131.2" x2="550.2" y2="131.2" class="v2-tread"></line>
+                        <line x1="506.8" y1="142.4" x2="550.2" y2="142.4" class="v2-tread"></line>
+                        <line x1="506.8" y1="153.6" x2="550.2" y2="153.6" class="v2-tread"></line>
+                        <line x1="506.8" y1="164.8" x2="550.2" y2="164.8" class="v2-tread"></line>
+                        <line x1="506.8" y1="176" x2="550.2" y2="176" class="v2-tread"></line>
+                        <line x1="506.8" y1="187.2" x2="550.2" y2="187.2" class="v2-tread"></line>
+                        <line x1="506.8" y1="198.4" x2="550.2" y2="198.4" class="v2-tread"></line>
+                        <line x1="506.8" y1="209.6" x2="550.2" y2="209.6" class="v2-tread"></line>
+                        <line x1="506.8" y1="220.8" x2="550.2" y2="220.8" class="v2-tread"></line>
+                        <rect x="90" y="232" width="669.4" height="62" class="v2-corridor" onclick="selectItem('vis2', 'C1', 'Společná chodba', '16,71 x 1,55 m', 'Páteřní chodba sklepů')"></rect>
+                        <rect x="759.4" y="232" width="74.4" height="62" class="v2-corridor" onclick="selectItem('vis2', 'Uzel chodby', 'Společná chodba', '1,86 x 1,55 m', 'Propojení s boční chodbou')"></rect>
+                        <rect x="156" y="160" width="174" height="57.96" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A1', 'Přístupová plocha', '4,35 x 1,45 m (6,30 m²)', 'Přístup ke kójím 885/1, 885/6 a 885/8 průchodem z A2')"></rect>
+                        <rect x="342" y="160" width="74" height="72" class="v2-corridor" onclick="selectItem('vis2', 'Přístup A2', 'Přístupová plocha', '1,85 x 1,80 m (3,33 m²)', 'Otevřeno do chodby C1 v celé šířce 885/9 (1,85 m); přístup k 885/9 a 885/2, průchodem doleva do A1')"></rect>
+                        <rect x="430" y="325.2" width="71.8" height="216.96" class="v2-corridor" onclick="selectItem('vis2', 'Přístup B2', 'Volná část B2', '1,79 x 5,42 m (9,74 m²)', 'Přístup ke kójím 885/5, 885/X a 885/4')"></rect>
+                        <rect x="773.8" y="164" width="60" height="68" class="v2-corridor" onclick="selectItem('vis2', 'Boční chodba', 'Boční chodba', '1,50 x 1,70 m (2,55 m²)', 'Přístup ke kójím A6 a 885/7')"></rect>
+                        <rect x="90" y="80" width="60" height="137.96" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/1', 'Sklepní kóje – cílový stav', '1,50 x 3,45 m (5,17 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="156" y="80" width="84" height="74" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/6', 'Sklepní kóje – cílový stav', '2,10 x 1,85 m (3,89 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="246" y="80" width="84" height="74" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/8', 'Sklepní kóje – cílový stav', '2,10 x 1,85 m (3,89 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="342" y="80" width="74" height="74" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/9', 'Sklepní kóje – cílový stav', '1,85 x 1,85 m (3,42 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="422" y="80" width="60" height="146" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/2', 'Sklepní kóje – cílový stav', '1,50 x 3,65 m (5,47 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="655.4" y="80" width="104" height="152" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/10', 'Sklepní kóje – cílový stav', '2,60 x 3,80 m (9,88 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="848.2" y="80" width="240" height="120" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/7', 'Sklepní kóje – cílový stav', '6,00 x 3,00 m (18,00 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="288" y="325.2" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/5', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="288" y="399.52" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/X', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="288" y="473.84" width="136" height="68.32" class="v2-unit" onclick="selectItem('vis2', 'Kóje 885/4', 'Sklepní kóje – cílový stav', '3,40 x 1,71 m (5,81 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="563.4" y="80" width="60" height="148" class="v2-shared" onclick="selectItem('vis2', 'A3', 'Společný prostor', '1,50 x 3,70 m (5,55 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="773.8" y="80" width="60" height="78" class="v2-shared" onclick="selectItem('vis2', 'A6', 'Společný prostor', '1,50 x 1,95 m (2,92 m²)', 'Vnitřní rozměr, příčky 15 cm, dveře 0,80 m')"></rect>
+                        <rect x="330" y="160" width="12" height="40" class="v2-opening"><title>Průchod A1/A2: šířka 1,00 m, 2,00 m od severní zdi</title></rect>
+                        <rect x="432" y="294" width="40" height="31.2" class="v2-opening"><title>Vstup do B2: 1,00 m, 3,60 m od rohu u B1</title></rect>
+                        <rect x="126" y="294" width="36" height="31.2" class="v2-opening"><title>Vstup do B1: 0,90 m, 0,90 m od začátku chodby C1</title></rect>
+                        <rect x="114" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                        <rect x="236.8" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                        <rect x="357.2" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                        <rect x="863.4" y="64" width="45.2" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                        <rect x="789" y="64" width="44.8" height="16" class="v2-win" onclick="selectItem('working', 'Okno', 'Okno ve severní zdi', '1,13 x 0,50 m', 'Parapet ve výšce 2,00 m')"></rect>
+                        <rect x="324.8" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'pravé okno 1,16 × 1,20 m, parapet 0,966 m', 'Jižní (venkovní) zeď')"></rect>
+                        <rect x="429" y="542.16" width="46.4" height="16" class="v2-win" onclick="selectItem('working', 'Okno B2', 'Okno v B2', 'levé okno 1,16 × 1,40 m, parapet 0,85 m', 'Jižní (venkovní) zeď')"></rect>
+                        <rect x="437.8" y="490.16" width="32" height="32" class="v2-hatch" onclick="selectItem('vis2', 'Poklop', 'Poklop k přívodu vody', '0,80 x 0,80 m', '0,50 m od venkovní zdi a 0,80 m od zdi k výsepu')"></rect>
+                        <rect x="497" y="494.16" width="4.8" height="8" class="v2-hatch" onclick="selectItem('vis2', 'Kryt vody', 'Kryt přívodu vody', '0,20 x 0,12 m', 'Na stěně k výsepu, 1,00 m od rohu u venkovní zdi')"></rect>
                         <g filter="url(#v2-shadow)" pointer-events="none">
-                            <rect x="150" y="80" width="6" height="132" class="v2-partition"></rect>
-                            <rect x="240" y="80" width="6" height="80" class="v2-partition"></rect>
-                            <rect x="156" y="160" width="174" height="6" class="v2-partition"></rect>
-                            <rect x="404" y="80" width="6" height="132" class="v2-partition"></rect>
-                            <rect x="330" y="160" width="74" height="6" class="v2-partition"></rect>
-                            <rect x="404" y="209" width="66" height="6" class="v2-partition"></rect>
-                            <rect x="276" y="341.07" width="136" height="6" class="v2-partition"></rect>
-                            <rect x="276" y="413.73" width="136" height="6" class="v2-partition"></rect>
-                            <rect x="412" y="274.4" width="6" height="212" class="v2-partition"></rect>
-                            <rect x="610" y="209" width="107" height="6" class="v2-partition"></rect>
-                            <rect x="711" y="80" width="6" height="132" class="v2-partition"></rect>
-                            <rect x="714" y="164" width="60" height="6" class="v2-partition"></rect>
-                            <rect x="550" y="209" width="60" height="6" class="v2-partition"></rect>
+                            <rect x="150" y="80" width="6" height="137.96" class="v2-partition"></rect>
+                            <rect x="240" y="80" width="6" height="74" class="v2-partition"></rect>
+                            <rect x="156" y="154" width="174" height="6" class="v2-partition"></rect>
+                            <rect x="342" y="154" width="74" height="6" class="v2-partition"></rect>
+                            <rect x="416" y="80" width="6" height="152" class="v2-partition"></rect>
+                            <rect x="422" y="226" width="60" height="6" class="v2-partition"></rect>
+                            <rect x="288" y="393.52" width="136" height="6" class="v2-partition"></rect>
+                            <rect x="288" y="467.84" width="136" height="6" class="v2-partition"></rect>
+                            <rect x="424" y="325.2" width="6" height="216.96" class="v2-partition"></rect>
+                            <rect x="773.8" y="158" width="60" height="6" class="v2-partition"></rect>
                         </g>
-                        <!-- Dveře 0,80 m, otevírání dovnitř -->
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/1', 'Vstupní dveře 885/1', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="150" y="173" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 150 173 L 118 173 A 32 32 0 0 0 150 205 Z" class="v2-door-swing"></path>
-                            <line x1="150" y1="173" x2="118" y2="173" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/1', 'Vstupní dveře 885/1', '0,80 m, otevírání dovnitř', 'v příčce do přístupové plochy A1')">
+                            <rect x="150" y="172.8" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 150 172.8 L 118 172.8 A 32 32 0 0 0 150 204.8 Z" class="v2-door-swing"></path>
+                            <line x1="150" y1="172.8" x2="118" y2="172.8" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/6', 'Vstupní dveře 885/6', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="182" y="160" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 182 160 L 182 128 A 32 32 0 0 1 214 160 Z" class="v2-door-swing"></path>
-                            <line x1="182" y1="160" x2="182" y2="128" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/6', 'Vstupní dveře 885/6', '0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A1')">
+                            <rect x="182" y="154" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 182 154 L 182 122 A 32 32 0 0 1 214 154 Z" class="v2-door-swing"></path>
+                            <line x1="182" y1="154" x2="182" y2="122" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/8', 'Vstupní dveře 885/8', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="272" y="160" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 272 160 L 272 128 A 32 32 0 0 1 304 160 Z" class="v2-door-swing"></path>
-                            <line x1="272" y1="160" x2="272" y2="128" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/8', 'Vstupní dveře 885/8', '0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A1')">
+                            <rect x="272" y="154" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 272 154 L 272 122 A 32 32 0 0 1 304 154 Z" class="v2-door-swing"></path>
+                            <line x1="272" y1="154" x2="272" y2="122" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/9', 'Vstupní dveře 885/9', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="351" y="160" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 351 160 L 351 128 A 32 32 0 0 1 383 160 Z" class="v2-door-swing"></path>
-                            <line x1="351" y1="160" x2="351" y2="128" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/9', 'Vstupní dveře 885/9', '0,80 m, otevírání dovnitř', 'v čelní příčce, z přístupové plochy A2')">
+                            <rect x="363" y="154" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 363 154 L 363 122 A 32 32 0 0 1 395 154 Z" class="v2-door-swing"></path>
+                            <line x1="363" y1="154" x2="363" y2="122" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/2', 'Vstupní dveře 885/2', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="404" y="173" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 410 173 L 442 173 A 32 32 0 0 1 410 205 Z" class="v2-door-swing"></path>
-                            <line x1="410" y1="173" x2="442" y2="173" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/2', 'Vstupní dveře 885/2', '0,80 m, otevírání dovnitř', 'v boční příčce, z přístupové plochy A2')">
+                            <rect x="416" y="180" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 422 180 L 454 180 A 32 32 0 0 1 422 212 Z" class="v2-door-swing"></path>
+                            <line x1="422" y1="180" x2="454" y2="180" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="646" y="209" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 646 212 L 646 180 A 32 32 0 0 1 678 212 Z" class="v2-door-swing"></path>
-                            <line x1="646" y1="212" x2="646" y2="180" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/5', 'Vstupní dveře 885/5', '0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                            <rect x="424" y="343.36" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 424 343.36 L 392 343.36 A 32 32 0 0 0 424 375.36 Z" class="v2-door-swing"></path>
+                            <line x1="424" y1="343.36" x2="392" y2="343.36" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/7', 'Vstupní dveře 885/7', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="771" y="175" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 774 175 L 806 175 A 32 32 0 0 1 774 207 Z" class="v2-door-swing"></path>
-                            <line x1="774" y1="175" x2="806" y2="175" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/X', 'Vstupní dveře 885/X', '0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                            <rect x="424" y="417.68" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 424 417.68 L 392 417.68 A 32 32 0 0 0 424 449.68 Z" class="v2-door-swing"></path>
+                            <line x1="424" y1="417.68" x2="392" y2="417.68" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A6', 'Vstupní dveře A6', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="728" y="164" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 728 164 L 728 132 A 32 32 0 0 1 760 164 Z" class="v2-door-swing"></path>
-                            <line x1="728" y1="164" x2="728" y2="132" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/4', 'Vstupní dveře 885/4', '0,80 m, otevírání dovnitř', 'v čelní příčce, z volné části B2')">
+                            <rect x="424" y="492" width="6" height="32" class="v2-door-gap"></rect>
+                            <path d="M 424 492 L 392 492 A 32 32 0 0 0 424 524 Z" class="v2-door-swing"></path>
+                            <line x1="424" y1="492" x2="392" y2="492" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A3', 'Vstupní dveře A3', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="564" y="209" width="32" height="6" class="v2-door-gap"></rect>
-                            <path d="M 564 212 L 564 180 A 32 32 0 0 1 596 212 Z" class="v2-door-swing"></path>
-                            <line x1="564" y1="212" x2="564" y2="180" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A6', 'Vstupní dveře A6', '0,80 m, otevírání dovnitř', 'v příčce z boční chodby')">
+                            <rect x="787.8" y="158" width="32" height="6" class="v2-door-gap"></rect>
+                            <path d="M 787.8 158 L 787.8 126 A 32 32 0 0 1 819.8 158 Z" class="v2-door-swing"></path>
+                            <line x1="787.8" y1="158" x2="787.8" y2="126" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/5', 'Vstupní dveře 885/5', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="412" y="291.73" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 412 291.73 L 380 291.73 A 32 32 0 0 0 412 323.73 Z" class="v2-door-swing"></path>
-                            <line x1="412" y1="291.73" x2="380" y2="291.73" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře A3', 'Vstupní dveře A3', '0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, otvor rozšířen z 0,60 na 0,80 m')">
+                            <rect x="577.4" y="228" width="32" height="4" class="v2-door-gap"></rect>
+                            <path d="M 577.4 228 L 577.4 196 A 32 32 0 0 1 609.4 228 Z" class="v2-door-swing"></path>
+                            <line x1="577.4" y1="228" x2="577.4" y2="196" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/X', 'Vstupní dveře 885/X', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="412" y="364.4" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 412 364.4 L 380 364.4 A 32 32 0 0 0 412 396.4 Z" class="v2-door-swing"></path>
-                            <line x1="412" y1="364.4" x2="380" y2="364.4" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/10', 'Vstupní dveře 885/10', '0,80 m, otevírání dovnitř', 've stávající zdi z chodby C1, v místě stávajícího vstupu')">
+                            <rect x="723.4" y="232" width="32" height="4" class="v2-door-gap"></rect>
+                            <path d="M 723.4 232 L 723.4 200 A 32 32 0 0 1 755.4 232 Z" class="v2-door-swing"></path>
+                            <line x1="723.4" y1="232" x2="723.4" y2="200" class="v2-door-leaf"></line>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/4', 'Vstupní dveře 885/4', '0,80 m, otevírání dovnitř', 'Plné dveře se zámkem')">
-                            <rect x="412" y="437.06" width="6" height="32" class="v2-door-gap"></rect>
-                            <path d="M 412 437.06 L 380 437.06 A 32 32 0 0 0 412 469.06 Z" class="v2-door-swing"></path>
-                            <line x1="412" y1="437.06" x2="380" y2="437.06" class="v2-door-leaf"></line>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Dveře 885/7', 'Vstupní dveře 885/7', '0,80 m, otevírání dovnitř', 'stávající otvor 0,85 m z boční chodby')">
+                            <rect x="833.8" y="166" width="14.4" height="34" class="v2-door-gap"></rect>
+                            <path d="M 848.2 166 L 882.2 166 A 34 34 0 0 1 848.2 200 Z" class="v2-door-swing"></path>
+                            <line x1="848.2" y1="166" x2="882.2" y2="166" class="v2-door-leaf"></line>
                         </g>
-                        <!-- Popisky -->
-                        <text x="120" y="128" class="v2-num v2-num-s" >885/1</text>
-                        <text x="120" y="142" class="v2-dim" >1,50 × 3,30</text>
-                        <text x="120" y="154" class="v2-area" >4,95 m²</text>
-                        <text x="198" y="96" class="v2-num" >885/6</text>
-                        <text x="198" y="110" class="v2-dim" >2,10 × 2,00 m</text>
-                        <text x="198" y="122" class="v2-area" >4,20 m²</text>
-                        <text x="288" y="96" class="v2-num" >885/8</text>
-                        <text x="288" y="110" class="v2-dim" >2,10 × 2,00 m</text>
-                        <text x="288" y="122" class="v2-area" >4,20 m²</text>
-                        <text x="367" y="96" class="v2-num v2-num-s" >885/9</text>
-                        <text x="367" y="110" class="v2-dim" >1,85 × 2,00</text>
-                        <text x="367" y="122" class="v2-area" >3,70 m²</text>
-                        <text x="440" y="128" class="v2-num v2-num-s" >885/2</text>
-                        <text x="440" y="142" class="v2-dim" >1,50 × 3,30</text>
-                        <text x="440" y="154" class="v2-area" >4,95 m²</text>
-                        <text x="662" y="128" class="v2-num" >885/10</text>
-                        <text x="662" y="142" class="v2-dim" >2,60 × 3,30 m</text>
-                        <text x="662" y="154" class="v2-area" >8,58 m²</text>
-                        <text x="894" y="130" class="v2-num" >885/7</text>
-                        <text x="894" y="144" class="v2-dim" >6,00 × 3,30 m</text>
-                        <text x="894" y="156" class="v2-area" >19,80 m²</text>
-                        <text x="330" y="296" class="v2-num" >885/5</text>
-                        <text x="330" y="310" class="v2-dim" >3,40 × 1,67 m</text>
-                        <text x="330" y="322" class="v2-area" >5,67 m²</text>
-                        <text x="330" y="369" class="v2-num" >885/X</text>
-                        <text x="330" y="383" class="v2-dim" >3,40 × 1,67 m</text>
-                        <text x="330" y="395" class="v2-area" >5,67 m²</text>
-                        <text x="330" y="442" class="v2-num" >885/4</text>
-                        <text x="330" y="456" class="v2-dim" >3,40 × 1,67 m</text>
-                        <text x="330" y="468" class="v2-area" >5,67 m²</text>
-                        <text x="580" y="128" class="v2-num v2-num-s" fill="#2e7d32">A3</text>
-                        <text x="580" y="142" class="v2-dim" fill="#2e7d32">společná</text>
-                        <text x="580" y="154" class="v2-area" fill="#2e7d32">4,95 m²</text>
-                        <text x="744" y="95" class="v2-num v2-num-s" fill="#2e7d32">A6</text>
-                        <text x="744" y="120" class="v2-area" fill="#2e7d32">3,15 m²</text>
-                        <text x="744" y="108" class="v2-dim" fill="#2e7d32">1,50 × 2,10</text>
-                        <!-- Vstup k horním kójím a průchod -->
+                        <text x="120" y="132" class="v2-num v2-num-s">885/1</text>
+                        <text x="120" y="144.8" class="v2-dim">1,50 × 3,45</text>
+                        <text x="120" y="156" class="v2-area">5,17 m²</text>
+                        <text x="198" y="96.8" class="v2-num">885/6</text>
+                        <text x="198" y="109.6" class="v2-dim">2,10 × 1,85</text>
+                        <text x="198" y="120.8" class="v2-area">3,89 m²</text>
+                        <text x="288" y="96.8" class="v2-num">885/8</text>
+                        <text x="288" y="109.6" class="v2-dim">2,10 × 1,85</text>
+                        <text x="288" y="120.8" class="v2-area">3,89 m²</text>
+                        <text x="379" y="96.8" class="v2-num v2-num-s">885/9</text>
+                        <text x="379" y="109.6" class="v2-dim">1,85 × 1,85</text>
+                        <text x="379" y="120.8" class="v2-area">3,42 m²</text>
+                        <text x="452" y="132" class="v2-num v2-num-s">885/2</text>
+                        <text x="452" y="144.8" class="v2-dim">1,50 × 3,65</text>
+                        <text x="452" y="156" class="v2-area">5,47 m²</text>
+                        <text x="707.4" y="132" class="v2-num">885/10</text>
+                        <text x="707.4" y="144.8" class="v2-dim">2,60 × 3,80</text>
+                        <text x="707.4" y="156" class="v2-area">9,88 m²</text>
+                        <text x="968.2" y="128" class="v2-num">885/7</text>
+                        <text x="968.2" y="140.8" class="v2-dim">6,00 × 3,00</text>
+                        <text x="968.2" y="152" class="v2-area">18,00 m²</text>
+                        <text x="344" y="342" class="v2-num">885/5</text>
+                        <text x="344" y="354.8" class="v2-dim">3,40 × 1,71</text>
+                        <text x="344" y="366" class="v2-area">5,81 m²</text>
+                        <text x="344" y="416.32" class="v2-num">885/X</text>
+                        <text x="344" y="429.12" class="v2-dim">3,40 × 1,71</text>
+                        <text x="344" y="440.32" class="v2-area">5,81 m²</text>
+                        <text x="344" y="490.64" class="v2-num">885/4</text>
+                        <text x="344" y="503.44" class="v2-dim">3,40 × 1,71</text>
+                        <text x="344" y="514.64" class="v2-area">5,81 m²</text>
+                        <text x="593.4" y="132" class="v2-num v2-num-s"  fill="#2e7d32">A3</text>
+                        <text x="593.4" y="144.8" class="v2-dim"  fill="#2e7d32">1,50 × 3,70</text>
+                        <text x="593.4" y="156" class="v2-area"  fill="#2e7d32">5,55 m²</text>
+                        <text x="803.8" y="96.8" class="v2-num v2-num-s"  fill="#2e7d32">A6</text>
+                        <text x="803.8" y="109.6" class="v2-dim"  fill="#2e7d32">1,50 × 1,95</text>
+                        <text x="803.8" y="120.8" class="v2-area"  fill="#2e7d32">2,92 m²</text>
+                        <text x="570" y="268" class="v2-corr-label">SPOLEČNÁ CHODBA C1</text>
+                        <text x="528.4" y="148" class="v2-out-label" fill="#e65100" transform="rotate(-90 528.4 148)">SCHODY</text>
+                        <text x="243" y="194" class="v2-corr-sub">přístup</text>
+                        <text x="394" y="214" class="v2-corr-sub">přístup</text>
+                        <text x="474" y="432" class="v2-corr-sub" transform="rotate(-90 474 432)">PŘÍSTUP B2 · 1,795 m</text>
+                        <text x="803.8" y="198" class="v2-corr-sub">chodba</text>
                         <g class="v2-door" onclick="selectItem('vis2', 'Vstup', 'Vstup k horním kójím', 'Otevřeno z chodby C1 v celé šířce 885/9 (1,85 m)', 'Přístup ke kójím 885/9 a 885/2, dále průchodem doleva k 885/1, 885/6 a 885/8')">
-                            <rect x="347" y="207" width="40" height="10" fill="transparent"></rect>
-                            <path d="M 367 236 L 367 218 M 361 224 L 367 217 L 373 224" class="v2-arrow"></path>
-                            <text x="367" y="246" class="v2-corr-sub" font-weight="bold" fill="#1565c0">VSTUP</text>
+                            <path d="M 379 258 L 379 238 M 373 245 L 379 237.2 L 385 245" class="v2-arrow"></path>
+                            <text x="379" y="270" class="v2-corr-sub" font-weight="bold" fill="#1565c0">VSTUP</text>
                         </g>
-                        <g class="v2-door" onclick="selectItem('vis2', 'Průchod', 'Průchod mezi A2 a A1', 'V místě současných dveří', 'Dveře se odstraní, ponechá se pouze otvor')">
-                            <rect x="322" y="173" width="16" height="32" fill="transparent"></rect>
-                            <line x1="324" y1="173" x2="336" y2="173" class="v2-jamb"></line>
-                            <line x1="324" y1="205" x2="336" y2="205" class="v2-jamb"></line>
-                            <path d="M 344 198 L 314 198 M 320 192 L 313 198 L 320 204" class="v2-arrow"></path>
-                            <text x="308" y="202" class="v2-corr-sub" font-weight="bold" fill="#1565c0" style="text-anchor: end;">průchod</text>
+                        <g class="v2-door" onclick="selectItem('vis2', 'Průchod', 'Průchod mezi A2 a A1', 'Šířka 1,00 m, 2,00–3,00 m od severní zdi', 'Stávající dveře se odstraní, ponechá se pouze otvor')">
+                            <path d="M 366 180 L 306 180 M 313 174 L 305.2 180 L 313 186" class="v2-arrow"></path>
+                            <text x="300" y="184" class="v2-corr-sub" font-weight="bold" fill="#1565c0" style="text-anchor: end;">průchod</text>
                         </g>
-
-                        <!-- Legenda a měřítko -->
                         <g pointer-events="none">
-                            <rect x="90" y="500" width="18" height="12" class="v2-unit" style="stroke:#546e7a; stroke-width:1;"></rect>
-                            <text x="114" y="510" class="v2-legend" >Soukromá kóje</text>
-                            <rect x="225" y="500" width="18" height="12" class="v2-shared" style="stroke:#546e7a; stroke-width:1;"></rect>
-                            <text x="249" y="510" class="v2-legend" >Společný prostor</text>
-                            <rect x="360" y="500" width="18" height="12" class="v2-corridor" style="stroke:#546e7a; stroke-width:1;"></rect>
-                            <text x="384" y="510" class="v2-legend" >Chodba / přístup</text>
-                            <rect x="495" y="500" width="18" height="12" class="v2-out" style="stroke:#546e7a; stroke-width:1;"></rect>
-                            <text x="519" y="510" class="v2-legend" >Mimo řešení</text>
-                            <rect x="630" y="500" width="18" height="12" class="v2-partition" style="stroke:#546e7a; stroke-width:1;"></rect>
-                            <text x="654" y="510" class="v2-legend" >Nová příčka 15 cm</text>
-                            <line x1="765" y1="506" x2="783" y2="506" class="v2-wall-legend"></line>
-                            <text x="789" y="510" class="v2-legend" >Stávající zeď</text>
-                            <path d="M 880 512 L 880 500 A 12 12 0 0 1 892 512 Z" class="v2-door-swing"></path>
-                            <line x1="880" y1="512" x2="880" y2="500" class="v2-door-leaf"></line>
-                            <text x="900" y="510" class="v2-legend" >Dveře 0,80 m</text>
-                            <rect x="90" y="530" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
-                            <text x="90" y="546" class="v2-legend" text-anchor="middle">0</text>
-                            <rect x="130" y="530" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
-                            <text x="130" y="546" class="v2-legend" text-anchor="middle">1</text>
-                            <rect x="170" y="530" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
-                            <text x="170" y="546" class="v2-legend" text-anchor="middle">2</text>
-                            <text x="210" y="546" class="v2-legend" text-anchor="middle">3 m</text>
-                            <text x="1012" y="540" class="v2-legend" text-anchor="end" font-style="italic">Cílový stav dle Návrhu 2 · 10 soukromých kójí · nové příčky 37,3 m · rozměry vnitřní</text>
+                            <rect x="90" y="612" width="18" height="12" class="v2-unit" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="114" y="622" class="v2-legend">Soukromá kóje</text>
+                            <rect x="225" y="612" width="18" height="12" class="v2-shared" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="249" y="622" class="v2-legend">Společný prostor</text>
+                            <rect x="360" y="612" width="18" height="12" class="v2-corridor" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="384" y="622" class="v2-legend">Chodba / přístup</text>
+                            <rect x="495" y="612" width="18" height="12" class="v2-out" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="519" y="622" class="v2-legend">Mimo řešení</text>
+                            <rect x="630" y="612" width="18" height="12" class="v2-partition" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="654" y="622" class="v2-legend">Nová příčka 15 cm</text>
+                            <rect x="765" y="612" width="18" height="12" class="v2-mass" style="stroke:#546e7a; stroke-width:1;"></rect>
+                            <text x="789" y="622" class="v2-legend">Stávající zdivo</text>
+                            <path d="M 900 624 L 900 612 A 12 12 0 0 1 912 624 Z" class="v2-door-swing"></path>
+                            <line x1="900" y1="624" x2="900" y2="612" class="v2-door-leaf"></line>
+                            <text x="920" y="622" class="v2-legend">Dveře 0,80 m</text>
+                            <rect x="90" y="628" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
+                            <rect x="130" y="628" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
+                            <rect x="170" y="628" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
+                            <rect x="210" y="628" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
+                            <text x="90" y="644" class="v2-legend">0</text><text x="250" y="644" class="v2-legend">4 m</text>
+                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 30,5 m · rozměry vnitřní</text>
                         </g>
                     </g>
 
                     <!-- VRSTVA 6b: ELEKTROINSTALACE 2 – návrh rozvodu z podružného rozvaděče RS v A3 (podklad: Vizualizace kójí 2) -->
                     <g id="layer-elec2" style="display: none;">
-                        <!-- Hlavní kabelové trasy pod stropem -->
-                        <polyline points="560,108 560,220 367,220 367,208 96,208" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <polyline points="367,220 200,220" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <polyline points="728,220 728,250" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <polyline points="367,208 462,208" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <polyline points="560,220 430,220 430,478" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
-                        <polyline points="560,220 728,220 728,172 800,172" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="569.4,110 569.4,242 170,242 170,338" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="394,242 394,212 96,212" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="394,216.8 476,216.8" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="452,242 452,336 440,336 440,532" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="569.4,242 782,242 782,120 862,120" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="670,242 670,222" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
+                        <polyline points="782,266 862,266" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
                         <!-- Zásuvkové okruhy K1–K12 (B16, CYKY-J 3x2,5, podružný elektroměr E1–E12) -->
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K1 – 885/1', 'Zásuvka kóje 885/1', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E1 · cca 18,0 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E1 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="93,208 93,196" class="e2-feed"></polyline>
-                            <rect x="88.5" y="191.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K1 – 885/1', 'Zásuvka kóje 885/1', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E1 · cca 19,1 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E1 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="96,212 96,202" class="e2-feed"></polyline>
+                            <rect x="91.5" y="197.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K2 – 885/6', 'Zásuvka kóje 885/6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E2 · cca 15,7 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E2 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="234,208 234,152" class="e2-feed"></polyline>
-                            <rect x="229.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K2 – 885/6', 'Zásuvka kóje 885/6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E2 · cca 17,2 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E2 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="232,212 232,144" class="e2-feed"></polyline>
+                            <rect x="227.5" y="139.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K3 – 885/8', 'Zásuvka kóje 885/8', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E3 · cca 13,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E3 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="324,208 324,152" class="e2-feed"></polyline>
-                            <rect x="319.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K3 – 885/8', 'Zásuvka kóje 885/8', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E3 · cca 14,9 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E3 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="322,212 322,144" class="e2-feed"></polyline>
+                            <rect x="317.5" y="139.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K4 – 885/9', 'Zásuvka kóje 885/9', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E4 · cca 13,1 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E4 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="398,208 398,152" class="e2-feed"></polyline>
-                            <rect x="393.5" y="147.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K4 – 885/9', 'Zásuvka kóje 885/9', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E4 · cca 13,5 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E4 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="394,212 408,212 408,144" class="e2-feed"></polyline>
+                            <rect x="403.5" y="139.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K5 – 885/2', 'Zásuvka kóje 885/2', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E5 · cca 13,5 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E5 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="462,208 462,200" class="e2-feed"></polyline>
-                            <rect x="457.5" y="195.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K5 – 885/2', 'Zásuvka kóje 885/2', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E5 · cca 13,7 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E5 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="476,216.8 476,212" class="e2-feed"></polyline>
+                            <rect x="471.5" y="207.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K6 – 885/5', 'Zásuvka kóje 885/5', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E6 · cca 12,6 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E6 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="430,333 403,333" class="e2-feed"></polyline>
-                            <rect x="398.5" y="328.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K6 – 885/5', 'Zásuvka kóje 885/5', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E6 · cca 13,6 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E6 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="440,385.2 420,385.2" class="e2-feed"></polyline>
+                            <rect x="415.5" y="380.7" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K7 – 885/X', 'Zásuvka kóje 885/X', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E7 · cca 14,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E7 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="430,406 403,406" class="e2-feed"></polyline>
-                            <rect x="398.5" y="401.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K7 – 885/X', 'Zásuvka kóje 885/X', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E7 · cca 15,5 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E7 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="440,459.52 420,459.52" class="e2-feed"></polyline>
+                            <rect x="415.5" y="455.02" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K8 – 885/4', 'Zásuvka kóje 885/4', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E8 · cca 16,2 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E8 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="430,478 403,478" class="e2-feed"></polyline>
-                            <rect x="398.5" y="473.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K8 – 885/4', 'Zásuvka kóje 885/4', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E8 · cca 17,3 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E8 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="440,533.84 420,533.84" class="e2-feed"></polyline>
+                            <rect x="415.5" y="529.34" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K9 – 885/10', 'Zásuvka kóje 885/10', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E9 · cca 9,9 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E9 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="704,220 704,200" class="e2-feed"></polyline>
-                            <rect x="699.5" y="195.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K9 – 885/10', 'Zásuvka kóje 885/10', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E9 · cca 9,3 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E9 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <polyline points="670,242 670,222" class="e2-feed"></polyline>
+                            <rect x="665.5" y="217.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K10 – 885/7', 'Zásuvka kóje 885/7', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E10 · cca 14,0 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E10 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="800,172 840,172" class="e2-feed"></polyline>
-                            <rect x="835.5" y="167.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K10 – 885/7', 'Zásuvka kóje 885/7', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E10 · cca 16,7 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E10 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <rect x="857.5" y="115.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K11 – 885/11', 'Zásuvka nebytové jednotky 885/11', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E11 · cca 16,4 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E11 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="200,220 200,282" class="e2-feed"></polyline>
-                            <rect x="195.5" y="277.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K11 – 885/11', 'Zásuvka nebytové jednotky 885/11', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E11 · cca 18,7 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E11 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <rect x="165.5" y="333.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K12 – 885/12', 'Zásuvka nebytové jednotky 885/12', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E12 · cca 12,3 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E12 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
-                            <polyline points="728,250 790,250" class="e2-feed"></polyline>
-                            <rect x="785.5" y="245.5" width="9" height="9" class="elec-socket"></rect>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh K12 – 885/12', 'Zásuvka nebytové jednotky 885/12', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E12 · cca 14,2 m', 'Z RS v A3 po trase pod stropem do zásuvky 230 V IP44; podružný elektroměr E12 pro odečet a rozúčtování. Svítidlo je na samostatném okruhu osvětlení O2.')">
+                            <rect x="857.5" y="261.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <!-- Okruh O2: svítidla v kójích (samostatný přívod osvětlení, jistič B10) -->
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh O2', 'Svítidla v kójích a nebytových jednotkách', 'CYKY-J 3x1,5 · jistič B10 · cca 76,6 m', 'Ze samostatného přívodu osvětlení; svítidlo LED IP44 v každé kóji a v 885/11 a 885/12, vypínač u dveří')">
-                            <polyline points="93,208 93,196 93,96 113,96" class="e2-light-line"></polyline>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh O2', 'Svítidla v kójích a nebytových jednotkách', 'CYKY-J 3x1,5 · jistič B10 · cca 83,8 m', 'Ze samostatného přívodu osvětlení; svítidlo LED IP44 v každé kóji a v 885/11 a 885/12, vypínač u dveří')">
+                            <polyline points="96,212 96,202 96,96 112,96" class="e2-light-line"></polyline>
                             <circle cx="120" cy="96" r="7" class="elec-light"></circle>
-                            <polyline points="234,208 234,152 234,138 233,138" class="e2-light-line"></polyline>
-                            <circle cx="226" cy="138" r="7" class="elec-light"></circle>
-                            <polyline points="324,208 324,152 324,138 323,138" class="e2-light-line"></polyline>
-                            <circle cx="316" cy="138" r="7" class="elec-light"></circle>
-                            <polyline points="398,208 398,152 398,138 397,138" class="e2-light-line"></polyline>
-                            <circle cx="390" cy="138" r="7" class="elec-light"></circle>
-                            <polyline points="462,208 462,200 462,96 447,96" class="e2-light-line"></polyline>
-                            <circle cx="440" cy="96" r="7" class="elec-light"></circle>
-                            <polyline points="430,333 403,333 295,333" class="e2-light-line"></polyline>
-                            <circle cx="288" cy="333" r="7" class="elec-light"></circle>
-                            <polyline points="430,406 403,406 295,406" class="e2-light-line"></polyline>
-                            <circle cx="288" cy="406" r="7" class="elec-light"></circle>
-                            <polyline points="430,478 403,478 295,478" class="e2-light-line"></polyline>
-                            <circle cx="288" cy="478" r="7" class="elec-light"></circle>
-                            <polyline points="704,220 704,200 704,100 669,100" class="e2-light-line"></polyline>
-                            <circle cx="662" cy="100" r="7" class="elec-light"></circle>
-                            <polyline points="800,172 840,172 840,100 887,100" class="e2-light-line"></polyline>
-                            <circle cx="894" cy="100" r="7" class="elec-light"></circle>
-                            <polyline points="200,220 200,282 200,313" class="e2-light-line"></polyline>
-                            <circle cx="200" cy="320" r="7" class="elec-light"></circle>
-                            <polyline points="728,250 790,250 833,250" class="e2-light-line"></polyline>
-                            <circle cx="840" cy="250" r="7" class="elec-light"></circle>
+                            <polyline points="232,212 232,144 232,130 228,130" class="e2-light-line"></polyline>
+                            <circle cx="222" cy="130" r="7" class="elec-light"></circle>
+                            <polyline points="322,212 322,144 322,130 318,130" class="e2-light-line"></polyline>
+                            <circle cx="312" cy="130" r="7" class="elec-light"></circle>
+                            <polyline points="394,212 408,212 408,144 408,130 404,130" class="e2-light-line"></polyline>
+                            <circle cx="398" cy="130" r="7" class="elec-light"></circle>
+                            <polyline points="476,216.8 476,212 476,104 458,104" class="e2-light-line"></polyline>
+                            <circle cx="452" cy="104" r="7" class="elec-light"></circle>
+                            <polyline points="440,385.2 420,385.2 304,385.2" class="e2-light-line"></polyline>
+                            <circle cx="298" cy="385.2" r="7" class="elec-light"></circle>
+                            <polyline points="440,459.52 420,459.52 304,459.52" class="e2-light-line"></polyline>
+                            <circle cx="298" cy="459.52" r="7" class="elec-light"></circle>
+                            <polyline points="440,533.84 420,533.84 304,533.84" class="e2-light-line"></polyline>
+                            <circle cx="298" cy="533.84" r="7" class="elec-light"></circle>
+                            <polyline points="670,242 670,222 670,104 690,104" class="e2-light-line"></polyline>
+                            <circle cx="697.2" cy="104" r="7" class="elec-light"></circle>
+                            <polyline points="862,120 1034,120 1034,132.8" class="e2-light-line"></polyline>
+                            <circle cx="1034" cy="140" r="7" class="elec-light"></circle>
+                            <polyline points="170,338 170,392" class="e2-light-line"></polyline>
+                            <circle cx="170" cy="400" r="7" class="elec-light"></circle>
+                            <polyline points="862,266 902,266" class="e2-light-line"></polyline>
+                            <circle cx="910" cy="266" r="7" class="elec-light"></circle>
                         </g>
                         <!-- Okruh O1: společné osvětlení s čidly pohybu -->
-                        <polyline points="552,108 552,226 180,226 180,236" class="e2-light-line"></polyline>
-                        <polyline points="400,226 400,236" class="e2-light-line"></polyline>
-                        <polyline points="180,226 180,203" class="e2-light-line"></polyline>
-                        <polyline points="390,226 390,199" class="e2-light-line"></polyline>
-                        <polyline points="480,226 480,293" class="e2-light-line"></polyline>
-                        <polyline points="480,307 480,453" class="e2-light-line"></polyline>
-                        <polyline points="510,226 510,147" class="e2-light-line"></polyline>
-                        <polyline points="552,226 744,226 744,236" class="e2-light-line"></polyline>
-                        <polyline points="690,226 690,236" class="e2-light-line"></polyline>
-                        <polyline points="744,226 764,226 764,147" class="e2-light-line"></polyline>
-                        <polyline points="567,100 578,100" class="e2-light-line"></polyline>
-                        <circle cx="180" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-1', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="400" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-2', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="690" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-3', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="744" cy="243" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-4', 'Chodba u boční chodby', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="510" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo S1', 'Schodiště', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="585" cy="100" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A3', 'Společný sklep A3', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="764" cy="140" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A6', 'Společná kóje A6', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="180" cy="196" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A1', 'Přístupová plocha A1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="390" cy="192" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A2', 'Přístupová plocha A2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="480" cy="300" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-1', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <circle cx="480" cy="460" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-2', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
-                        <path d="M 523 232 A 7 7 0 0 1 537 232 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-1', 'Čidlo pohybu', 'PIR, IP44', 'U schodiště v chodbě C1; spíná okruh O1')"></path>
-                        <path d="M 359 214 A 7 7 0 0 1 373 214 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-2', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu k horním kójím; spíná okruh O1')"></path>
-                        <path d="M 450 283 A 7 7 0 0 1 464 283 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-3', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu do B2; spíná okruh O1')"></path>
-                        <!-- Okruh Z1: společné zásuvky A3 a A6 -->
-                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh Z1', 'Společné zásuvky A3 a A6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E13 · cca 11,8 m', 'Společná spotřeba měřená elektroměrem E13, rozpočítá se mezi vlastníky')">
-                            <polyline points="569,104 606,104 606,229 722,229 722,155" class="e2-common-feed"></polyline>
-                            <rect x="601.5" y="165.5" width="9" height="9" class="elec-socket"></rect>
-                            <rect x="717.5" y="145.5" width="9" height="9" class="elec-socket"></rect>
+                        <polyline points="566,110 566,248 170,248 170,256" class="e2-light-line"></polyline>
+                        <polyline points="322,248 322,256" class="e2-light-line"></polyline>
+                        <polyline points="566,248 796,248 796,256" class="e2-light-line"></polyline>
+                        <polyline points="714,248 714,256" class="e2-light-line"></polyline>
+                        <polyline points="286,248 286,195.2" class="e2-light-line"></polyline>
+                        <polyline points="404,248 404,200.8" class="e2-light-line"></polyline>
+                        <polyline points="528.4,248 528.4,214.8" class="e2-light-line"></polyline>
+                        <polyline points="575.4,98 593.2,98" class="e2-light-line"></polyline>
+                        <polyline points="778,248 778,144.8" class="e2-light-line"></polyline>
+                        <polyline points="466,248 466,356" class="e2-light-line"></polyline>
+                        <polyline points="466,364 466,464 477.2,464" class="e2-light-line"></polyline>
+                        <circle cx="170" cy="263" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-1', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="322" cy="263" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-2', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="714" cy="263" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-3', 'Chodba C1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="796" cy="263" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo C1-4', 'Uzel u boční chodby', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="528.4" cy="208" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo S1', 'Schodiště', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="600" cy="98" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A3', 'Společný sklep A3', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="782" cy="138" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo A6', 'Společná kóje A6', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="286" cy="188.8" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A1', 'Přístupová plocha A1', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="404" cy="194" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-A2', 'Přístupová plocha A2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="466" cy="360" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-1', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <circle cx="484" cy="464" r="7" class="elec-light e2-common" onclick="selectItem('elec2', 'Svítidlo P-B2-2', 'Přístup B2', 'LED IP44', 'Okruh O1 – společné osvětlení (samostatný přívod osvětlení, jistič B10), spínáno čidly pohybu')"></circle>
+                        <path d="M 535 239.2 A 7 7 0 0 1 549 239.2 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-1', 'Čidlo pohybu', 'PIR, IP44', 'U schodiště v chodbě C1; spíná okruh O1')"></path>
+                        <path d="M 353 239.2 A 7 7 0 0 1 367 239.2 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-2', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu k horním kójím; spíná okruh O1')"></path>
+                        <path d="M 473 332 A 7 7 0 0 1 487 332 Z" class="e2-pir" onclick="selectItem('elec2', 'PIR-3', 'Čidlo pohybu', 'PIR, IP44', 'U vstupu do B2; spíná okruh O1')"></path>
+                        <g class="e2-circuit" onclick="selectItem('elec2', 'Okruh Z1', 'Společné zásuvky A3 a A6', 'CYKY-J 3x2,5 · jistič B16 · elektroměr E13 · cca 15,7 m', 'Společná spotřeba měřená elektroměrem E13, rozpočítá se mezi vlastníky')">
+                            <polyline points="575.4,106 618,106 618,252 828,252 828,144" class="e2-common-feed"></polyline>
+                            <rect x="613.5" y="179.5" width="9" height="9" class="elec-socket"></rect>
+                            <rect x="823.5" y="139.5" width="9" height="9" class="elec-socket"></rect>
                         </g>
-                        <!-- Schéma podružného měření v RS -->
                         <g class="e2-rs-g" onclick="selectItem('elec2', 'Měření v RS', '13 podružných elektroměrů', 'E1–E10 kóje · E11 = 885/11 · E12 = 885/12 · E13 = společné zásuvky A3, A6', 'Elektroměry na DIN lištu s odečtem kWh pro zásuvkové okruhy; osvětlení O1 a O2 je na samostatném přívodu')">
-                            <rect x="716" y="30" width="298" height="46" rx="4" fill="#263238" stroke="#ff9800" stroke-width="1.5"></rect>
-                            <text x="724" y="42" class="e2-meter-title">RS – podružné elektroměry pro odečet a rozúčtování (kWh)</text>
-                            <rect x="722" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="731.5" y="55" class="e2-meter-num">E1</text>
-                            <text x="731.5" y="71" class="e2-meter-lab">885/1</text>
-                            <rect x="744.4" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="753.9" y="55" class="e2-meter-num">E2</text>
-                            <text x="753.9" y="71" class="e2-meter-lab">885/6</text>
-                            <rect x="766.8" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="776.3" y="55" class="e2-meter-num">E3</text>
-                            <text x="776.3" y="71" class="e2-meter-lab">885/8</text>
-                            <rect x="789.2" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="798.7" y="55" class="e2-meter-num">E4</text>
-                            <text x="798.7" y="71" class="e2-meter-lab">885/9</text>
-                            <rect x="811.6" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="821.1" y="55" class="e2-meter-num">E5</text>
-                            <text x="821.1" y="71" class="e2-meter-lab">885/2</text>
-                            <rect x="834" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="843.5" y="55" class="e2-meter-num">E6</text>
-                            <text x="843.5" y="71" class="e2-meter-lab">885/5</text>
-                            <rect x="856.4" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="865.9" y="55" class="e2-meter-num">E7</text>
-                            <text x="865.9" y="71" class="e2-meter-lab">885/X</text>
-                            <rect x="878.8" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="888.3" y="55" class="e2-meter-num">E8</text>
-                            <text x="888.3" y="71" class="e2-meter-lab">885/4</text>
-                            <rect x="901.2" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="910.7" y="55" class="e2-meter-num">E9</text>
-                            <text x="910.7" y="71" class="e2-meter-lab">885/10</text>
-                            <rect x="923.6" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="933.1" y="55" class="e2-meter-num">E10</text>
-                            <text x="933.1" y="71" class="e2-meter-lab">885/7</text>
-                            <rect x="946" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="955.5" y="55" class="e2-meter-num">E11</text>
-                            <text x="955.5" y="71" class="e2-meter-lab">885/11</text>
-                            <rect x="968.4" y="47" width="19" height="15" rx="1.5" class="e2-meter"></rect>
-                            <text x="977.9" y="55" class="e2-meter-num">E12</text>
-                            <text x="977.9" y="71" class="e2-meter-lab">885/12</text>
-                            <rect x="990.8" y="47" width="19" height="15" rx="1.5" class="e2-meter e2-meter-common"></rect>
-                            <text x="1000.3" y="55" class="e2-meter-num">E13</text>
-                            <text x="1000.3" y="71" class="e2-meter-lab">spol.</text>
+                            <rect x="790" y="4" width="298" height="46" rx="4" fill="#263238" stroke="#ff9800" stroke-width="1.5"></rect>
+                            <text x="798" y="16" class="e2-meter-title">RS – podružné elektroměry pro odečet a rozúčtování (kWh)</text>
+                            <rect x="796" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="805.5" y="29" class="e2-meter-num">E1</text>
+                            <text x="805.5" y="45" class="e2-meter-lab">885/1</text>
+                            <rect x="818.4" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="827.9" y="29" class="e2-meter-num">E2</text>
+                            <text x="827.9" y="45" class="e2-meter-lab">885/6</text>
+                            <rect x="840.8" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="850.3" y="29" class="e2-meter-num">E3</text>
+                            <text x="850.3" y="45" class="e2-meter-lab">885/8</text>
+                            <rect x="863.2" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="872.7" y="29" class="e2-meter-num">E4</text>
+                            <text x="872.7" y="45" class="e2-meter-lab">885/9</text>
+                            <rect x="885.6" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="895.1" y="29" class="e2-meter-num">E5</text>
+                            <text x="895.1" y="45" class="e2-meter-lab">885/2</text>
+                            <rect x="908" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="917.5" y="29" class="e2-meter-num">E6</text>
+                            <text x="917.5" y="45" class="e2-meter-lab">885/5</text>
+                            <rect x="930.4" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="939.9" y="29" class="e2-meter-num">E7</text>
+                            <text x="939.9" y="45" class="e2-meter-lab">885/X</text>
+                            <rect x="952.8" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="962.3" y="29" class="e2-meter-num">E8</text>
+                            <text x="962.3" y="45" class="e2-meter-lab">885/4</text>
+                            <rect x="975.2" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="984.7" y="29" class="e2-meter-num">E9</text>
+                            <text x="984.7" y="45" class="e2-meter-lab">885/10</text>
+                            <rect x="997.6" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="1007.1" y="29" class="e2-meter-num">E10</text>
+                            <text x="1007.1" y="45" class="e2-meter-lab">885/7</text>
+                            <rect x="1020" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="1029.5" y="29" class="e2-meter-num">E11</text>
+                            <text x="1029.5" y="45" class="e2-meter-lab">885/11</text>
+                            <rect x="1042.4" y="21" width="19" height="15" rx="1.5" class="e2-meter"></rect>
+                            <text x="1051.9" y="29" class="e2-meter-num">E12</text>
+                            <text x="1051.9" y="45" class="e2-meter-lab">885/12</text>
+                            <rect x="1064.8" y="21" width="19" height="15" rx="1.5" class="e2-meter e2-meter-common"></rect>
+                            <text x="1074.3" y="29" class="e2-meter-num">E13</text>
+                            <text x="1074.3" y="45" class="e2-meter-lab">spol.</text>
                         </g>
-                        <!-- Podružný rozvaděč RS v A3 -->
                         <g class="e2-rs-g" onclick="selectItem('elec2', 'RS – A3', 'Podružný rozvaděč (společný prostor A3)', 'Zásuvková část: hl. vypínač, chránič 30 mA, 12× B16 s elektroměrem E1–E12, Z1 B16 s E13 · Osvětlení: samostatný přívod, vypínač, O1 B10, O2 B10', 'K1–K10 kóje, K11 = 885/11, K12 = 885/12, Z1 společné zásuvky; O1 společné osvětlení, O2 svítidla v kójích')">
-                            <rect x="551" y="82" width="18" height="26" rx="2" class="e2-rs"></rect>
-                            <text x="560" y="96" class="e2-rs-text">RS</text>
+                            <rect x="560.4" y="84" width="18" height="26" rx="2" class="e2-rs"></rect>
+                            <text x="569.4" y="98" class="e2-rs-text">RS</text>
                         </g>
-                        <path d="M 555 60 L 555 80 M 551 74 L 555 81 L 559 74" class="e2-supply"></path>
-                        <path d="M 565 60 L 565 80 M 561 74 L 565 81 L 569 74" class="e2-supply e2-supply-light"></path>
-                        <text x="572" y="66" class="e2-legend" style="font-size:9px;">přívody: zásuvky + osvětlení</text>
-                        <!-- Legenda elektro -->
+                        <path d="M 564.4 34 L 564.4 83 M 560.4 77 L 564.4 84 L 568.4 77" class="e2-supply"></path>
+                        <path d="M 574.4 34 L 574.4 83 M 570.4 77 L 574.4 84 L 578.4 77" class="e2-supply e2-supply-light"></path>
+                        <text x="581.4" y="32" class="e2-legend" style="font-size:9px;">přívody: zásuvky + osvětlení</text>
                         <g pointer-events="none">
-                            <rect x="90" y="34" width="440" height="34" rx="4" fill="#ffffff" fill-opacity="0.92" stroke="#cfd8dc"></rect>
-                            <rect x="98" y="40" width="10" height="14" rx="1.5" class="e2-rs"></rect><text x="113" y="51" class="e2-legend">RS</text>
-                            <circle cx="144" cy="47" r="6" class="elec-light"></circle><text x="154" y="51" class="e2-legend">svítidlo</text>
-                            <rect x="198" y="42.5" width="9" height="9" class="elec-socket"></rect><text x="212" y="51" class="e2-legend">zásuvka</text>
-                            <path d="M 258 51 A 7 7 0 0 1 272 51 Z" class="e2-pir"></path><text x="277" y="51" class="e2-legend">čidlo</text>
-                            <line x1="314" y1="47" x2="334" y2="47" class="e2-tray"></line><text x="339" y="51" class="e2-legend">trasa</text>
-                            <line x1="374" y1="47" x2="394" y2="47" class="e2-feed"></line><text x="399" y="51" class="e2-legend">zásuvky</text>
-                            <line x1="446" y1="47" x2="466" y2="47" class="e2-light-line"></line><text x="471" y="51" class="e2-legend">světla</text>
-                            <text x="98" y="64" class="e2-legend" style="font-size:9px; fill:#607d8b;">3×2,5 zásuvky K1–K12 + Z1 ≈ 181,1 m (B16) · 3×1,5 světla O1 + O2 ≈ 109,0 m (B10, samost. přívod)</text>
+                            <rect x="90" y="4" width="440" height="34" rx="4" fill="#ffffff" fill-opacity="0.92" stroke="#cfd8dc"></rect>
+                            <rect x="98" y="10" width="10" height="14" rx="1.5" class="e2-rs"></rect><text x="113" y="21" class="e2-legend">RS</text>
+                            <circle cx="144" cy="17" r="6" class="elec-light"></circle><text x="154" y="21" class="e2-legend">svítidlo</text>
+                            <rect x="198" y="12.5" width="9" height="9" class="elec-socket"></rect><text x="212" y="21" class="e2-legend">zásuvka</text>
+                            <path d="M 258 21 A 7 7 0 0 1 272 21 Z" class="e2-pir"></path><text x="277" y="21" class="e2-legend">čidlo</text>
+                            <line x1="314" y1="17" x2="334" y2="17" class="e2-tray"></line><text x="339" y="21" class="e2-legend">trasa</text>
+                            <line x1="374" y1="17" x2="394" y2="17" class="e2-feed"></line><text x="399" y="21" class="e2-legend">zásuvky</text>
+                            <line x1="446" y1="17" x2="466" y2="17" class="e2-light-line"></line><text x="471" y="21" class="e2-legend">světla</text>
+                            <text x="98" y="34" class="e2-legend" style="font-size:9px; fill:#607d8b;">3×2,5 zásuvky K1–K12 + Z1 ≈ 199,4 m (B16) · 3×1,5 světla O1 + O2 ≈ 118,6 m (B10, samost. přívod)</text>
                         </g>
                     </g>
 
-                <!-- VRSTVA KÓTY A ROZMĚRY – světlé rozměry fyzických místností dle zaměření (40 px = 1 m) -->
+                <!-- VRSTVA KÓTY A ROZMĚRY – světlé rozměry podle přesného zaměření (40 px = 1 m) -->
                 <g id="layer-dimensions" style="display: none;">
-                    <!-- Řada A (sever): šířky místností -->
-                    <line x1="90" y1="56" x2="330" y2="56" class="dim-line"></line>
-                    <text x="210" y="49" class="dim-text">A1 6,00</text>
-                    <line x1="330" y1="56" x2="470" y2="56" class="dim-line"></line>
-                    <text x="400" y="49" class="dim-text">A2 3,50</text>
-                    <line x1="470" y1="56" x2="550" y2="56" class="dim-line"></line>
-                    <text x="510" y="49" class="dim-text">S1 2,00</text>
-                    <line x1="550" y1="56" x2="610" y2="56" class="dim-line"></line>
-                    <text x="580" y="49" class="dim-text">A3 1,50</text>
-                    <line x1="610" y1="56" x2="714" y2="56" class="dim-line"></line>
-                    <text x="662" y="49" class="dim-text">A4 2,60</text>
-                    <line x1="714" y1="56" x2="774" y2="56" class="dim-line"></line>
-                    <text x="744" y="49" class="dim-text">C2 1,50</text>
-                    <line x1="774" y1="56" x2="1014" y2="56" class="dim-line"></line>
-                    <text x="894" y="49" class="dim-text">A5 6,00</text>
-                    <line x1="90" y1="52" x2="90" y2="84" class="dim-guide"></line>
-                    <line x1="330" y1="52" x2="330" y2="84" class="dim-guide"></line>
-                    <line x1="470" y1="52" x2="470" y2="84" class="dim-guide"></line>
-                    <line x1="550" y1="52" x2="550" y2="84" class="dim-guide"></line>
-                    <line x1="610" y1="52" x2="610" y2="84" class="dim-guide"></line>
-                    <line x1="714" y1="52" x2="714" y2="84" class="dim-guide"></line>
-                    <line x1="774" y1="52" x2="774" y2="84" class="dim-guide"></line>
-                    <line x1="1014" y1="52" x2="1014" y2="84" class="dim-guide"></line>
-                    <line x1="90" y1="30" x2="1014" y2="30" class="dim-line-outer"></line>
-                    <text x="552" y="23" class="dim-text-outer">Celkem řada A: 23,10 m</text>
-                    <line x1="90" y1="26" x2="90" y2="60" class="dim-guide"></line>
-                    <line x1="1014" y1="26" x2="1014" y2="60" class="dim-guide"></line>
-                    <!-- Řada B (jih): šířky místností -->
-                    <line x1="90" y1="512" x2="276" y2="512" class="dim-line"></line>
-                    <text x="183" y="505" class="dim-text">B1 4,65</text>
-                    <line x1="276" y1="512" x2="496" y2="512" class="dim-line"></line>
-                    <text x="386" y="505" class="dim-text">B2 5,50</text>
-                    <line x1="496" y1="512" x2="594" y2="512" class="dim-line"></line>
-                    <text x="545" y="505" class="dim-text">V0 2,45</text>
-                    <line x1="594" y1="512" x2="690" y2="512" class="dim-line"></line>
-                    <text x="642" y="505" class="dim-text">B3 2,40</text>
-                    <line x1="690" y1="512" x2="822" y2="512" class="dim-line"></line>
-                    <text x="756" y="505" class="dim-text">B4 3,30</text>
-                    <line x1="822" y1="512" x2="1014" y2="512" class="dim-line"></line>
-                    <text x="918" y="505" class="dim-text">B5 4,80</text>
-                    <line x1="90" y1="482.4" x2="90" y2="516" class="dim-guide"></line>
-                    <line x1="276" y1="482.4" x2="276" y2="516" class="dim-guide"></line>
-                    <line x1="496" y1="482.4" x2="496" y2="516" class="dim-guide"></line>
-                    <line x1="594" y1="482.4" x2="594" y2="516" class="dim-guide"></line>
-                    <line x1="690" y1="482.4" x2="690" y2="516" class="dim-guide"></line>
-                    <line x1="822" y1="482.4" x2="822" y2="516" class="dim-guide"></line>
-                    <line x1="1014" y1="482.4" x2="1014" y2="516" class="dim-guide"></line>
-                    <line x1="90" y1="540" x2="1014" y2="540" class="dim-line-outer"></line>
-                    <text x="552" y="533" class="dim-text-outer">Celkem řada B: 23,10 m</text>
-                    <line x1="90" y1="508" x2="90" y2="544" class="dim-guide"></line>
-                    <line x1="1014" y1="508" x2="1014" y2="544" class="dim-guide"></line>
-                    <!-- Hloubky vlevo: řada A, chodba C1, řada B -->
-                    <line x1="62" y1="80" x2="62" y2="212" class="dim-line"></line>
-                    <text x="54" y="146" class="dim-text" transform="rotate(-90 54 146)">A 3,30</text>
-                    <line x1="62" y1="212" x2="62" y2="274.4" class="dim-line"></line>
-                    <text x="54" y="243.2" class="dim-text" transform="rotate(-90 54 243.2)">C1 1,56</text>
-                    <line x1="62" y1="274.4" x2="62" y2="486.4" class="dim-line"></line>
-                    <text x="54" y="380.4" class="dim-text" transform="rotate(-90 54 380.4)">B 5,30</text>
+                    <!-- Řada A: šířky místností a tloušťky zdí -->
+                    <line x1="90" y1="40" x2="330" y2="40" class="dim-line"></line>
+                    <text x="210" y="33" class="dim-text">A1 6,00</text>
+                    <line x1="330" y1="40" x2="342" y2="40" class="dim-line"></line>
+                    <text x="336" y="49" class="dim-text dim-text-small">0,30</text>
+                    <line x1="342" y1="40" x2="482" y2="40" class="dim-line"></line>
+                    <text x="412" y="33" class="dim-text">A2 3,50</text>
+                    <line x1="482" y1="40" x2="506.8" y2="40" class="dim-line"></line>
+                    <text x="494.4" y="49" class="dim-text dim-text-small">0,62</text>
+                    <line x1="506.8" y1="40" x2="550.2" y2="40" class="dim-line"></line>
+                    <text x="528.5" y="33" class="dim-text">S1 1,085</text>
+                    <line x1="550.2" y1="40" x2="563.4" y2="40" class="dim-line"></line>
+                    <text x="556.8" y="49" class="dim-text dim-text-small">0,33</text>
+                    <line x1="563.4" y1="40" x2="623.4" y2="40" class="dim-line"></line>
+                    <text x="593.4" y="33" class="dim-text">A3 1,50</text>
+                    <line x1="623.4" y1="40" x2="655.4" y2="40" class="dim-line"></line>
+                    <text x="639.4" y="49" class="dim-text dim-text-small">0,80</text>
+                    <line x1="655.4" y1="40" x2="759.4" y2="40" class="dim-line"></line>
+                    <text x="707.4" y="33" class="dim-text">A4 2,60</text>
+                    <line x1="759.4" y1="40" x2="773.8" y2="40" class="dim-line"></line>
+                    <text x="766.6" y="49" class="dim-text dim-text-small">0,36</text>
+                    <line x1="773.8" y1="40" x2="833.8" y2="40" class="dim-line"></line>
+                    <text x="803.8" y="33" class="dim-text">C2 1,50</text>
+                    <line x1="833.8" y1="40" x2="848.2" y2="40" class="dim-line"></line>
+                    <text x="841" y="49" class="dim-text dim-text-small">0,36</text>
+                    <line x1="848.2" y1="40" x2="1088.2" y2="40" class="dim-line"></line>
+                    <text x="968.2" y="33" class="dim-text">A5 6,00</text>
+                    <line x1="90" y1="36" x2="90" y2="64" class="dim-guide"></line>
+                    <line x1="330" y1="36" x2="330" y2="64" class="dim-guide"></line>
+                    <line x1="342" y1="36" x2="342" y2="64" class="dim-guide"></line>
+                    <line x1="482" y1="36" x2="482" y2="64" class="dim-guide"></line>
+                    <line x1="506.8" y1="36" x2="506.8" y2="64" class="dim-guide"></line>
+                    <line x1="550.2" y1="36" x2="550.2" y2="64" class="dim-guide"></line>
+                    <line x1="563.4" y1="36" x2="563.4" y2="64" class="dim-guide"></line>
+                    <line x1="623.4" y1="36" x2="623.4" y2="64" class="dim-guide"></line>
+                    <line x1="655.4" y1="36" x2="655.4" y2="64" class="dim-guide"></line>
+                    <line x1="759.4" y1="36" x2="759.4" y2="64" class="dim-guide"></line>
+                    <line x1="773.8" y1="36" x2="773.8" y2="64" class="dim-guide"></line>
+                    <line x1="833.8" y1="36" x2="833.8" y2="64" class="dim-guide"></line>
+                    <line x1="848.2" y1="36" x2="848.2" y2="64" class="dim-guide"></line>
+                    <line x1="1088.2" y1="36" x2="1088.2" y2="64" class="dim-guide"></line>
+                    <line x1="90" y1="16" x2="1088.2" y2="16" class="dim-line-outer"></line>
+                    <text x="589.1" y="9" class="dim-text-outer">Celkem řada A: 24,955 m</text>
+                    <line x1="90" y1="12" x2="90" y2="44" class="dim-guide"></line>
+                    <line x1="1088.2" y1="12" x2="1088.2" y2="44" class="dim-guide"></line>
+                    <!-- Chodba C1 -->
+                    <line x1="90" y1="284.0" x2="759.4" y2="284.0" class="dim-line"></line>
+                    <text x="424.7" y="277.0" class="dim-text">C1 16,71 m (měřeno 16,713)</text>
+                    <line x1="90" y1="280.0" x2="90" y2="288.0" class="dim-guide"></line>
+                    <line x1="759.4" y1="280.0" x2="759.4" y2="288.0" class="dim-guide"></line>
+                    <!-- Řada B: B1, B2 -->
+                    <line x1="90" y1="578" x2="276" y2="578" class="dim-line"></line>
+                    <text x="183" y="571" class="dim-text">B1 4,65*</text>
+                    <line x1="276" y1="578" x2="288" y2="578" class="dim-line"></line>
+                    <text x="282" y="587" class="dim-text dim-text-small">0,30*</text>
+                    <line x1="288" y1="578" x2="501.8" y2="578" class="dim-line"></line>
+                    <text x="394.9" y="571" class="dim-text">B2 5,345</text>
+                    <line x1="90" y1="556" x2="90" y2="582" class="dim-guide"></line>
+                    <line x1="276" y1="556" x2="276" y2="582" class="dim-guide"></line>
+                    <line x1="288" y1="556" x2="288" y2="582" class="dim-guide"></line>
+                    <line x1="501.8" y1="556" x2="501.8" y2="582" class="dim-guide"></line>
+                    <text x="514" y="582" class="dim-text" style="text-anchor: start;">* neověřeno · V0, B3–B6 neřešeno</text>
+                    <!-- Hloubky -->
+                    <line x1="62" y1="80" x2="62" y2="217.96" class="dim-line"></line>
+                    <text x="54" y="148.98" class="dim-text" transform="rotate(-90 54 148.98)">A1 3,449</text>
+                    <line x1="62" y1="217.96" x2="62" y2="232" class="dim-line"></line>
+                    <text x="54" y="224.98" class="dim-text" transform="rotate(-90 54 224.98)">0,35</text>
+                    <line x1="62" y1="232" x2="62" y2="294" class="dim-line"></line>
+                    <text x="54" y="263" class="dim-text" transform="rotate(-90 54 263)">C1 1,55</text>
+                    <line x1="62" y1="294" x2="62" y2="325.2" class="dim-line"></line>
+                    <text x="54" y="309.6" class="dim-text" transform="rotate(-90 54 309.6)">0,78</text>
+                    <line x1="62" y1="325.2" x2="62" y2="537.2" class="dim-line"></line>
+                    <text x="54" y="431.2" class="dim-text" transform="rotate(-90 54 431.2)">B1 5,30*</text>
                     <line x1="58" y1="80" x2="94" y2="80" class="dim-guide"></line>
-                    <line x1="58" y1="212" x2="94" y2="212" class="dim-guide"></line>
-                    <line x1="58" y1="274.4" x2="94" y2="274.4" class="dim-guide"></line>
-                    <line x1="58" y1="486.4" x2="94" y2="486.4" class="dim-guide"></line>
-                    <line x1="36" y1="80" x2="36" y2="486.4" class="dim-line-outer"></line>
-                    <text x="28" y="283.2" class="dim-text-outer" transform="rotate(-90 28 283.2)">Celkem: 10,16 m</text>
-                    <line x1="32" y1="80" x2="66" y2="80" class="dim-guide"></line>
-                    <line x1="32" y1="486.4" x2="66" y2="486.4" class="dim-guide"></line>
-                    <text x="1014" y="553" class="dim-text-outer" style="text-anchor: end;">Světlá výška všech místností: 2,60 m</text>
-                    <!-- Hloubky vpravo: A5, B6, B5 -->
-                    <line x1="1040" y1="80" x2="1040" y2="212" class="dim-line"></line>
-                    <text x="1048" y="146" class="dim-text" transform="rotate(-90 1048 146)">A5 3,30</text>
-                    <line x1="1040" y1="212" x2="1040" y2="274.4" class="dim-line"></line>
-                    <text x="1048" y="243.2" class="dim-text" transform="rotate(-90 1048 243.2)">B6 1,56</text>
-                    <line x1="1040" y1="274.4" x2="1040" y2="486.4" class="dim-line"></line>
-                    <text x="1048" y="380.4" class="dim-text" transform="rotate(-90 1048 380.4)">B5 5,30</text>
-                    <line x1="1010" y1="80" x2="1044" y2="80" class="dim-guide"></line>
-                    <line x1="1010" y1="212" x2="1044" y2="212" class="dim-guide"></line>
-                    <line x1="1010" y1="274.4" x2="1044" y2="274.4" class="dim-guide"></line>
-                    <line x1="1010" y1="486.4" x2="1044" y2="486.4" class="dim-guide"></line>
+                    <line x1="58" y1="217.96" x2="94" y2="217.96" class="dim-guide"></line>
+                    <line x1="58" y1="232" x2="94" y2="232" class="dim-guide"></line>
+                    <line x1="58" y1="294" x2="94" y2="294" class="dim-guide"></line>
+                    <line x1="58" y1="325.2" x2="94" y2="325.2" class="dim-guide"></line>
+                    <line x1="58" y1="537.2" x2="94" y2="537.2" class="dim-guide"></line>
+                    <line x1="1128" y1="80" x2="1128" y2="200" class="dim-line"></line>
+                    <text x="1136" y="140" class="dim-text" transform="rotate(-90 1136 140)">A5 3,00</text>
+                    <line x1="1084" y1="80" x2="1132" y2="80" class="dim-guide"></line>
+                    <line x1="1084" y1="200" x2="1132" y2="200" class="dim-guide"></line>
+                    <line x1="523.8" y1="325.2" x2="523.8" y2="542.16" class="dim-line"></line>
+                    <text x="531.8" y="433.68" class="dim-text" transform="rotate(-90 531.8 433.68)">B2 5,424</text>
+                    <line x1="497.8" y1="325.2" x2="527.8" y2="325.2" class="dim-guide"></line>
+                    <line x1="497.8" y1="542.16" x2="527.8" y2="542.16" class="dim-guide"></line>
+                    <line x1="356.0" y1="80" x2="356.0" y2="220" class="dim-line"></line>
+                    <text x="364.0" y="150" class="dim-text" transform="rotate(-90 364.0 150)">A2 3,50 (3,80)</text>
+                    <line x1="338.0" y1="80" x2="360.0" y2="80" class="dim-guide"></line>
+                    <line x1="338.0" y1="220" x2="360.0" y2="220" class="dim-guide"></line>
+                    <text x="1100" y="600" class="dim-text-outer" style="text-anchor: end;">Světlá výška všech místností: 2,60 m</text>
                 </g>
             </svg>
         </div>
@@ -1444,12 +1408,12 @@
             } else if (mode === 'visualization2') {
                 // Samostatný čistý půdorys cílového stavu dle Návrhu 2
                 layerVis2.style.display = 'block';
-                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (37,3 m), dveře 0,80 m, rozměry vnitřní');
+                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (30,5 m), dveře 0,80 m, rozměry vnitřní');
             } else if (mode === 'electric2') {
                 // Elektroinstalace 2 nad vizualizací cílového stavu 2
                 layerVis2.style.display = 'block';
                 layerElec2.style.display = 'block';
-                selectItem('elec2', 'Elektroinstalace 2', 'Rozvod z podružného rozvaděče RS v A3', 'Zásuvky: 12 okruhů s elektroměry E1–E12 + Z1 s E13 · Světla: samostatný přívod, O1 + O2', 'Zásuvky CYKY-J 3x2,5 cca 181,1 m (B16), světla CYKY-J 3x1,5 cca 109,0 m (B10)');
+                selectItem('elec2', 'Elektroinstalace 2', 'Rozvod z podružného rozvaděče RS v A3', 'Zásuvky: 12 okruhů s elektroměry E1–E12 + Z1 s E13 · Světla: samostatný přívod, O1 + O2', 'Zásuvky CYKY-J 3x2,5 cca 199,4 m (B16), světla CYKY-J 3x1,5 cca 118,6 m (B10)');
             } else if (mode === 'electric') {
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';

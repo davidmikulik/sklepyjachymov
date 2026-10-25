@@ -31,8 +31,8 @@
     <div id="view"></div>
     <div class="panel">
         <h1>Místnost B2 – cílový stav</h1>
-        <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,67 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2 (šířka 1,95 m).</p>
-        <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2 a fotografie současného stavu. Rozměry dle půdorysu, světlá výška 2,60 m. Myší lze pohled otáčet a přibližovat.</p>
+        <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,71 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2 (šířka 1,795 m).</p>
+        <p class="note">Vizualizace podle Návrhu cílového stavu 2, fotografie a přesného zaměření: B2 5,345 × 5,424 m, světlá výška 2,60 m, okna 1,16 × 1,40 a 1,16 × 1,20 m, vstup 1,00 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="photo" class="active">Pohled od vstupu</button>
             <button data-view="cutaway">Řez shora</button>
@@ -51,7 +51,7 @@
         import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
         // Rozměry v metrech: x = od západní stěny (kóje), z = od chodby C1 k oknům, y = výška
-        const W = 5.5, D = 5.3, H = 2.6;
+        const W = 5.345, D = 5.424, H = 2.6;
         const KX = 3.40, PT = 0.15;               // šířka kójí a tloušťka příčky
         const KD = (D - 2 * PT) / 3;              // hloubka kóje 1,667 m
         const KOJE = ['885/5', '885/X', '885/4'];
@@ -193,7 +193,7 @@
         ceiling.userData.cutaway = true;
 
         // Stěny místnosti (vnitřní líc) – jižní stěna s okny se skládá z tvaru s otvory
-        const WIN = [{ cx: 3.95, w: 0.95, y0: 1.20, y1: 2.10 }, { cx: 1.85, w: 0.95, y0: 1.20, y1: 2.10 }];
+        const WIN = [{ cx: W - 0.66 - 0.58, w: 1.16, y0: 0.85, y1: 2.25 }, { cx: 0.92 + 0.58, w: 1.16, y0: 0.966, y1: 2.166 }];   // levé a pravé okno dle zaměření
         function shapeWall(len, holes, tex) {
             const s = new THREE.Shape();
             s.moveTo(0, 0); s.lineTo(len, 0); s.lineTo(len, H); s.lineTo(0, H); s.lineTo(0, 0);
@@ -215,7 +215,7 @@
         // západní (za kójemi) a severní (vstup z chodby C1)
         const west = shapeWall(D, [], wallTexture(D, 9));
         west.position.set(0.004, 0, D); west.rotation.y = Math.PI / 2; west.receiveShadow = true; scene.add(west);
-        const north = shapeWall(W, [{ x0: 4.0, x1: 5.0, y0: 0, y1: 2.0 }], wallTexture(W, 13));
+        const north = shapeWall(W, [{ x0: 3.60, x1: 4.60, y0: 0, y1: 2.0 }], wallTexture(W, 13));   // vstup 1,00 m, 3,60 m od rohu u B1
         north.position.set(0, 0, 0.004); north.receiveShadow = true; scene.add(north);
         north.userData.cutaway = true;
 
@@ -250,7 +250,7 @@
 
         // Průvlaky ve stropu a ocelový nosník u vstupu (dle fotografie)
         const beamMat = std({ map: canvasTex(plainTexture(1, 1, 31, '#e4e0d8', ['#cfc8bb', '#f4f1ea'], 200).c) });
-        add(box(0.32, 0.34, D), beamMat, 4.55, H - 0.17, D / 2).userData.cutaway = true;
+        add(box(0.32, 0.34, D), beamMat, 4.45, H - 0.17, D / 2).userData.cutaway = true;
         add(box(W, 0.30, 0.30), beamMat, W / 2, H - 0.15, 2.7).userData.cutaway = true;
         const steel = std({ color: '#2e3338', metalness: 0.7, roughness: 0.45 });
         add(box(W, 0.2, 0.02), steel, W / 2, H - 0.12, 0.45).userData.cutaway = true;
@@ -266,9 +266,9 @@
             m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vb.clone().sub(va).normalize());
             return m;
         };
-        pipe([W - 0.06, H - 0.38, 0.6], [W - 0.06, H - 0.38, D - 0.06]).userData.cutaway = true;
-        pipe([W - 0.06, H - 0.38, D - 0.06], [3.35, H - 0.38, D - 0.06]);
-        pipe([4.55, H - 0.38, D - 0.06], [4.55, 1.70, D - 0.06]);
+        pipe([W - 0.06, H - 0.32, 0.6], [W - 0.06, H - 0.32, D - 0.06]).userData.cutaway = true;
+        pipe([W - 0.06, H - 0.32, D - 0.06], [3.35, H - 0.32, D - 0.06]);
+        pipe([4.95, H - 0.32, D - 0.06], [4.95, 1.70, D - 0.06]);
 
         // ---------- Kóje: příčky z tvárnic 15 cm ----------
         const blockMat = (len, seed) => { const t = blockTexture(len, H, seed); return std({ map: t, bumpMap: t, bumpScale: 0.8, roughness: 0.95 }); };
@@ -340,21 +340,21 @@
 
         // Elektro ve volné části: kabelová lišta, LED svítidla, čidlo pohybu
         const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
-        add(box(0.06, 0.04, D - 0.2), pvc, 3.85, H - 0.02, D / 2, { cast: false }).userData.cutaway = true;
-        KOJE.forEach((_, i) => { add(box(0.3, 0.04, 0.05), pvc, 3.7, H - 0.02, kStart(i) + KD - 0.2, { cast: false }).userData.cutaway = true; });
+        add(box(0.06, 0.04, D - 0.2), pvc, 3.75, H - 0.02, D / 2, { cast: false }).userData.cutaway = true;
+        KOJE.forEach((_, i) => { add(box(0.25, 0.04, 0.05), pvc, 3.62, H - 0.02, kStart(i) + KD - 0.2, { cast: false }).userData.cutaway = true; });
         const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
-        [0.75, 4.55].forEach(z => {
-            add(box(0.12, 0.05, 1.2), pvc, 5.1, H - 0.025, z, { cast: false }).userData.cutaway = true;
-            add(box(0.09, 0.01, 1.15), ledMat, 5.1, H - 0.052, z, { cast: false }).userData.cutaway = true;
+        [0.75, 4.6].forEach(z => {
+            add(box(0.12, 0.05, 1.2), pvc, 4.45, H - 0.025, z, { cast: false }).userData.cutaway = true;
+            add(box(0.09, 0.01, 1.15), ledMat, 4.45, H - 0.052, z, { cast: false }).userData.cutaway = true;
             const ra = new THREE.RectAreaLight('#fff6ea', 9, 0.1, 1.15);
-            ra.position.set(5.1, H - 0.06, z); ra.lookAt(5.1, 0, z); scene.add(ra);
+            ra.position.set(4.45, H - 0.06, z); ra.lookAt(4.45, 0, z); scene.add(ra);
         });
-        const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, 4.45, H - 0.05, 0.35); pir.rotation.x = Math.PI; pir.userData.cutaway = true;
+        const pir = add(new THREE.SphereGeometry(0.05, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), pvc, 4.1, H - 0.05, 0.35); pir.rotation.x = Math.PI; pir.userData.cutaway = true;
 
         // Přívod vody na východní stěně: svislé potrubí zakryté plechovým krytem, vodorovně pod stropem
         const coverMat = std({ color: '#d9dcdc', metalness: 0.3, roughness: 0.5 });
-        const waterCover = add(box(0.12, H - 0.45, 0.2), coverMat, W - 0.06, (H - 0.45) / 2, 3.2);
-        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, 3.2, 14), pvc, W - 0.06, H - 0.45, 1.6);
+        const waterCover = add(box(0.12, H - 0.45, 0.2), coverMat, W - 0.06, (H - 0.45) / 2, D - 1.0 - 0.1);   // 1,00 m od rohu u venkovní zdi
+        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, D - 1.1, 14), pvc, W - 0.06, H - 0.45, (D - 1.1) / 2);
         waterPipe.rotation.x = Math.PI / 2;
         waterCover.userData.cutaway = waterPipe.userData.cutaway = true;
 
@@ -370,7 +370,7 @@
             }
             return canvasTex(c);
         }
-        const hatch = new THREE.Group(); hatch.position.set(4.4, 0, D - 0.62); scene.add(hatch);
+        const hatch = new THREE.Group(); hatch.position.set(W - 0.8 - 0.4, 0, D - 0.5 - 0.4); scene.add(hatch);   // 0,80 m od zdi k výsepu, 0,50 m od venkovní zdi
         add(box(0.88, 0.012, 0.88), std({ color: '#4b5157', metalness: 0.7, roughness: 0.4 }), 0, 0.006, 0, { parent: hatch, cast: false });
         add(box(0.80, 0.016, 0.80), std({ map: checkerTexture(), metalness: 0.75, roughness: 0.35 }), 0, 0.008, 0, { parent: hatch, cast: false });
         [-0.25, 0.25].forEach(dx => add(box(0.12, 0.018, 0.025), std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 }), dx, 0.009, 0.32, { parent: hatch, cast: false }));
@@ -387,7 +387,7 @@
             scene.add(sun, sun.target);
         });
         const fill = new THREE.PointLight('#fff3e2', 7, 9, 2);
-        fill.position.set(4.9, 2.45, 2.6); fill.castShadow = true; fill.shadow.mapSize.set(1024, 1024); fill.shadow.bias = -0.002;
+        fill.position.set(4.45, 2.3, 2.6); fill.castShadow = true; fill.shadow.mapSize.set(1024, 1024); fill.shadow.bias = -0.002;
         scene.add(fill);
 
         // ---------- Kamera, pohledy ----------
@@ -395,9 +395,9 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         const VIEWS = {
-            photo: { pos: [4.75, 1.62, 0.12], target: [3.3, 1.05, 5.3], fov: 92 },
+            photo: { pos: [4.1, 1.62, 0.12], target: [2.9, 1.05, D], fov: 92 },
             cutaway: { pos: [9.2, 8.6, -3.6], target: [2.7, 0.4, 2.7], fov: 40 },
-            inside: { pos: [5.3, 1.6, 0.8], target: [2.0, 1.05, 2.75], fov: 68 }
+            inside: { pos: [5.05, 1.6, 0.8], target: [2.0, 1.05, 2.75], fov: 68 }
         };
         function setView(name) {
             const v = VIEWS[name];

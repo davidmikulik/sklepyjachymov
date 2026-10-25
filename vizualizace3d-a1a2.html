@@ -31,9 +31,9 @@
     <div id="view"></div>
     <div class="panel">
         <h1>Místnosti A1 a A2 – cílový stav</h1>
-        <p><b>A1:</b> 885/1 (1,50 × 3,30 m), 885/6 a 885/8 (2,10 × 2,00 m). <b>A2:</b> 885/9 (1,85 × 2,00 m), 885/2 (1,50 × 3,30 m).</p>
-        <p>Přístup z chodby C1 otevřený v celé šířce 885/9 (1,85 m), do A1 průchodem bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
-        <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2. Rozměry dle půdorysu, světlá výška 2,60 m, stěny s opravenou omítkou. Okna a rozvody v A1 a A2 nejsou zakresleny (nemám podklad). Myší lze pohled otáčet a přibližovat.</p>
+        <p><b>A1:</b> 885/1 (1,50 × 3,45 m), 885/6 a 885/8 (2,10 × 1,85 m). <b>A2:</b> 885/9 (1,85 × 1,85 m), 885/2 (1,50 × 3,65 m).</p>
+        <p>Dřevěná příčka před A2 vybourána, přístup z chodby C1 otevřený v celé šířce 885/9 (1,85 m); do A1 průchodem 1,00 m bez dveří. Příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m.</p>
+        <p class="note">Vizualizace podle Návrhu cílového stavu 2 a přesného zaměření: A1 6,00 × 3,449 m, A2 3,50 × 3,80 m, chodba C1 1,55 m, světlá výška 2,60 m, okna 1,13 × 0,50 m s parapetem ve 2,00 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Pohled od vstupu</button>
             <button data-view="a1">Přístup v A1</button>
@@ -54,10 +54,12 @@
         // Souřadnice v metrech: x = od západní stěny A1 k východu, z = od severní stěny k chodbě C1, y = výška.
         // Rozměry kójí jsou vnitřní; stávající stěny i nové příčky mají 15 cm.
         const H = 2.6, PT = 0.15;
-        const A1W = 6.0, OX = A1W + PT, A2W = 3.5;   // A2 začíná za stěnou A1/A2
-        const DEP = 3.3;                             // hloubka A1 a A2
-        const C1Z = DEP + PT, C1D = 1.56;            // chodba C1
-        const XEND = OX + A2W + PT + 1.2;            // kus chodby za A2 (u schodiště)
+        const A1W = 6.0, OX = A1W + 0.30, A2W = 3.5;   // zeď A1/A2 0,30 m
+        const D1 = 3.449, D2 = 3.80;                   // hloubka A1 (k nosné zdi) a A2 (po vybourání dřevěné příčky)
+        const C1Z = D2, C1D = 1.55;                    // chodba C1
+        const XEND = OX + A2W + 0.62 + 1.4;            // kus chodby za A2 (u schodiště)
+        const WIN_SILL = 2.0, WIN_TOP = 2.5;           // okna 1,13 × 0,50 m, parapet 2,00 m
+        const WINDOWS = [[0.60, 1.73], [3.67, 4.80], [OX + 0.38, OX + 1.51]];
         const DOOR_W = 0.80, DOOR_H = 1.97;
 
         const params = new URLSearchParams(location.search);
@@ -187,7 +189,7 @@
             const parts = [];
             let cur = from;
             const ops = openings.slice().sort((p, q) => p.a - q.a);
-            ops.forEach(o => { parts.push([cur, o.a, 0, H]); parts.push([o.a, o.b, o.h, H]); cur = o.b; });
+            ops.forEach(o => { parts.push([cur, o.a, 0, H]); parts.push([o.a, o.b, o.h, H]); if (o.y0) parts.push([o.a, o.b, 0, o.y0]); cur = o.b; });
             parts.push([cur, to, 0, H]);
             parts.forEach(([a, b, y0, y1]) => {
                 if (b - a < 0.001 || y1 - y0 < 0.001) return;
@@ -210,23 +212,32 @@
 
         // ---------- Stávající stěny (omítka) ----------
         const T = 0.45;
-        wall(-T, -T, XEND, 0, 'plaster', [], { cut: false });                          // severní obvodová
+        wall(-T, -T, XEND, 0, 'plaster', WINDOWS.map(([a, b]) => ({ a, b, y0: WIN_SILL, h: WIN_TOP })), { cut: false }); // severní obvodová s okny
         wall(-T, 0, 0, C1Z + C1D, 'plaster');                                          // západní obvodová
-        wall(A1W, 0, OX, DEP, 'plaster', [{ a: 2.325, b: 3.125, h: 2.0 }]);            // A1 | A2 – průchod v místě současných dveří
-        wall(0, DEP, OX, C1Z, 'plaster');                                              // A1 | C1 – plná zeď
-        // A2 | C1: v šířce 885/9 (1,85 m) zcela otevřeno do chodby, bez stěny
-        wall(OX + A2W, 0, OX + A2W + PT, C1Z, 'plaster');                              // A2 | schodiště
-        wall(0, C1Z + C1D, XEND, C1Z + C1D + PT, 'plaster', [], { cut: true });        // jižní stěna chodby C1
+        wall(A1W, 0, OX, C1Z, 'plaster', [{ a: 2.0, b: 3.0, h: 2.0 }]);                // A1 | A2 (0,30 m) – průchod 1,00 m v místě současných dveří
+        wall(0, D1, A1W, C1Z, 'plaster');                                              // A1 | C1 – nosná zeď 0,35 m
+        // A2 | C1: dřevěná příčka vybourána, v šířce 885/9 (1,85 m) zcela otevřeno do chodby
+        wall(OX + A2W, 0, OX + A2W + 0.62, C1Z, 'plaster');                            // A2 | schodiště (0,62 m)
+        wall(0, C1Z + C1D, XEND, C1Z + C1D + 0.3, 'plaster', [], { cut: true });       // jižní stěna chodby C1
         wall(XEND, C1Z, XEND + PT, C1Z + C1D, 'plaster', [], { cut: true });
+        // okna: sklo s mříží
+        WINDOWS.forEach(([a, b]) => {
+            const w = b - a, cx = (a + b) / 2, cy = (WIN_SILL + WIN_TOP) / 2;
+            const glass = new THREE.Mesh(new THREE.PlaneGeometry(w, WIN_TOP - WIN_SILL), new THREE.MeshStandardMaterial({ color: '#dfe9e2', emissive: '#e8f0ff', emissiveIntensity: 1.4, roughness: 0.4 }));
+            glass.position.set(cx, cy, -T + 0.08); scene.add(glass);
+            const bar = std({ color: '#2b2f33', metalness: 0.6, roughness: 0.5 });
+            for (let k = 1; k < 5; k++) add(box(0.012, WIN_TOP - WIN_SILL, 0.012), bar, a + k * w / 5, cy, -T + 0.2);
+            const ra = new THREE.RectAreaLight('#eaf1ff', 3, w, WIN_TOP - WIN_SILL);
+            ra.position.set(cx, cy, -0.02); ra.lookAt(cx, cy - 0.5, 3); scene.add(ra);
+        });
 
         // ---------- Nové příčky z tvárnic 15 cm ----------
-        const D_1 = { a: 2.325, b: 3.125, h: DOOR_H };
-        wall(1.5, 0, 1.65, DEP, 'block', [D_1]);                                                      // 885/1 | přístup A1
-        wall(1.65, 2.0, A1W, 2.15, 'block', [{ a: 2.3, b: 3.1, h: DOOR_H }, { a: 4.55, b: 5.35, h: DOOR_H }]); // čelo 885/6 + 885/8
-        wall(3.75, 0, 3.9, 2.0, 'block');                                                             // 885/6 | 885/8
-        wall(OX, 2.0, OX + 1.85, 2.15, 'block', [{ a: OX + 0.525, b: OX + 1.325, h: DOOR_H }]);       // čelo 885/9
-        wall(OX + 1.85, 0, OX + 2.0, C1Z, 'block', [D_1]);                                            // 885/9 + přístup | 885/2
-        wall(OX + 2.0, DEP, OX + A2W, C1Z, 'block');                                                  // 885/2 dole
+        wall(1.5, 0, 1.65, D1, 'block', [{ a: 2.32, b: 3.12, h: DOOR_H }]);                          // 885/1 | přístup A1
+        wall(1.65, 1.85, A1W, 2.0, 'block', [{ a: 2.3, b: 3.1, h: DOOR_H }, { a: 4.55, b: 5.35, h: DOOR_H }]); // čelo 885/6 + 885/8
+        wall(3.75, 0, 3.9, 1.85, 'block');                                                            // 885/6 | 885/8
+        wall(OX, 1.85, OX + 1.85, 2.0, 'block', [{ a: OX + 0.525, b: OX + 1.325, h: DOOR_H }]);       // čelo 885/9
+        wall(OX + 1.85, 0, OX + 2.0, C1Z, 'block', [{ a: 2.50, b: 3.30, h: DOOR_H }]);               // 885/9 + přístup | 885/2
+        wall(OX + 2.0, 3.65, OX + A2W, C1Z, 'block');                                                 // 885/2 do chodby C1
 
         // ---------- Dveře ----------
         const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
@@ -262,22 +273,22 @@
                 add(box(0.03, 0.035, DOOR_W + 0.06), frameMat, out, DOOR_H + 0.018, a + DOOR_W / 2);
             }
         }
-        door('885/1', 'z', 1.65, -1, 2.325);
-        door('885/6', 'x', 2.15, -1, 2.3);
-        door('885/8', 'x', 2.15, -1, 4.55, 0.55);
-        door('885/9', 'x', 2.15, -1, OX + 0.525);
-        door('885/2', 'z', OX + 1.85, 1, 2.325);
+        door('885/1', 'z', 1.65, -1, 2.32);
+        door('885/6', 'x', 2.0, -1, 2.3);
+        door('885/8', 'x', 2.0, -1, 4.55, 0.55);
+        door('885/9', 'x', 2.0, -1, OX + 0.525);
+        door('885/2', 'z', OX + 1.85, 1, 2.50);
 
-        // Průchod A2 → A1: jen otvor s ocelovou zárubní, bez křídla
-        [[A1W, 2.325 - 0.012], [A1W, 3.125 + 0.012]].forEach(([x, z]) => add(box(0.18, 2.02, 0.03), frameMat, x + PT / 2, 1.01, z));
-        add(box(0.18, 0.03, 0.83), frameMat, A1W + PT / 2, 2.01, 2.725);
+        // Průchod A2 → A1 (1,00 m): jen otvor s ocelovou zárubní, bez křídla
+        [[A1W, 2.0 - 0.012], [A1W, 3.0 + 0.012]].forEach(([x, z]) => add(box(0.33, 2.02, 0.03), frameMat, x + 0.15, 1.01, z));
+        add(box(0.33, 0.03, 1.03), frameMat, A1W + 0.15, 2.01, 2.5);
 
         // ---------- Vybavení kójí: regály, svítidla ----------
         const shelfMat = std({ color: '#9aa5ab', metalness: 0.6, roughness: 0.45 });
         const boxCols = ['#b48a5a', '#a07a4c', '#c49a68', '#5d7f99', '#7a8b5c'];
         // kóje: [x0, z0, x1, z1, strana regálu ('n' = u severní stěny, 'w' = u západní)]
-        const KOJE = { '885/1': [0, 0, 1.5, DEP, 'w'], '885/6': [1.65, 0, 3.75, 2.0, 'n'], '885/8': [3.9, 0, A1W, 2.0, 'n'],
-            '885/9': [OX, 0, OX + 1.85, 2.0, 'n'], '885/2': [OX + 2.0, 0, OX + A2W, DEP, 'w'] };
+        const KOJE = { '885/1': [0, 0, 1.5, D1, 'w'], '885/6': [1.65, 0, 3.75, 1.85, 'n'], '885/8': [3.9, 0, A1W, 1.85, 'n'],
+            '885/9': [OX, 0, OX + 1.85, 1.85, 'n'], '885/2': [OX + 2.0, 0, OX + A2W, 3.65, 'w'] };
         Object.entries(KOJE).forEach(([name, [x0, z0, x1, z1, side]], i) => {
             const r = rng(90 + i);
             const sd = 0.45;
@@ -304,8 +315,8 @@
         // ---------- Elektro v přístupových plochách a v chodbě ----------
         const pvc = std({ color: '#f4f4f2', roughness: 0.6 });
         const ledMat = std({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 3 });
-        add(box(OX + 1.0 - 0.2, 0.04, 0.06), pvc, (OX + 1.0 + 0.2) / 2, H - 0.02, 3.2, { cast: false, cut: true });   // kabelová lišta
-        [[3.8, 2.72, 1.2], [OX + 0.92, 2.72, 0.6], [2.0, C1Z + C1D / 2, 1.2], [OX + 1.0, C1Z + C1D / 2, 1.2]].forEach(([x, z, l]) => {
+        add(box(OX + 1.3 - 0.15, 0.04, 0.06), pvc, (OX + 1.3 + 0.15) / 2, H - 0.02, 3.30, { cast: false, cut: true });   // kabelová lišta
+        [[4.9, 2.72, 1.2], [OX + 1.0, 2.9, 0.6], [2.0, C1Z + C1D / 2, 1.2], [OX - 0.5, C1Z + C1D / 2, 1.2]].forEach(([x, z, l]) => {
             add(box(l, 0.05, 0.12), pvc, x, H - 0.025, z, { cast: false, cut: true });
             add(box(l - 0.05, 0.01, 0.09), ledMat, x, H - 0.052, z, { cast: false, cut: true });
             const ra = new THREE.RectAreaLight('#fff6ea', 9, l - 0.05, 0.1);
@@ -316,7 +327,7 @@
 
         // ---------- Osvětlení ----------
         scene.add(new THREE.HemisphereLight('#f3f1ec', '#6b6052', 0.9));
-        [[3.8, 2.5, 2.75, 7], [OX + 0.9, 2.5, 2.75, 5], [OX + 0.9, 2.5, C1Z + 0.8, 6], [2.0, 2.5, C1Z + 0.8, 4]].forEach(([x, y, z, i]) => {
+        [[3.8, 2.3, 2.72, 7], [OX + 0.9, 2.3, 2.9, 5], [OX + 0.9, 2.3, C1Z + 0.8, 6], [2.0, 2.3, C1Z + 0.8, 4]].forEach(([x, y, z, i]) => {
             const l = new THREE.PointLight('#fff3e2', i, 9, 2);
             l.position.set(x, y, z); l.castShadow = true; l.shadow.mapSize.set(1024, 1024); l.shadow.bias = -0.002;
             scene.add(l);
@@ -327,8 +338,8 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         const VIEWS = {
-            entry: { pos: [OX + 1.45, 1.6, 3.05], target: [OX - 1.5, 1.0, 2.45], fov: 80 },
-            a1: { pos: [A1W - 0.2, 1.6, 2.95], target: [1.3, 1.0, 2.3], fov: 75 },
+            entry: { pos: [OX + 1.45, 1.6, 3.45], target: [OX - 1.5, 1.0, 2.5], fov: 80 },
+            a1: { pos: [A1W - 0.2, 1.6, 2.9], target: [1.3, 1.0, 2.5], fov: 75 },
             cutaway: { pos: [XEND / 2 + 3.0, 12.5, C1Z + 6.5], target: [XEND / 2 - 0.6, 0, 1.7], fov: 44 }
         };
         function setView(name) {
