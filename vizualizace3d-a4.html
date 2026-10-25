@@ -32,7 +32,7 @@
     <div class="panel">
         <h1>A4 – kóje 885/10 – cílový stav</h1>
         <p><b>885/10:</b> 2,81 × 3,65 m (10,26 m²). Dnešní dřevěné stěny (jižní do chodby C1 a východní k A6 a boční chodbě) se vybourají a nahradí příčkami z tvárnic 15 cm až ke stropu.</p>
-        <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
+        <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby, nad nimi větrací mřížka 600 × 150 mm. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
         <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace 2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu 2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
@@ -240,6 +240,22 @@
         const handleMat = std({ color: '#cfd8dc', metalness: 0.9, roughness: 0.25 });
         // axis: 'x' = dveře ve stěně vedené podél x, 'z' = podél z; face = souřadnice líce na straně přístupu;
         // into = -1/+1 směr do kóje; a = začátek otvoru; open = úhel otevření (rad); dw = šířka
+        // Větrací mřížka 600 × 150 mm nad dveřmi kóje (otvor 2,30–2,45 m, mřížka z obou stran příčky)
+        const ventMat = (() => {
+            const c = document.createElement('canvas'); c.width = 240; c.height = 60;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#e8e8e6'; ctx.fillRect(0, 0, 240, 60);
+            ctx.fillStyle = '#3a3f44'; ctx.fillRect(10, 8, 220, 44);
+            ctx.fillStyle = '#c9ccce';
+            for (let y = 12; y < 50; y += 7) ctx.fillRect(12, y, 216, 3);
+            return std({ map: canvasTex(c), roughness: 0.6 });
+        })();
+        const VENT_Y = 2.375;
+        function vent(axis, along, f1, f2) {
+            [f1, f2].forEach(f => add(axis === 'x' ? box(0.60, 0.15, 0.012) : box(0.012, 0.15, 0.60), ventMat,
+                axis === 'x' ? along : f, VENT_Y, axis === 'x' ? f : along, { cast: false }));
+        }
+
         function door(name, axis, face, into, a, open = 0, dw = DOOR_W) {
             const hinge = new THREE.Group();
             if (axis === 'x') {
@@ -250,6 +266,7 @@
                 hinge.rotation.y = -Math.PI / 2 + into * open;
             }
             scene.add(hinge);
+            if (name !== '885/7') vent(axis, a + dw / 2, face - into * 0.006, face + into * (PT + 0.006));
             add(box(dw - 0.02, DOOR_H - 0.02, 0.04), leafMat, (dw - 0.02) / 2, DOOR_H / 2, 0, { parent: hinge });
             [-1, 1].forEach(sd => {
                 add(box(0.13, 0.02, 0.06), handleMat, dw - 0.12, 1.05, sd * 0.045, { parent: hinge });
