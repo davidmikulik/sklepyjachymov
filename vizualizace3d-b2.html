@@ -32,7 +32,7 @@
     <div class="panel">
         <h1>Místnost B2 – cílový stav</h1>
         <p>Tři nové kóje <b>885/5, 885/X, 885/4</b> (vnitřně 3,40 × 1,67 m), příčky z tvárnic 15 cm až ke stropu, dveře 0,80 m z volné části B2 (šířka 1,95 m).</p>
-        <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2 a fotografie současného stavu. Rozměry dle půdorysu, výška stropu 2,80 m. Myší lze pohled otáčet a přibližovat.</p>
+        <p class="note">Orientační vizualizace podle Návrhu cílového stavu 2 a fotografie současného stavu. Rozměry dle půdorysu, světlá výška 2,60 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="photo" class="active">Pohled od vstupu</button>
             <button data-view="cutaway">Řez shora</button>
@@ -51,7 +51,7 @@
         import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
         // Rozměry v metrech: x = od západní stěny (kóje), z = od chodby C1 k oknům, y = výška
-        const W = 5.5, D = 5.3, H = 2.8;
+        const W = 5.5, D = 5.3, H = 2.6;
         const KX = 3.40, PT = 0.15;               // šířka kójí a tloušťka příčky
         const KD = (D - 2 * PT) / 3;              // hloubka kóje 1,667 m
         const KOJE = ['885/5', '885/X', '885/4'];
@@ -193,7 +193,7 @@
         ceiling.userData.cutaway = true;
 
         // Stěny místnosti (vnitřní líc) – jižní stěna s okny se skládá z tvaru s otvory
-        const WIN = [{ cx: 3.95, w: 0.95, y0: 1.35, y1: 2.30 }, { cx: 1.85, w: 0.95, y0: 1.35, y1: 2.30 }];
+        const WIN = [{ cx: 3.95, w: 0.95, y0: 1.20, y1: 2.10 }, { cx: 1.85, w: 0.95, y0: 1.20, y1: 2.10 }];
         function shapeWall(len, holes, tex) {
             const s = new THREE.Shape();
             s.moveTo(0, 0); s.lineTo(len, 0); s.lineTo(len, H); s.lineTo(0, H); s.lineTo(0, 0);
@@ -266,9 +266,9 @@
             m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vb.clone().sub(va).normalize());
             return m;
         };
-        pipe([W - 0.06, 2.45, 0.6], [W - 0.06, 2.45, D - 0.06]).userData.cutaway = true;
-        pipe([W - 0.06, 2.45, D - 0.06], [3.35, 2.45, D - 0.06]);
-        pipe([4.55, 2.45, D - 0.06], [4.55, 1.70, D - 0.06]);
+        pipe([W - 0.06, H - 0.38, 0.6], [W - 0.06, H - 0.38, D - 0.06]).userData.cutaway = true;
+        pipe([W - 0.06, H - 0.38, D - 0.06], [3.35, H - 0.38, D - 0.06]);
+        pipe([4.55, H - 0.38, D - 0.06], [4.55, 1.70, D - 0.06]);
 
         // ---------- Kóje: příčky z tvárnic 15 cm ----------
         const blockMat = (len, seed) => { const t = blockTexture(len, H, seed); return std({ map: t, bumpMap: t, bumpScale: 0.8, roughness: 0.95 }); };
@@ -353,8 +353,8 @@
 
         // Přívod vody na východní stěně: svislé potrubí zakryté plechovým krytem, vodorovně pod stropem
         const coverMat = std({ color: '#d9dcdc', metalness: 0.3, roughness: 0.5 });
-        const waterCover = add(box(0.12, H - 0.25, 0.2), coverMat, W - 0.06, (H - 0.25) / 2, 3.2);
-        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, 3.2, 14), pvc, W - 0.07, H - 0.18, 1.6);
+        const waterCover = add(box(0.12, H - 0.45, 0.2), coverMat, W - 0.06, (H - 0.45) / 2, 3.2);
+        const waterPipe = add(new THREE.CylinderGeometry(0.025, 0.025, 3.2, 14), pvc, W - 0.06, H - 0.45, 1.6);
         waterPipe.rotation.x = Math.PI / 2;
         waterCover.userData.cutaway = waterPipe.userData.cutaway = true;
 
