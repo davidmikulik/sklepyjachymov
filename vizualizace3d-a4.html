@@ -34,8 +34,8 @@
         <p><b>885/10:</b> 2,81 × 3,65 m (10,26 m²). Dnešní dřevěné stěny (jižní do chodby C1 a východní k A6 a boční chodbě) se vybourají a nahradí příčkami z tvárnic 15 cm až ke stropu.</p>
         <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby, nad nimi větrací mřížka 600 × 150 mm. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
         <p><b>A3</b> (společný sklep s rozvaděčem RS, cílově 1,50 × 3,65 m): sádrokartonová stěna do chodby C1 se vybourá a nahradí zděnou příčkou č. 13 v zákrytu se zdí, s novou zárubní, dveřmi 0,80 m a větrací mřížkou.</p>
-        <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace 2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
-        <p class="note">Vizualizace podle Návrhu cílového stavu 2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
+        <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace v.2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
+        <p class="note">Vizualizace podle Návrhu cílového stavu v.2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Z chodby C1</button>
             <button data-view="side">Boční chodba a A6</button>
@@ -319,7 +319,7 @@
         shelf(A4X0, 0, A4X1, A4Z, 'w', 91);          // 885/10 – regál u západní stěny
         shelf(A4X0 + 0.6, 0, A4X1, A4Z, 'n', 92);    // 885/10 – regál u severní stěny
         shelf(SCX0, 0, SCX1, 1.95, 'n', 93);         // A6 – společná kóje
-        // svítidla v kójích (Elektroinstalace 2): 885/10 okruh O2, A6 okruh O1
+        // svítidla v kójích (Elektroinstalace v.2): 885/10 okruh O2, A6 okruh O1
         [[15.18, 0.60, 2.5], [17.30, 1.45, 2.5], [12.75, 0.45, 2.5]].forEach(([x, z, i]) => {
             add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), x, H - 0.03, z, { cast: false, cut: true });
             const pl = new THREE.PointLight('#ffe9cc', i, 6, 2); pl.position.set(x, H - 0.25, z); scene.add(pl);

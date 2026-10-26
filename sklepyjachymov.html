@@ -221,7 +221,10 @@
         .photo-dot { fill: #6a1b9a; stroke: #fff; stroke-width: 1.5; }
         .photo-num { fill: #fff; font-size: 9px; font-weight: bold; text-anchor: middle; pointer-events: none; }
         .photo-pin:hover .photo-cone { fill: rgba(106, 27, 154, 0.4); }
-        /* Vizualizace kójí 2 */
+        .archive-box { flex-basis: 100%; border-top: 1px dashed #ccc; padding-top: 8px; }
+        .archive-box summary { cursor: pointer; font-weight: 600; font-size: 13px; color: #607d8b; }
+        .archive-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        /* Vizualizace kójí v.2 */
         .v2-unit { fill: #bbdefb; stroke: none; cursor: pointer; transition: fill 0.2s; }
         .v2-unit:hover { fill: #90caf9; }
         .v2-shared { fill: #c8e6c9; stroke: none; cursor: pointer; }
@@ -253,7 +256,7 @@
         .v2-corr-sub { font-size: 9px; fill: #9e9e90; text-anchor: middle; pointer-events: none; }
         .v2-legend { font-size: 11px; fill: #37474f; }
 
-        /* Elektroinstalace 2 */
+        /* Elektroinstalace v.2 */
         .e2-tray { fill: none; stroke: #ff9800; stroke-opacity: 0.35; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; cursor: pointer; }
         .e2-feed { fill: none; stroke: #e65100; stroke-width: 1.6; stroke-linejoin: round; }
         .e2-circuit { cursor: pointer; }
@@ -367,12 +370,9 @@
         <button class="btn-layer active" onclick="setLayerMode('working')">🏢 Fyzické místnosti (A/B/V)</button>
         <button class="btn-layer" onclick="setLayerMode('both')">🔗 Fyzický + Oficiální</button>
         <button class="btn-layer btn-layer-usage" onclick="setLayerMode('usage')">👤 Aktuální využití</button>
-        <button class="btn-layer btn-layer-proposal" onclick="setLayerMode('proposal')">🎯 Návrh cílového stavu </button>
-        <button class="btn-layer btn-layer-proposal2" onclick="setLayerMode('proposal2')">🎯 Návrh cílového stavu 2</button>
-        <button class="btn-layer btn-layer-elec" onclick="setLayerMode('electric')">⚡ Elektroinstalace (Cílový stav)</button>
-        <button class="btn-layer btn-layer-elec2" onclick="setLayerMode('electric2')">⚡ Elektroinstalace 2</button>
-        <button class="btn-layer btn-layer-vis" onclick="setLayerMode('visualization')">🎨 Vizualizace kójí</button>
-        <button class="btn-layer btn-layer-vis2" onclick="setLayerMode('visualization2')">🎨 Vizualizace kójí 2</button>
+        <button class="btn-layer btn-layer-proposal2" onclick="setLayerMode('proposal2')">🎯 Návrh cílového stavu v.2</button>
+        <button class="btn-layer btn-layer-elec2" onclick="setLayerMode('electric2')">⚡ Elektroinstalace v.2</button>
+        <button class="btn-layer btn-layer-vis2" onclick="setLayerMode('visualization2')">🎨 Vizualizace kójí v.2</button>
         <button class="btn-layer btn-layer-photo" onclick="setLayerMode('photos')">📷 Fotodokumentace</button>
         <a class="btn-layer" href="vizualizace3d-b2.html" target="_blank" style="text-decoration: none; color: inherit;">🧊 3D vizualizace B2</a>
         <a class="btn-layer" href="vizualizace3d-a1a2.html" target="_blank" style="text-decoration: none; color: inherit;">🧊 3D vizualizace A1 + A2</a>
@@ -381,6 +381,14 @@
         <button class="btn-layer" onclick="setLayerMode('official')">📜 Oficiální stav (bez fyzického)</button>
         <span style="border-left: 1px solid #ccc; height: 20px; margin: 0 5px;"></span>
         <button class="btn-layer btn-dim-toggle" id="btn-dim" onclick="toggleDimensions()">📐 Vrstva rozměrů (Vypnuta)</button>
+        <details class="archive-box">
+            <summary>🗄️ Archiv – starší návrhy</summary>
+            <div class="archive-buttons">
+            <button class="btn-layer btn-layer-proposal" onclick="setLayerMode('proposal')">🎯 Návrh cílového stavu </button>
+            <button class="btn-layer btn-layer-elec" onclick="setLayerMode('electric')">⚡ Elektroinstalace (Cílový stav)</button>
+            <button class="btn-layer btn-layer-vis" onclick="setLayerMode('visualization')">🎨 Vizualizace kójí</button>
+            </div>
+        </details>
     </div>
 
     <div class="container">
@@ -545,7 +553,7 @@
 
                 <!-- VRSTVA 4b: NÁVRH CÍLOVÉHO STAVU 2 (výchozí kopie vrstvy 4, bude dále upravována) -->
                 <g id="layer-proposal2" style="display: none;">
-                    <!-- Návrh cílového stavu 2 podle přesného zaměření; rozměry kójí světlé, příčky 15 cm -->
+                    <!-- Návrh cílového stavu v.2 podle přesného zaměření; rozměry kójí světlé, příčky 15 cm -->
                     <rect x="90" y="80" width="240" height="137.96" fill="#f5f5f5" stroke="none"></rect>
                     <rect x="342" y="80" width="140" height="152" fill="#f5f5f5" stroke="none"></rect>
                     <rect x="655.4" y="80" width="118.4" height="152" fill="#f5f5f5" stroke="none"></rect>
@@ -818,7 +826,7 @@
                     </g>
                 </g>
 
-                    <!-- VRSTVA 5b: VIZUALIZACE KÓJÍ 2 – čistý půdorys cílového stavu dle Návrhu cílového stavu 2 podle přesného zaměření (40 px = 1 m) -->
+                    <!-- VRSTVA 5b: VIZUALIZACE KÓJÍ v.2 – čistý půdorys cílového stavu dle Návrhu cílového stavu v.2 podle přesného zaměření (40 px = 1 m) -->
                     <g id="layer-vis2" style="display: none;">
                         <rect x="0" y="0" width="1190" height="650" fill="#ffffff"></rect>
                         <rect x="74" y="48" width="1030.2" height="510.16" class="v2-mass"></rect>
@@ -1044,11 +1052,11 @@
                             <rect x="170" y="628" width="40" height="5" fill="#37474f" stroke="#37474f" stroke-width="1"></rect>
                             <rect x="210" y="628" width="40" height="5" fill="#ffffff" stroke="#37474f" stroke-width="1"></rect>
                             <text x="90" y="644" class="v2-legend">0</text><text x="250" y="644" class="v2-legend">4 m</text>
-                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu 2 · přesné zaměření · 10 soukromých kójí · nové příčky 38,9 m · rozměry vnitřní</text>
+                            <text x="1100" y="640" class="v2-legend" text-anchor="end" font-style="italic" style="text-anchor: end;">Cílový stav dle Návrhu v.2 · přesné zaměření · 10 soukromých kójí · nové příčky 38,9 m · rozměry vnitřní</text>
                         </g>
                     </g>
 
-                    <!-- VRSTVA 6b: ELEKTROINSTALACE 2 – návrh rozvodu z podružného rozvaděče RS v A3 (podklad: Vizualizace kójí 2) -->
+                    <!-- VRSTVA 6b: ELEKTROINSTALACE v.2 – návrh rozvodu z podružného rozvaděče RS v A3 (podklad: Vizualizace kójí v.2) -->
                     <g id="layer-elec2" style="display: none;">
                         <polyline points="569.4,110 569.4,242 170,242 170,338" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
                         <polyline points="394,242 394,212 96,212" class="e2-tray" onclick="selectItem('elec2', 'Kabelová trasa', 'Hlavní trasa z RS v A3', 'Kabelová lišta / žlab pod stropem', 'Svazek přívodů ke kójím a okruh společného osvětlení')"></polyline>
@@ -1509,12 +1517,12 @@
                 layerWork.removeAttribute('opacity');
                 selectItem('proposal', 'Cílový stav', 'Fyzický + Oficiální stav + Kóje 885/4, 885/5', 'Kompletní plán', 'Sloučený pohled pro realizaci');
             } else if (mode === 'proposal2') {
-                // Fyzický + Oficiální + Návrh cílového stavu 2
+                // Fyzický + Oficiální + Návrh cílového stavu v.2
                 layerWork.style.display = 'block';
                 layerOff.style.display = 'block';
                 layerProp2.style.display = 'block';
                 layerWork.removeAttribute('opacity');
-                selectItem('proposal2', 'Cílový stav 2', 'Fyzický + Oficiální stav + Návrh 2', 'Kompletní plán', 'Alternativní návrh vycházející z Návrhu cílového stavu');
+                selectItem('proposal2', 'Cílový stav v.2', 'Fyzický + Oficiální stav + Návrh v.2', 'Kompletní plán', 'Alternativní návrh vycházející z Návrhu cílového stavu');
             } else if (mode === 'usage') {
                 layerWork.style.display = 'block';
                 layerUsage.style.display = 'block';
@@ -1524,14 +1532,14 @@
                 layerVis.style.display = 'block';
                 layerWork.removeAttribute('opacity');
             } else if (mode === 'visualization2') {
-                // Samostatný čistý půdorys cílového stavu dle Návrhu 2
+                // Samostatný čistý půdorys cílového stavu dle Návrhu v.2
                 layerVis2.style.display = 'block';
-                selectItem('vis2', 'Cílový stav 2', 'Vizualizace dle Návrhu cílového stavu 2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (38,9 m), dveře 0,80 m, rozměry vnitřní');
+                selectItem('vis2', 'Cílový stav v.2', 'Vizualizace dle Návrhu cílového stavu v.2 (přesné zaměření)', '10 soukromých kójí, 2 společné', 'Nové příčky 15 cm (38,9 m), dveře 0,80 m, rozměry vnitřní');
             } else if (mode === 'electric2') {
-                // Elektroinstalace 2 nad vizualizací cílového stavu 2
+                // Elektroinstalace v.2 nad vizualizací cílového stavu v.2
                 layerVis2.style.display = 'block';
                 layerElec2.style.display = 'block';
-                selectItem('elec2', 'Elektroinstalace 2', 'Rozvod z podružného rozvaděče RS v A3', 'Zásuvky: 12 okruhů s elektroměry E1–E12 + Z1 s E13 · Světla: samostatný přívod, O1 + O2', 'Zásuvky CYKY-J 3x2,5 cca 199,9 m (B16), světla CYKY-J 3x1,5 cca 118,7 m (B10)');
+                selectItem('elec2', 'Elektroinstalace v.2', 'Rozvod z podružného rozvaděče RS v A3', 'Zásuvky: 12 okruhů s elektroměry E1–E12 + Z1 s E13 · Světla: samostatný přívod, O1 + O2', 'Zásuvky CYKY-J 3x2,5 cca 199,9 m (B16), světla CYKY-J 3x1,5 cca 118,7 m (B10)');
             } else if (mode === 'photos') {
                 // Fotky současného stavu nad fyzickým zaměřením
                 layerWork.style.display = 'block';
@@ -1621,7 +1629,7 @@
                 colorHex = '#0288d1';
             } else if (type === 'proposal2') {
                 badgeClass = 'badge-proposal2';
-                badgeText = 'Návrh cílového stavu 2';
+                badgeText = 'Návrh cílového stavu v.2';
                 colorHex = '#00897b';
             } else if (type === 'usage') {
                 badgeClass = 'badge-usage';
@@ -1633,11 +1641,11 @@
                 colorHex = '#37474f';
             } else if (type === 'vis2') {
                 badgeClass = 'badge-vis2';
-                badgeText = 'Vizualizace kójí 2';
+                badgeText = 'Vizualizace kójí v.2';
                 colorHex = '#1565c0';
             } else if (type === 'elec2') {
                 badgeClass = 'badge-elec2';
-                badgeText = 'Elektroinstalace 2';
+                badgeText = 'Elektroinstalace v.2';
                 colorHex = '#e65100';
             } else if (type === 'elec') {
                 badgeClass = 'badge-elec';
