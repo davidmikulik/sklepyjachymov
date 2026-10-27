@@ -42,7 +42,7 @@
             <button data-view="koje">Uvnitř 885/10</button>
             <button data-view="a3">A3 a rozvaděč</button>
             <button data-view="cutaway">Řez shora</button>
-            <a href="/">← Zpět na plánek</a>
+            <a href="/" target="_top">← Zpět na plánek</a>
         </div>
     </div>
 
@@ -408,5 +408,6 @@
             renderer.setAnimationLoop(frame);
         }
     </script>
+    <script>if (window.top !== window.self) document.querySelectorAll('.buttons a[href="/"]').forEach(a => a.remove());   // ve 3D přehledu je odkaz na plánek nahoře</script>
 </body>
 </html>
