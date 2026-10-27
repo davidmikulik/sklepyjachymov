@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D vizualizace sklepa</title>
+    <meta name="description" content="3D vizualizace cílového stavu sklepa č.p. 885, Jáchymov – části B2, A1 + A2 a A3 + A4 na jedné stránce.">
+    <style>
+        html, body { margin: 0; height: 100%; background: #1c1f22; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #eceff1; }
+        body { display: flex; flex-direction: column; }
+        .bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #263238; border-bottom: 1px solid #455a64; flex: none; overflow-x: auto; white-space: nowrap; }
+        .bar .title { font-weight: 700; color: #ffcc80; margin-right: 6px; }
+        .bar a, .bar button { background: #37474f; color: #eceff1; border: 1px solid #607d8b; border-radius: 5px; padding: 6px 11px; font: inherit; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .bar button.active { background: #ef6c00; border-color: #ef6c00; }
+        .bar .back { margin-left: auto; }
+        #frame { flex: 1; width: 100%; border: 0; display: none; }
+        #overview { flex: 1; overflow-y: auto; padding: 20px 16px; box-sizing: border-box; }
+        #overview p.lead { max-width: 900px; margin: 0 auto 18px; color: #b0bec5; font-size: 14px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; }
+        .card { background: #263238; border: 1px solid #455a64; border-radius: 8px; overflow: hidden; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+        .card:hover { border-color: #ef6c00; }
+        .card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+        .card h2 { font-size: 16px; margin: 10px 12px 4px; color: #ffcc80; }
+        .card p { font-size: 13px; margin: 0 12px 12px; color: #cfd8dc; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="bar">
+        <span class="title">🧊 3D vizualizace</span>
+        <button data-part="">Přehled</button>
+        <button data-part="b2">B2</button>
+        <button data-part="a1a2">A1 + A2</button>
+        <button data-part="a4">A3 + A4</button>
+        <a class="back" href="/">← Zpět na plánek</a>
+    </div>
+    <div id="overview">
+        <p class="lead">Cílový stav podle Návrhu cílového stavu v.2. Vyberte část sklepa nahoře nebo kliknutím na náhled. V každé části lze model myší otáčet a přibližovat a přepínat připravené pohledy v panelu vlevo nahoře.</p>
+        <div class="cards">
+            <a class="card" href="#b2">
+                <img src="b2-3d-pohled.jpg" alt="3D náhled B2" loading="lazy">
+                <h2>B2</h2>
+                <p>Kóje 885/5, 885/X a 885/4, volný pruh s poklopem k přívodu vody, okna do ulice.</p>
+            </a>
+            <a class="card" href="#a1a2">
+                <img src="a1a2-3d-vstup.jpg" alt="3D náhled A1 a A2" loading="lazy">
+                <h2>A1 + A2</h2>
+                <p>Kóje 885/1, 885/6, 885/8, 885/9 a 885/2, průchod A1/A2, chodba C1 a schodiště.</p>
+            </a>
+            <a class="card" href="#a4">
+                <img src="a4-3d-rez.jpg" alt="3D náhled A3 a A4" loading="lazy">
+                <h2>A3 + A4</h2>
+                <p>Kóje 885/10, společný sklep A3 s rozvaděčem RS, boční chodba, A6 a vstup do 885/7.</p>
+            </a>
+        </div>
+    </div>
+    <iframe id="frame" title="3D vizualizace"></iframe>
+
+    <script>
+        const PAGES = { b2: 'vizualizace3d-b2.html', a1a2: 'vizualizace3d-a1a2.html', a4: 'vizualizace3d-a4.html' };
+        const frame = document.getElementById('frame');
+        const overview = document.getElementById('overview');
+        function show() {
+            const part = location.hash.slice(1);
+            const page = PAGES[part];
+            document.querySelectorAll('.bar button').forEach(b => b.classList.toggle('active', b.dataset.part === (page ? part : '')));
+            overview.style.display = page ? 'none' : 'block';
+            frame.style.display = page ? 'block' : 'none';
+            if (page && !frame.src.endsWith(page)) frame.src = page;
+        }
+        document.querySelectorAll('.bar button').forEach(b => b.addEventListener('click', () => {
+            location.hash = b.dataset.part;
+            if (!b.dataset.part) history.replaceState(null, '', location.pathname);
+            show();
+        }));
+        window.addEventListener('hashchange', show);
+        show();
+    </script>
+</body>
+</html>
