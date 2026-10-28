@@ -31,14 +31,14 @@
     <div id="view"></div>
     <div class="panel">
         <h1>A3 a A4 (kóje 885/10) – cílový stav</h1>
-        <p><b>885/10:</b> 2,81 × 3,65 m (10,26 m²). Dnešní dřevěné stěny (jižní do chodby C1 a východní k A6 a boční chodbě) se vybourají a nahradí příčkami z tvárnic 15 cm až ke stropu.</p>
-        <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby, nad nimi větrací mřížka 600 × 150 mm. Příčka č. 12 stojí u boční chodby, uvolněný prostor po dřevěné stěně připadl kóji.</p>
+        <p><b>885/10:</b> 2,81 × 3,65 m propojené s A6 (1,65 × 1,95 m), celkem 13,47 m² (PV 12,84 m²). Dnešní dřevěné stěny (jižní do chodby C1, východní k boční chodbě a stěna k A6) se vybourají; k chodbám je nahradí příčky z tvárnic 15 cm až ke stropu.</p>
+        <p>Příčka č. 11 je v zákrytu se stávající zdí a nezasahuje do chodby C1, dveře 0,80 m u boční chodby, nad nimi větrací mřížka 600 × 150 mm. Příčka č. 12 stojí u boční chodby, A6 je s kójí otevřeně propojená a dveře A6 do boční chodby se nezřizují.</p>
         <p><b>A3</b> (společný sklep s rozvaděčem RS, cílově 1,50 × 3,65 m): sádrokartonová stěna do chodby C1 se vybourá a nahradí zděnou příčkou č. 13 v zákrytu se zdí, s novou zárubní, dveřmi 0,80 m a větrací mřížkou.</p>
-        <p>V okolí: společná kóje A6 (1,50 × 1,95 m) na konci boční chodby a stávající dveře 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace v.2: zásuvka a svítidlo v 885/10, zásuvka Z1 a svítidlo v A6, LED v chodbě.</p>
+        <p>V okolí: boční chodba se stávajícími dveřmi 0,85 m do 885/7 (A5). Elektro podle Elektroinstalace v.2: zásuvka a dvě svítidla v 885/10 (jedno v části A6), zásuvka Z1 v A3, LED v chodbě.</p>
         <p class="note">Vizualizace podle Návrhu cílového stavu v.2 a zaměření: světlá výška 2,60 m, boční chodba 1,50 m, chodba C1 1,55 m. Myší lze pohled otáčet a přibližovat.</p>
         <div class="buttons">
             <button data-view="entry" class="active">Z chodby C1</button>
-            <button data-view="side">Boční chodba a A6</button>
+            <button data-view="side">Boční chodba</button>
             <button data-view="koje">Uvnitř 885/10</button>
             <button data-view="a3">A3 a rozvaděč</button>
             <button data-view="cutaway">Řez shora</button>
@@ -236,8 +236,8 @@
         // ---------- Nové příčky z tvárnic 15 cm (místo dřevěných stěn A4) ----------
         wall(A4X0, A4Z, SCX0, C1Z, 'block', [{ a: 16.045, b: 16.845, h: DOOR_H }]);     // č. 11: 885/10 do C1, v zákrytu se zdí
         wall(A3X0, A4Z, A3X1, C1Z, 'block', [{ a: 12.185, b: 12.985, h: DOOR_H }]);     // č. 13: A3 do C1 místo sádrokartonu
-        wall(A4X1, 0, SCX0, A4Z, 'block');                                                // č. 12: 885/10 | A6 a boční chodba
-        wall(SCX0, 1.95, SCX1, 2.10, 'block', [{ a: 17.445, b: 18.245, h: DOOR_H }]);    // A6 do boční chodby
+        wall(A4X1, 1.95, SCX0, A4Z, 'block');                                             // č. 12: 885/10 | boční chodba (k A6 otevřeno)
+        wall(SCX0, 1.95, SCX1, 2.10, 'block');                                            // A6 (část 885/10) do boční chodby, bez dveří
 
         // ---------- Dveře ----------
         const frameMat = std({ color: '#5a6268', metalness: 0.5, roughness: 0.45 });
@@ -292,7 +292,6 @@
             }
         }
         door('885/10', 'x', C1Z, -1, 16.045, 0.6, DOOR_W, true);
-        door('A6', 'x', 2.10, -1, 17.445);
         door('A3', 'x', C1Z, -1, 12.185, 0.5);
         door('885/7', 'z', SCX1, 1, 2.15, 0, 0.85, true);
 
@@ -318,9 +317,9 @@
         }
         shelf(A4X0, 0, A4X1, A4Z, 'w', 91);          // 885/10 – regál u západní stěny
         shelf(A4X0 + 0.6, 0, A4X1, A4Z, 'n', 92);    // 885/10 – regál u severní stěny
-        shelf(SCX0, 0, SCX1, 1.95, 'n', 93);         // A6 – společná kóje
+        shelf(SCX0, 0, SCX1, 1.95, 'n', 93);         // 885/10 – část A6
         // svítidla v kójích (Elektroinstalace v.2): 885/10 okruh O2, A6 okruh O1
-        [[15.18, 0.60, 2.5], [17.30, 1.45, 2.5], [12.75, 0.45, 2.5]].forEach(([x, z, i]) => {
+        [[15.18, 0.60, 2.5], [18.13, 1.60, 2.5], [12.75, 0.45, 2.5]].forEach(([x, z, i]) => {
             add(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 28), std({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 2.2 }), x, H - 0.03, z, { cast: false, cut: true });
             const pl = new THREE.PointLight('#ffe9cc', i, 6, 2); pl.position.set(x, H - 0.25, z); scene.add(pl);
         });
@@ -333,8 +332,8 @@
         // podružný rozvaděč RS na západní stěně A3
         add(box(0.16, 0.9, 0.6), std({ color: '#eceff1', roughness: 0.5 }), A3X0 + 0.08, 1.55, 0.95);
         add(box(0.01, 0.5, 0.36), std({ color: '#90a4ae', roughness: 0.4 }), A3X0 + 0.165, 1.6, 0.95);
-        // zásuvky: 885/10 (K9) na příčce č. 11, A6 (Z1) u východní stěny
-        [[14.50, A4Z - 0.03, 'z'], [SCX1 - 0.03, 1.0, 'x'], [A3X1 - 0.03, 1.8, 'x']].forEach(([x, z, n]) => {
+        // zásuvky: 885/10 (K9) na příčce č. 11, A3 (Z1)
+        [[14.50, A4Z - 0.03, 'z'], [A3X1 - 0.03, 1.8, 'x']].forEach(([x, z, n]) => {
             add(n === 'x' ? box(0.05, 0.08, 0.08) : box(0.08, 0.08, 0.05), pvc, x, 1.2, z);
             add(box(0.03, H - 1.25, 0.03), pvc, x, (H + 1.25) / 2, z, { cast: false });
         });
