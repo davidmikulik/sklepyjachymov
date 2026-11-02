@@ -5,9 +5,20 @@ const path = require('path');
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 const MISTRAL_MODEL = process.env.MISTRAL_MODEL || 'mistral-small-2603';
 
-// Archiv vygenerovaných hlášek v Upstash Redis (integrace ve Vercelu), klíče obou pojmenování
-const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+// Archiv vygenerovaných hlášek v Upstash Redis (integrace ve Vercelu). Vercel může proměnným
+// přidat vlastní předponu (např. STORAGE_KV_REST_API_URL), proto se hledají podle konce názvu.
+function findEnv(suffixes) {
+    for (const suffix of suffixes) {
+        if (process.env[suffix]) return suffix;
+        const name = Object.keys(process.env).find(k => k.endsWith('_' + suffix) && process.env[k]);
+        if (name) return name;
+    }
+    return null;
+}
+const REDIS_URL_VAR = findEnv(['KV_REST_API_URL', 'UPSTASH_REDIS_REST_URL']);
+const REDIS_TOKEN_VAR = findEnv(['KV_REST_API_TOKEN', 'UPSTASH_REDIS_REST_TOKEN']);
+const REDIS_URL = REDIS_URL_VAR && process.env[REDIS_URL_VAR];
+const REDIS_TOKEN = REDIS_TOKEN_VAR && process.env[REDIS_TOKEN_VAR];
 const REDIS_KEY = 'jachymov:hlasky';
 const ARCHIVE_SIZE = 200;
 
@@ -84,8 +95,36 @@ async function askMistral(prompt) {
     return text.trim();
 }
 
+// /api/generate-text?diag=1 – stav nastavení bez hodnot klíčů (jen názvy proměnných a výsledky testů)
+async function diagnostics() {
+    const out = {
+        gemini: { configured: !!process.env.GEMINI_API_KEY, model: GEMINI_MODEL },
+        mistral: { configured: !!process.env.MISTRAL_API_KEY, model: MISTRAL_MODEL },
+        redis: { urlVar: REDIS_URL_VAR, tokenVar: REDIS_TOKEN_VAR },
+        storageEnvNames: Object.keys(process.env).filter(k => /KV|REDIS|UPSTASH|BLOB/.test(k)).sort(),
+        prompt: !!loadPrompt(),
+        seedCount: seedJokes().length,
+    };
+    try {
+        out.redis.ping = await redis(['PING']);
+        out.redis.archived = await redis(['LLEN', REDIS_KEY]);
+    } catch (e) {
+        out.redis.error = e.message;
+    }
+    try {
+        out.gemini.test = (await askGemini('Odpověz jedním slovem: ahoj')) ? 'ok' : 'nenastaveno';
+    } catch (e) {
+        out.gemini.error = e.message;
+    }
+    return out;
+}
+
 module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    if (req.query && req.query.diag) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        return res.status(200).send(JSON.stringify(await diagnostics(), null, 2));
+    }
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
     const basePrompt = loadPrompt();
