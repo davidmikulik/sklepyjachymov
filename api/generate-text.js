@@ -95,36 +95,8 @@ async function askMistral(prompt) {
     return text.trim();
 }
 
-// /api/generate-text?diag=1 – stav nastavení bez hodnot klíčů (jen názvy proměnných a výsledky testů)
-async function diagnostics() {
-    const out = {
-        gemini: { configured: !!process.env.GEMINI_API_KEY, model: GEMINI_MODEL },
-        mistral: { configured: !!process.env.MISTRAL_API_KEY, model: MISTRAL_MODEL },
-        redis: { urlVar: REDIS_URL_VAR, tokenVar: REDIS_TOKEN_VAR },
-        storageEnvNames: Object.keys(process.env).filter(k => /KV|REDIS|UPSTASH|BLOB/.test(k)).sort(),
-        prompt: !!loadPrompt(),
-        seedCount: seedJokes().length,
-    };
-    try {
-        out.redis.ping = await redis(['PING']);
-        out.redis.archived = await redis(['LLEN', REDIS_KEY]);
-    } catch (e) {
-        out.redis.error = e.message;
-    }
-    try {
-        out.gemini.test = (await askGemini('Odpověz jedním slovem: ahoj')) ? 'ok' : 'nenastaveno';
-    } catch (e) {
-        out.gemini.error = e.message;
-    }
-    return out;
-}
-
 module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-    if (req.query && req.query.diag) {
-        res.setHeader('Content-Type', 'application/json; charset=utf-8');
-        return res.status(200).send(JSON.stringify(await diagnostics(), null, 2));
-    }
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
     const basePrompt = loadPrompt();
