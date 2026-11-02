@@ -19,7 +19,7 @@ const REDIS_URL_VAR = findEnv(['KV_REST_API_URL', 'UPSTASH_REDIS_REST_URL']);
 const REDIS_TOKEN_VAR = findEnv(['KV_REST_API_TOKEN', 'UPSTASH_REDIS_REST_TOKEN']);
 const REDIS_URL = REDIS_URL_VAR && process.env[REDIS_URL_VAR];
 const REDIS_TOKEN = REDIS_TOKEN_VAR && process.env[REDIS_TOKEN_VAR];
-const REDIS_KEY = 'jachymov:hlasky';
+const REDIS_KEY = 'jachymov:fakta';   // nový archiv po změně promptu z vtipů na fakta
 const ARCHIVE_SIZE = 200;
 
 // prompt.md a hlasky.json se do funkce přibalují přes "includeFiles" ve vercel.json

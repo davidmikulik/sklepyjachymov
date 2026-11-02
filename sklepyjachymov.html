@@ -1673,7 +1673,7 @@
         }
 
         // Hlášky z AI se ukládají i v prohlížeči; poslouží jako záloha, když server nemá vlastní archiv.
-        const HLASKY_KEY = 'jachymov-hlasky';
+        const HLASKY_KEY = 'jachymov-fakta';
         function localJokes() {
             try { return JSON.parse(localStorage.getItem(HLASKY_KEY) || '[]'); } catch (e) { return []; }
         }

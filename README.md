@@ -14,7 +14,7 @@
 
 Box „Něco o Jáchymově“ plní serverless funkce `api/generate-text.js`: zkusí Gemini (a případně Mistral),
 úspěšnou hlášku uloží do archivu a vrátí ji. Když AI volání odmítne, vrátí náhodnou hlášku z archivu,
-jinak ze záložní sady `hlasky.json`. Prohlížeč si navíc ukládá posledních 50 hlášek a použije je, když server
+jinak náhradní větu ze souboru `hlasky.json`. Prohlížeč si navíc ukládá posledních 50 hlášek a použije je, když server
 nemá nic lepšího. Zdroj je v hlavičce `X-Hlaska-Source` (`ai`, `archiv`, `zaloha`).
 
 Lokální spuštění: `npx vercel dev` (proměnné do `.env`, viz `.env.example`).
