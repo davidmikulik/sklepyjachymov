@@ -32,26 +32,33 @@ module.exports = async function handler(req, res) {
 
     const prompt = basePrompt + '\n\nID: ' + Date.now().toString(36) + Math.random().toString(36).slice(2);
 
+    const callApi = () => fetch(MISTRAL_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey,
+        },
+        body: JSON.stringify({
+            model: MISTRAL_MODEL_NAME,
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+        }),
+    });
+
     try {
-        const response = await fetch(MISTRAL_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiKey,
-            },
-            body: JSON.stringify({
-                model: MISTRAL_MODEL_NAME,
-                messages: [{ role: 'user', content: prompt }],
-                temperature: 0.7,
-            }),
-        });
+        let response = await callApi();
+        if (response.status === 429) {
+            // limit 1 požadavek/s – jeden opakovaný pokus po krátké pauze
+            await new Promise(r => setTimeout(r, 1500));
+            response = await callApi();
+        }
 
         const raw = await response.text();
         let result;
         try {
             result = JSON.parse(raw);
         } catch (e) {
-            return res.status(502).send(`Neočekávaná odpověď API (HTTP ${response.status}): ${raw}`);
+            return res.status(502).send(`Neočekávaná odpověď API (HTTP ${response.status}, model ${MISTRAL_MODEL_NAME}): ${raw}`);
         }
 
         if (result.error && result.error.message) {
@@ -67,7 +74,7 @@ module.exports = async function handler(req, res) {
             return res.status(200).send(content.trim());
         }
 
-        return res.status(502).send(`Neočekávaná odpověď API (HTTP ${response.status}): ${raw}`);
+        return res.status(502).send(`Neočekávaná odpověď API (HTTP ${response.status}, model ${MISTRAL_MODEL_NAME}): ${raw}`);
     } catch (error) {
         return res.status(502).send('Chyba při volání API: ' + error.message);
     }
