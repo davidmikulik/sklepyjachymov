@@ -1,15 +1,19 @@
 const fs = require('fs');
 const path = require('path');
 
-const MISTRAL_MODEL_NAME = process.env.MISTRAL_MODEL || 'mistral-small';
+const MISTRAL_MODEL_NAME = process.env.MISTRAL_MODEL || 'mistral-small-latest';
 const MISTRAL_URL = 'https://api.mistral.ai/v1/chat/completions';
 
+// prompt.md se do funkce přibaluje přes "includeFiles" ve vercel.json
+const PROMPT_FILES = [path.join(__dirname, '..', 'prompt.md'), path.join(process.cwd(), 'prompt.md')];
+
 function loadPrompt() {
-    const promptFile = path.join(process.cwd(), 'prompt.md');
-    if (fs.existsSync(promptFile)) {
-        return fs.readFileSync(promptFile, 'utf8').trim();
+    const fromEnv = (process.env.MISTRAL_PROMPT || '').trim();
+    if (fromEnv) return fromEnv;
+    for (const file of PROMPT_FILES) {
+        if (fs.existsSync(file)) return fs.readFileSync(file, 'utf8').trim();
     }
-    return (process.env.MISTRAL_PROMPT || '').trim();
+    return '';
 }
 
 module.exports = async function handler(req, res) {
