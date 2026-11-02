@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const MISTRAL_MODEL_NAME = process.env.MISTRAL_MODEL || 'mistral-small-latest';
+const MISTRAL_MODEL_NAME = process.env.MISTRAL_MODEL || 'mistral-small-2603';
 const MISTRAL_URL = 'https://api.mistral.ai/v1/chat/completions';
 
 // prompt.md se do funkce přibaluje přes "includeFiles" ve vercel.json
