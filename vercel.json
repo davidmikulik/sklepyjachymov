@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/generate-text.js": { "includeFiles": "prompt.md" }
+  },
   "rewrites": [
     { "source": "/", "destination": "/sklepyjachymov.html" },
     { "source": "/generate_text_mistral.php", "destination": "/api/generate-text" }

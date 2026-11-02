@@ -1677,23 +1677,22 @@
             const textEl = document.getElementById('joke-text');
 
             try {
-                const response = await fetch('/api/generate-text?_=' + Date.now());
+                textEl.textContent = 'Načítám text ze serveru…';
+                const response = await fetch('/api/generate-text?_=' + Date.now(), { cache: 'no-store' });
+                const text = (await response.text()).trim();
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    throw new Error(text || `HTTP ${response.status}`);
                 }
-
-                const text = await response.text();
-                const trimmed = text.trim();
-                if (!trimmed) {
+                if (!text) {
                     throw new Error('Prázdná odpověď ze serveru');
                 }
 
-                textEl.textContent = trimmed;
+                textEl.textContent = text;
             } catch (error) {
                 console.warn('Nepodařilo se načíst text:', error);
-                if (textBox) {
-                    textBox.style.display = 'none';
-                }
+                // chybu ukážeme v boxu, ať je vidět, co na serveru chybí (např. MISTRAL_API_KEY)
+                textEl.textContent = 'Text se nepodařilo načíst: ' + error.message.slice(0, 200);
+                if (textBox) textBox.style.display = '';
             }
         }
 
