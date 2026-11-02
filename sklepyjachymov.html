@@ -1672,9 +1672,23 @@
             `;
         }
 
+        // Hlášky z AI se ukládají i v prohlížeči; poslouží jako záloha, když server nemá vlastní archiv.
+        const HLASKY_KEY = 'jachymov-hlasky';
+        function localJokes() {
+            try { return JSON.parse(localStorage.getItem(HLASKY_KEY) || '[]'); } catch (e) { return []; }
+        }
+        function rememberJoke(text) {
+            try {
+                const list = localJokes().filter(t => t !== text);
+                list.unshift(text);
+                localStorage.setItem(HLASKY_KEY, JSON.stringify(list.slice(0, 50)));
+            } catch (e) { /* prohlížeč bez úložiště */ }
+        }
+
         async function loadText() {
             const textBox = document.getElementById('joke-box');
             const textEl = document.getElementById('joke-text');
+            const local = localJokes();
 
             try {
                 textEl.textContent = 'Načítám text ze serveru…';
@@ -1686,12 +1700,17 @@
                 if (!text) {
                     throw new Error('Prázdná odpověď ze serveru');
                 }
-
-                textEl.textContent = text;
+                const source = response.headers.get('X-Hlaska-Source');
+                if (source === 'ai') rememberJoke(text);
+                // server neměl AI ani archiv – raději uložená hláška z tohoto prohlížeče
+                textEl.textContent = (source === 'zaloha' && local.length) ? local[Math.floor(Math.random() * local.length)] : text;
             } catch (error) {
                 console.warn('Nepodařilo se načíst text:', error);
-                // chybu ukážeme v boxu, ať je vidět, co na serveru chybí (např. MISTRAL_API_KEY)
-                textEl.textContent = 'Text se nepodařilo načíst: ' + error.message.slice(0, 200);
+                if (local.length) {
+                    textEl.textContent = local[Math.floor(Math.random() * local.length)];
+                } else {
+                    textEl.textContent = 'Text se nepodařilo načíst: ' + error.message.slice(0, 200);
+                }
                 if (textBox) textBox.style.display = '';
             }
         }
