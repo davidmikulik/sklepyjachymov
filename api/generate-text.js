@@ -30,8 +30,9 @@ function readBundled(name) {
     return null;
 }
 
+// Prompt z prompt.md; přepsat ho jde jen proměnnou AI_PROMPT (starší MISTRAL_PROMPT se už nepoužívá)
 function loadPrompt() {
-    const fromEnv = (process.env.AI_PROMPT || process.env.MISTRAL_PROMPT || '').trim();
+    const fromEnv = (process.env.AI_PROMPT || '').trim();
     return fromEnv || (readBundled('prompt.md') || '').trim();
 }
 
@@ -60,15 +61,26 @@ async function askGemini(prompt) {
     const key = process.env.GEMINI_API_KEY;
     if (!key) return null;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-    const call = () => fetch(url, {
+    // url_context: Gemini si načte stránky uvedené v promptu (palfi.cz, jachymov-joachimsthal.cz)
+    const call = withUrls => fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9 } }),
+        body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.9 },
+            ...(withUrls ? { tools: [{ url_context: {} }] } : {}),
+        }),
     });
-    let response = await call();
+    let withUrls = process.env.GEMINI_URL_CONTEXT !== '0';
+    let response = await call(withUrls);
+    if (response.status === 400 && withUrls) {
+        // model načítání stránek nepodporuje – zkusit bez něj
+        withUrls = false;
+        response = await call(false);
+    }
     if (response.status === 429) {
         await new Promise(r => setTimeout(r, 1500));
-        response = await call();
+        response = await call(withUrls);
     }
     const raw = await response.text();
     let data;

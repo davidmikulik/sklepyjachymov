@@ -6,6 +6,7 @@
 2. V *Project Settings → Environment Variables* nastavte:
    - `GEMINI_API_KEY` – API klíč z Google AI Studio (hlavní zdroj hlášek)
    - `GEMINI_MODEL` – volitelně, výchozí `gemini-flash-lite-latest`
+   - `GEMINI_URL_CONTEXT=0` – volitelně vypne načítání webů uvedených v promptu (nástroj url_context)
    - `AI_PROMPT` – volitelně, přepíše prompt ze souboru `prompt.md`
    - `MISTRAL_API_KEY`, `MISTRAL_MODEL` – volitelně, záložní poskytovatel (výchozí `mistral-small-2603`)
 3. Volitelně v *Storage* připojte **Upstash Redis** (Marketplace) – Vercel sám nastaví `KV_REST_API_URL`
